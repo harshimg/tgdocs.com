@@ -8,6 +8,10 @@ import type { StorageProvider, TGFile, TGFolder, StorageStats } from './types';
 export class MockStorageProvider implements StorageProvider {
   name = 'mock';
 
+  async init(): Promise<void> {
+    // No initialization needed for mock provider
+  }
+
   private folders: TGFolder[] = [
     { id: 'fld_work', name: 'Work Documents', parentId: null, createdAt: Date.now() - 86400000 * 5, color: '#1a73e8' },
     { id: 'fld_projects', name: 'TGDocs Design Assets', parentId: 'fld_work', createdAt: Date.now() - 86400000 * 3 },

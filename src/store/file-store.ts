@@ -174,7 +174,7 @@ export const useFileStore = create<FileState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const provider = getActiveStorageProvider();
-      await provider.init();
+      await provider.init?.();
       const { currentFolderId } = get();
       const [folders, folderFiles, stats] = await Promise.all([
         provider.getFolders(),

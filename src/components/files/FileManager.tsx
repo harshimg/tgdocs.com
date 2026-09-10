@@ -173,26 +173,19 @@ export const FileManager: React.FC<FileManagerProps> = ({
                     }
                   }}
                 />
-                <div
+                <button
+                  type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="cursor-pointer group mb-4 sm:mb-5 transition-transform duration-300 hover:scale-105"
-                  title="Click to upload files"
+                  className="w-16 h-16 rounded-2xl bg-[#d3e3fd]/60 dark:bg-[#004a77]/50 hover:bg-[#c2e7ff] dark:hover:bg-[#004a77] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa] mb-4 transition-transform hover:scale-110 active:scale-95 cursor-pointer shadow-sm"
+                  title="Click to browse files"
                 >
-                  <img
-                    src="/images/empty-folder.png"
-                    alt="Drop files here"
-                    className="w-40 sm:w-56 md:w-64 h-auto pointer-events-none drop-shadow-sm select-none"
-                  />
-                </div>
-                <h3 className="text-xl sm:text-2xl md:text-[26px] font-normal text-[#1f1f1f] dark:text-[#e3e3e3] mb-1.5 sm:mb-2 tracking-tight">
-                  Drop files here
+                  <Upload className="w-7 h-7" />
+                </button>
+                <h3 className="text-lg sm:text-xl font-semibold text-[#1f1f1f] dark:text-[#e3e3e3] mb-1 tracking-tight">
+                  Drop files here to upload to {currentFolderName}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#444746] dark:text-[#8e918f]">
-                  or use the{' '}
-                  <span className="text-[#0b57d0] dark:text-[#a8c7fa] font-medium">
-                    'New'
-                  </span>{' '}
-                  button.
+                <p className="text-xs sm:text-sm text-[#747775] dark:text-[#8e918f]">
+                  or click the upload icon to browse from your device
                 </p>
               </div>
             ) : (
@@ -298,22 +291,19 @@ export const FileManager: React.FC<FileManagerProps> = ({
                         }
                       }}
                     />
-                    <div
+                    <button
+                      type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="cursor-pointer group mb-3 transition-transform duration-300 hover:scale-105"
-                      title="Click to upload files"
+                      className="w-14 h-14 rounded-2xl bg-[#d3e3fd]/60 dark:bg-[#004a77]/50 hover:bg-[#c2e7ff] dark:hover:bg-[#004a77] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa] mb-3 transition-transform hover:scale-110 active:scale-95 cursor-pointer shadow-sm"
+                      title="Click to browse files"
                     >
-                      <img
-                        src="/images/empty-folder.png"
-                        alt="Drop files here"
-                        className="w-36 h-auto pointer-events-none opacity-90 select-none"
-                      />
-                    </div>
-                    <h4 className="text-lg font-medium text-[#1f1f1f] dark:text-[#e3e3e3] mb-1">
-                      Drop files here
+                      <Upload className="w-6 h-6" />
+                    </button>
+                    <h4 className="text-sm font-semibold text-[#1f1f1f] dark:text-[#e3e3e3] mb-1">
+                      Drop files here to upload to {currentFolderName}
                     </h4>
                     <p className="text-xs text-[#747775] dark:text-[#8e918f]">
-                      or use the 'New' button to upload files to this folder.
+                      or click the upload icon to browse from your device
                     </p>
                   </div>
                 )

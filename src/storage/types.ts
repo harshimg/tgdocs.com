@@ -46,6 +46,7 @@ export interface UploadTask {
 
 export interface StorageProvider {
   name: string;
+  init?(): Promise<void>;
   
   // Folders
   getFolders(): Promise<TGFolder[]>;
