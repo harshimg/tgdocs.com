@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-surface: #ffffff;
+    --bg-surface-container-lowest: #ffffff;
+    --bg-surface-container-low: #f8fafd;
+    --bg-surface-container: #f0f4f9;
+    --bg-surface-container-high: #e9eef6;
+    --bg-surface-container-highest: #dde3ea;
+
+    --text-primary: #1f1f1f;
+    --text-secondary: #444746;
+    --text-tertiary: #747775;
+    --text-disabled: #a8aaa8;
+
+    --border-subtle: #e0e3e7;
+    --border-hover: #c4c7c5;
+    --border-focus: #0b57d0;
+
+    --color-primary: #0b57d0;
+    --color-primary-hover: #0842a0;
+    --color-primary-container: #d3e3fd;
+    --color-on-primary-container: #041e49;
+
+    --color-folder: #444746;
+    --color-folder-hover: #1f1f1f;
+
+    --shadow-google-1: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+    --shadow-google-2: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+    --shadow-google-3: 0 2px 6px 2px rgba(60,64,67,0.15), 0 1px 2px 0 rgba(60,64,67,0.3);
+  }
+
+  .dark {
+    --bg-surface: #131314;
+    --bg-surface-container-lowest: #0e0e0f;
+    --bg-surface-container-low: #1a1a1c;
+    --bg-surface-container: #1e1f20;
+    --bg-surface-container-high: #282a2c;
+    --bg-surface-container-highest: #333538;
+
+    --text-primary: #e3e3e3;
+    --text-secondary: #c4c7c5;
+    --text-tertiary: #8e918f;
+    --text-disabled: #5e6061;
+
+    --border-subtle: #3c4043;
+    --border-hover: #5e6266;
+    --border-focus: #a8c7fa;
+
+    --color-primary: #a8c7fa;
+    --color-primary-hover: #d3e3fd;
+    --color-primary-container: #0842a0;
+    --color-on-primary-container: #d3e3fd;
+
+    --color-folder: #c4c7c5;
+    --color-folder-hover: #ffffff;
+
+    --shadow-google-1: 0 1px 3px 0 rgba(0,0,0,0.5), 0 1px 2px 0 rgba(0,0,0,0.3);
+    --shadow-google-2: 0 2px 6px 2px rgba(0,0,0,0.4), 0 1px 2px 0 rgba(0,0,0,0.6);
+    --shadow-google-3: 0 4px 12px 4px rgba(0,0,0,0.5);
+  }
+
+  body {
+    background-color: var(--bg-surface-container-low);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+  }
+}
+
+/* Custom scrollbar matching Google Drive */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 120, 0.45);
+}
+
+/* Transitions */
+.gdrive-transition {
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
