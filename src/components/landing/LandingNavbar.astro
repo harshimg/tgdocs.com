@@ -1,0 +1,60 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<header class="sticky top-0 z-50 w-full border-b border-[#e5e7eb] dark:border-[#26292c] bg-white/95 dark:bg-[#191b1d]/95 backdrop-blur-md transition-colors duration-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <!-- Brand Logo -->
+    <a href="/" class="flex items-center gap-2.5 group">
+      <img
+        src="/logo.svg"
+        alt="TGDocs Logo"
+        width="36"
+        height="36"
+        class="w-9 h-9 rounded-xl object-contain shadow-sm transition-transform duration-200 group-hover:scale-105"
+        loading="eager"
+        decoding="sync"
+      />
+
+      <div class="flex items-baseline tracking-[0.16em] font-semibold text-lg select-none">
+        <span class="text-[#0082c8] font-bold">TG</span>
+        <span class="text-[#191b1d] dark:text-[#fafafa] ml-0.5">DOCS</span>
+      </div>
+    </a>
+
+    <!-- Nav Links (Desktop) -->
+    <nav class="hidden md:flex items-center gap-7 text-[13.5px] font-medium text-[#707579] dark:text-[#8e9295]">
+      <a href="#features" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Features</a>
+      <a href="#screenshots" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Preview</a>
+      <a href="#how-it-works" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">How It Works</a>
+      <a href="#security" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Security</a>
+    </nav>
+
+    <!-- Right Actions -->
+    <div class="flex items-center gap-3">
+      <!-- Theme Toggle -->
+      <ThemeToggle />
+
+      <!-- GitHub Link -->
+      <a
+        href="https://github.com/harshimg/tgdocs.com"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="GitHub repository"
+        class="p-2 rounded-xl border border-[#e2e8f0] dark:border-[#2e3236] bg-white dark:bg-[#212427] text-[#707579] dark:text-[#8e9295] hover:text-[#191b1d] dark:hover:text-white transition-all duration-200"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+        </svg>
+      </a>
+
+      <!-- Primary CTA: Launch App -->
+      <a
+        href="/app"
+        class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#0082c8] hover:bg-[#0073b0] active:scale-98 text-white font-medium text-xs sm:text-sm tracking-normal shadow-sm transition-all duration-150 cursor-pointer"
+      >
+        <span>Open App</span>
+      </a>
+    </div>
+  </div>
+</header>

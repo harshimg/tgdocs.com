@@ -1,0 +1,172 @@
+---
+// HeroInteractive3D.astro - Refined clean 3D Stage with authentic Telegram aesthetic
+---
+
+<div id="hero-3d-stage-container" class="relative w-full max-w-[500px] h-[380px] sm:h-[430px] mx-auto flex items-center justify-center perspective-1200 select-none">
+  <!-- Interactive 3D Canvas Box that tilts smoothly with pointer -->
+  <div
+    id="hero-3d-box"
+    class="relative w-full h-full flex items-center justify-center preserve-3d transition-transform duration-100 ease-out"
+    style="transform: rotateX(6deg) rotateY(-8deg);"
+  >
+    <!-- Background Outer Orbit Ring (Subtle clean border) -->
+    <div
+      class="absolute w-[300px] sm:w-[350px] h-[300px] sm:h-[350px] rounded-full border border-dashed border-[#d1d5db] dark:border-[#2d3136] animate-spin-slow pointer-events-none"
+      style="transform: translateZ(-50px) rotateX(65deg);"
+    ></div>
+
+    <!-- Inner Orbit Ring -->
+    <div
+      class="absolute w-[220px] sm:w-[260px] h-[220px] sm:h-[260px] rounded-full border border-[#e5e7eb] dark:border-[#282b2e] pointer-events-none"
+      style="transform: translateZ(-25px);"
+    ></div>
+
+    <!-- Center Floating Telegram Paper Plane Card -->
+    <div
+      class="relative z-10 w-36 h-36 sm:w-40 sm:h-40 preserve-3d animate-float-slow flex items-center justify-center group cursor-grab active:cursor-grabbing"
+      style="transform: translateZ(45px);"
+    >
+      <!-- Clean Slate Card Frame -->
+      <div class="absolute inset-0 rounded-3xl bg-white dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#2e3236] shadow-xl shadow-black/10 dark:shadow-black/50 flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
+        
+        <!-- Telegram Blue Emblem Circle -->
+        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-[#0082c8] flex items-center justify-center shadow-md shadow-[#0082c8]/25">
+          <!-- Authentic Telegram Paper Plane Icon -->
+          <svg
+            class="w-12 h-12 sm:w-14 sm:h-14 text-white transform -rotate-3 transition-transform duration-200 group-hover:rotate-0"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Chip 1: Private & Secure -->
+    <div
+      class="absolute top-6 sm:top-8 -left-2 sm:left-2 z-20 px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#2e3236] shadow-lg shadow-black/5 dark:shadow-black/40 flex items-center gap-2.5 animate-float-slow pointer-events-auto transition-transform duration-200 hover:scale-105"
+      style="transform: translateZ(80px);"
+    >
+      <div class="w-7 h-7 rounded-lg bg-[#f0f4f8] dark:bg-[#282b2e] flex items-center justify-center text-[#0082c8] shrink-0">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      </div>
+      <div>
+        <div class="text-[11.5px] font-semibold text-[#191b1d] dark:text-[#fafafa] tracking-tight">
+          Private & Secure
+        </div>
+        <div class="text-[10px] text-[#707579] dark:text-[#8e9295]">Your account only</div>
+      </div>
+    </div>
+
+    <!-- Floating Chip 2: Unlimited Cloud Space -->
+    <div
+      class="absolute top-8 sm:top-10 -right-2 sm:right-2 z-20 px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#2e3236] shadow-lg shadow-black/5 dark:shadow-black/40 flex items-center gap-2.5 animate-float-reverse pointer-events-auto transition-transform duration-200 hover:scale-105"
+      style="transform: translateZ(95px);"
+    >
+      <div class="w-7 h-7 rounded-lg bg-[#f0f4f8] dark:bg-[#282b2e] flex items-center justify-center text-[#0082c8] shrink-0">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+        </svg>
+      </div>
+      <div>
+        <div class="text-[11.5px] font-semibold text-[#191b1d] dark:text-[#fafafa] tracking-tight">
+          Unlimited Space
+        </div>
+        <div class="text-[10px] text-[#707579] dark:text-[#8e9295]">Free Telegram cloud</div>
+      </div>
+    </div>
+
+    <!-- Floating Chip 3: Drive Folders -->
+    <div
+      class="absolute bottom-8 sm:bottom-10 -left-3 sm:left-4 z-20 px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#2e3236] shadow-lg shadow-black/5 dark:shadow-black/40 flex items-center gap-2.5 animate-float-reverse pointer-events-auto transition-transform duration-200 hover:scale-105"
+      style="transform: translateZ(75px);"
+    >
+      <div class="w-7 h-7 rounded-lg bg-[#f0f4f8] dark:bg-[#282b2e] flex items-center justify-center text-[#0082c8] shrink-0">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+        </svg>
+      </div>
+      <div>
+        <div class="text-[11.5px] font-semibold text-[#191b1d] dark:text-[#fafafa] tracking-tight">
+          Drive Folders
+        </div>
+        <div class="text-[10px] text-[#707579] dark:text-[#8e9295]">Organize with ease</div>
+      </div>
+    </div>
+
+    <!-- Floating Chip 4: Up to 4GB Files -->
+    <div
+      class="absolute bottom-6 sm:bottom-8 -right-3 sm:right-4 z-20 px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#2e3236] shadow-lg shadow-black/5 dark:shadow-black/40 flex items-center gap-2.5 animate-float-slow pointer-events-auto transition-transform duration-200 hover:scale-105"
+      style="transform: translateZ(85px);"
+    >
+      <div class="w-7 h-7 rounded-lg bg-[#f0f4f8] dark:bg-[#282b2e] flex items-center justify-center text-[#0082c8] shrink-0">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+      </div>
+      <div>
+        <div class="text-[11.5px] font-semibold text-[#191b1d] dark:text-[#fafafa] tracking-tight">
+          Large Files
+        </div>
+        <div class="text-[10px] text-[#707579] dark:text-[#8e9295]">2GB (4GB with Premium)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const container = document.getElementById('hero-3d-stage-container');
+    const box = document.getElementById('hero-3d-box');
+    if (!container || !box) return;
+
+    let targetRotX = 6;
+    let targetRotY = -8;
+    let currentRotX = 6;
+    let currentRotY = -8;
+    let isTicking = false;
+
+    function onMouseMove(e) {
+      const rect = container.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      const normX = (e.clientX - centerX) / (window.innerWidth / 2);
+      const normY = (e.clientY - centerY) / (window.innerHeight / 2);
+
+      targetRotY = normX * 18;
+      targetRotX = -normY * 14 + 4;
+
+      if (!isTicking) {
+        isTicking = true;
+        requestAnimationFrame(updateTransform);
+      }
+    }
+
+    function updateTransform() {
+      currentRotX += (targetRotX - currentRotX) * 0.08;
+      currentRotY += (targetRotY - currentRotY) * 0.08;
+
+      box.style.transform = `rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg)`;
+
+      if (Math.abs(targetRotX - currentRotX) > 0.05 || Math.abs(targetRotY - currentRotY) > 0.05) {
+        requestAnimationFrame(updateTransform);
+      } else {
+        isTicking = false;
+      }
+    }
+
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+
+    container.addEventListener('touchmove', function (e) {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        onMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
+      }
+    }, { passive: true });
+  })();
+</script>

@@ -1,0 +1,139 @@
+---
+// Hero3DCanvas.astro - Subtle elegant particle mesh background (no neon glow)
+---
+
+<div class="absolute inset-0 pointer-events-none overflow-hidden select-none" aria-hidden="true">
+  <canvas id="hero-3d-canvas" class="w-full h-full opacity-40 dark:opacity-50"></canvas>
+</div>
+
+<script is:inline>
+  (function () {
+    const canvas = document.getElementById('hero-3d-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = 0;
+    let height = 0;
+    let animationFrameId;
+    let isVisible = true;
+
+    // Mouse coordinates relative to hero center
+    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+
+    const isMobile = window.innerWidth < 768;
+    const PARTICLE_COUNT = isMobile ? 30 : 50;
+    const MAX_DISTANCE = isMobile ? 85 : 120;
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.z = Math.random() * 600;
+        this.baseRadius = Math.random() * 1.5 + 1;
+        this.vx = (Math.random() - 0.5) * 0.35;
+        this.vy = (Math.random() - 0.5) * 0.35;
+        this.vz = (Math.random() - 0.5) * 0.5;
+        this.alpha = Math.random() * 0.4 + 0.15;
+      }
+
+      update() {
+        this.x += this.vx + (mouse.x * 0.0002 * (this.z / 300));
+        this.y += this.vy + (mouse.y * 0.0002 * (this.z / 300));
+        this.z += this.vz;
+
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+        if (this.z < 10) this.z = 600;
+        if (this.z > 600) this.z = 10;
+      }
+
+      draw() {
+        const scale = 400 / (400 + this.z);
+        const screenX = this.x;
+        const screenY = this.y;
+        const radius = this.baseRadius * scale;
+
+        ctx.beginPath();
+        ctx.arc(screenX, screenY, radius, 0, Math.PI * 2);
+        // Clean slate-blue particle color without neon blur
+        ctx.fillStyle = `rgba(129, 144, 159, ${this.alpha * scale * 0.8})`;
+        ctx.fill();
+      }
+    }
+
+    let particles = [];
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      width = canvas.width = rect.width || window.innerWidth;
+      height = canvas.height = rect.height || 600;
+
+      particles = [];
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function render() {
+      if (!isVisible) return;
+
+      mouse.x += (mouse.targetX - mouse.x) * 0.05;
+      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < MAX_DISTANCE) {
+            const opacity = (1 - dist / MAX_DISTANCE) * 0.16;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            // Clean subtle connector line
+            ctx.strokeStyle = `rgba(129, 144, 159, ${opacity})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    }
+
+    window.addEventListener('resize', resize, { passive: true });
+
+    window.addEventListener('mousemove', function (e) {
+      mouse.targetX = e.clientX - window.innerWidth / 2;
+      mouse.targetY = e.clientY - window.innerHeight / 2;
+    }, { passive: true });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible && !animationFrameId) {
+          render();
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(canvas);
+
+    resize();
+    render();
+  })();
+</script>

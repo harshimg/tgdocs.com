@@ -1,0 +1,76 @@
+---
+// ThemeToggle.astro - Client-side dark/light mode toggle with persistence
+---
+
+<button
+  id="theme-toggle-btn"
+  type="button"
+  aria-label="Toggle dark/light theme"
+  class="relative p-2 rounded-xl border border-[#232733] bg-[#141720]/80 hover:bg-[#1e2330] text-[#9ca3af] hover:text-white transition-all duration-200 cursor-pointer shadow-sm hover:shadow-[#0088cc]/10 flex items-center justify-center group"
+>
+  {/* Sun icon (visible in dark mode, click to switch to light) */}
+  <svg
+    id="theme-sun-icon"
+    class="w-4 h-4 text-amber-400 group-hover:rotate-45 transition-transform duration-300 hidden"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+  </svg>
+
+  {/* Moon icon (visible in light mode, click to switch to dark) */}
+  <svg
+    id="theme-moon-icon"
+    class="w-4 h-4 text-[#0088cc] group-hover:-rotate-12 transition-transform duration-300 hidden"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+</button>
+
+<script is:inline>
+  (function () {
+    const btn = document.getElementById('theme-toggle-btn');
+    const sunIcon = document.getElementById('theme-sun-icon');
+    const moonIcon = document.getElementById('theme-moon-icon');
+
+    function updateIcons() {
+      const isDark = document.documentElement.classList.contains('dark');
+      if (sunIcon && moonIcon) {
+        if (isDark) {
+          sunIcon.classList.remove('hidden');
+          moonIcon.classList.add('hidden');
+        } else {
+          sunIcon.classList.add('hidden');
+          moonIcon.classList.remove('hidden');
+        }
+      }
+    }
+
+    // Initial icon state
+    updateIcons();
+
+    if (btn) {
+      btn.addEventListener('click', function () {
+        const isDark = document.documentElement.classList.contains('dark');
+        const next = !isDark;
+
+        if (next) {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('tgdocs_theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('tgdocs_theme', 'light');
+        }
+
+        updateIcons();
+      });
+    }
+  })();
+</script>

@@ -2,25 +2,32 @@
 interface Props {
   title?: string;
   description?: string;
+  isApp?: boolean;
 }
 
 const {
   title = "TGDocs - Privacy-First Telegram Cloud File Manager",
   description = "A Google Drive-inspired client layer for managing your personal files stored securely in Telegram Cloud. 100% client-side, zero middleman servers, free & open source.",
+  isApp = false,
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="TGDocs" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#0b57d0" />
+    <meta name="theme-color" content="#0088cc" />
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website" />
@@ -28,13 +35,34 @@ const {
     <meta property="og:description" content={description} />
     <meta property="og:url" content="https://tgdocs.com" />
 
+    <!-- Inline script to prevent theme flash -->
+    <script is:inline>
+      (function() {
+        try {
+          var saved = localStorage.getItem('tgdocs_theme');
+          if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          } else if (saved === 'light') {
+            document.documentElement.classList.remove('dark');
+          } else {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+
     <!-- Privacy & Security CSP: Restrict outbound network calls to Telegram MTProto WebSockets and self -->
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' wss://*.web.telegram.org wss://*.telegram.org https://*.telegram.org blob:; img-src 'self' data: blob: https:; media-src 'self' blob:; worker-src 'self' blob:;"
     />
   </head>
-  <body class="bg-[#f0f4f9] dark:bg-[#131314] text-[#1f1f1f] dark:text-[#e3e3e3] antialiased overflow-hidden min-h-[100dvh] h-[100dvh]">
+  <body class={isApp 
+    ? "bg-[#f0f4f9] dark:bg-[#131314] text-[#1f1f1f] dark:text-[#e3e3e3] antialiased overflow-hidden min-h-[100dvh] h-[100dvh] selection:bg-[#0082c8]/20"
+    : "bg-[#f5f5f6] dark:bg-[#191b1d] text-[#212427] dark:text-[#fafafa] antialiased overflow-x-hidden min-h-screen selection:bg-[#0082c8]/20 transition-colors duration-200"
+  }>
     <slot />
   </body>
 </html>
@@ -42,11 +70,10 @@ const {
 <style is:global>
   @import "../styles/global.css";
 
-  html,
-  body {
+  html {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    scroll-behavior: smooth;
   }
 </style>

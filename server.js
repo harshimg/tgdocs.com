@@ -26,10 +26,23 @@ const server = http.createServer((req, res) => {
 
   let filePath = path.join(DIST_DIR, reqUrl);
 
-  fs.stat(filePath, (err, stats) => {
-    if (err || !stats.isFile()) {
+  // Check if direct file exists
+  if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+    if (fs.existsSync(path.join(filePath, 'index.html'))) {
+      filePath = path.join(filePath, 'index.html');
+    } else if (fs.existsSync(filePath + '.html')) {
+      filePath = filePath + '.html';
+    } else {
+      // If it's an asset request, 404; else fallback to index.html
+      const hasExt = path.extname(reqUrl) !== '';
+      if (hasExt) {
+        res.writeHead(404);
+        res.end('Not found');
+        return;
+      }
       filePath = path.join(DIST_DIR, 'index.html');
     }
+  }
 
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
@@ -46,7 +59,6 @@ const server = http.createServer((req, res) => {
       });
       res.end(content);
     });
-  });
 });
 
 server.listen(PORT, '127.0.0.1', () => {

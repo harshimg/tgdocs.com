@@ -135,15 +135,11 @@ export const LoginView: React.FC = () => {
           <>
             {/* TGSTORAGE / TGDocs Logo Header */}
             <div className="flex items-center gap-3.5 mb-10">
-              <div className="w-13 h-13 rounded-2xl bg-[#0088cc] flex items-center justify-center shadow-lg shadow-[#0088cc]/20">
-                {/* Floppy disk with paper plane inside */}
-                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                  {/* Floppy disk base */}
-                  <path d="M19.41 6.59L17.41 4.59C17.03 4.22 16.53 4 16 4H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7.41c0-.53-.22-1.03-.59-1.42zM12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-3.8 8.6L14.6 11l-5.6 5.4v-2.8z" />
-                  {/* Paper plane emblem overlay */}
-                  <path d="M10.8 13.9l.4 2.8 1.4-1.2 2.7 2c.5.3.8.1.9-.4l1.8-8.5c.2-.7-.3-1-0.8-.8L4.7 12.8c-.7.3-.7.7-.1.9l3.2 1 7.3-4.6-4.3 3.8z" />
-                </svg>
-              </div>
+              <img
+                src="/logo.svg"
+                alt="TGDocs Logo"
+                className="w-13 h-13 rounded-2xl object-contain shadow-lg shadow-[#0088cc]/20"
+              />
 
               <div className="flex items-center tracking-[0.22em] font-medium text-2xl">
                 <span className="text-[#24a1de] font-bold">TG</span>

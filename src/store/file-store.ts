@@ -90,15 +90,22 @@ export const useFileStore = create<FileState>((set, get) => ({
   inspectedItem: null,
   mobileSidebarOpen: false,
 
-  isDarkMode: false,
+  isDarkMode: typeof window !== 'undefined'
+    ? (localStorage.getItem('tgdocs_theme')
+        ? localStorage.getItem('tgdocs_theme') === 'dark'
+        : document.documentElement.classList.contains('dark') || true)
+    : true,
 
   toggleTheme: () => {
     const next = !get().isDarkMode;
     set({ isDarkMode: next });
-    if (next) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('tgdocs_theme', next ? 'dark' : 'light');
+      if (next) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
   },
 

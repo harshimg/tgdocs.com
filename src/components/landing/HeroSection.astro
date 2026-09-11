@@ -1,0 +1,55 @@
+---
+import Hero3DCanvas from './Hero3DCanvas.astro';
+import HeroInteractive3D from './HeroInteractive3D.astro';
+---
+
+<section class="relative min-h-[78vh] flex items-center justify-center pt-8 pb-14 lg:pt-14 lg:pb-20 overflow-hidden">
+  <!-- Subtle Canvas Mesh Background -->
+  <Hero3DCanvas />
+
+  <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+      
+      <!-- Left Column: Simple, Human Overview -->
+      <div class="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
+        
+        <!-- Hero Headline -->
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#191b1d] dark:text-[#fafafa] leading-[1.18] mb-5">
+          Your Cloud Drive, <br />
+          <span class="text-[#0082c8]">Powered by Telegram.</span>
+        </h1>
+
+        <!-- Subtitle: Overview without heavy technical jargon -->
+        <p class="text-base sm:text-lg text-[#5d6c7b] dark:text-[#8e9295] max-w-xl leading-relaxed mb-8 font-normal">
+          Organize your Telegram files, media, and documents in a clean Google Drive-style web interface. Enjoy unlimited free storage with folders, instant search, and complete privacy.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <!-- Primary CTA -->
+          <a
+            href="/app"
+            class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#0082c8] hover:bg-[#0073b0] active:scale-98 text-white font-medium text-sm sm:text-base tracking-normal shadow-sm transition-all duration-150 flex items-center justify-center cursor-pointer"
+          >
+            <span>Open TGDocs</span>
+          </a>
+
+          <!-- Secondary CTA -->
+          <a
+            href="#features"
+            class="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-[#e2e8f0] dark:border-[#2e3236] bg-white dark:bg-[#212427] hover:bg-[#f8fafc] dark:hover:bg-[#282b2e] text-[#4b5563] dark:text-[#d1d5db] font-medium text-sm sm:text-base transition-all duration-150 flex items-center justify-center cursor-pointer"
+          >
+            <span>Learn More</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Interactive 3D Paper Plane & Stage -->
+      <div class="lg:col-span-5 flex items-center justify-center">
+        <HeroInteractive3D />
+      </div>
+
+    </div>
+  </div>
+</section>

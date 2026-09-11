@@ -1,0 +1,57 @@
+---
+// LandingFooter.astro - Minimalist clean footer (tgstorage styling)
+---
+
+<footer class="border-t border-[#e5e7eb] dark:border-[#26292c] bg-white dark:bg-[#191b1d] py-10 text-[#707579] dark:text-[#8e9295] text-xs">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-[#e5e7eb] dark:border-[#26292c]">
+      
+      <!-- Brand & Description -->
+      <div class="flex items-center gap-3">
+        <img
+          src="/logo.svg"
+          alt="TGDocs Logo"
+          width="32"
+          height="32"
+          class="w-8 h-8 rounded-xl object-contain shadow-sm"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="flex flex-col">
+          <div class="font-bold text-[#191b1d] dark:text-[#fafafa] tracking-wider text-sm">
+            <span class="text-[#0082c8]">TG</span>DOCS
+          </div>
+          <span class="text-[11px] text-[#707579] dark:text-[#8e9295]">Telegram Cloud File Manager</span>
+        </div>
+      </div>
+
+      <!-- Quick Navigation -->
+      <div class="flex flex-wrap items-center justify-center gap-6 text-[13px] text-[#707579] dark:text-[#8e9295]">
+        <a href="/app" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Launch App</a>
+        <a href="#features" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Features</a>
+        <a href="#screenshots" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Preview</a>
+        <a href="#how-it-works" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">How It Works</a>
+        <a href="#security" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Security</a>
+        <a
+          href="https://github.com/harshimg/tgdocs.com"
+          target="_blank"
+          rel="noreferrer"
+          class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors"
+        >
+          <span>GitHub</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Bottom Disclaimer & Copyright -->
+    <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#707579] dark:text-[#8e9295]">
+      <div>
+        © {new Date().getFullYear()} TGDocs. Built with open-source client-side code.
+      </div>
+      <div class="text-center sm:text-right max-w-md">
+        Disclaimer: TGDocs is an independent client interface and is not affiliated with Telegram FZ-LLC.
+      </div>
+    </div>
+  </div>
+</footer>
