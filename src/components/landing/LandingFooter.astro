@@ -1,57 +1,168 @@
 ---
-// LandingFooter.astro - Minimalist clean footer (tgstorage styling)
+// LandingFooter.astro - Comprehensive production footer with legal, navigation, and trust links
 ---
 
-<footer class="border-t border-[#e5e7eb] dark:border-[#26292c] bg-white dark:bg-[#191b1d] py-10 text-[#707579] dark:text-[#8e9295] text-xs">
+<footer class="border-t border-[#e5e7eb] dark:border-[#26292c] bg-white dark:bg-[#191b1d] pt-14 pb-10 text-[#707579] dark:text-[#8e9295] text-xs transition-colors duration-200">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-[#e5e7eb] dark:border-[#26292c]">
+    
+    <!-- Multi-Column Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12 pb-12 border-b border-[#e5e7eb] dark:border-[#26292c]">
       
-      <!-- Brand & Description -->
-      <div class="flex items-center gap-3">
-        <img
-          src="/logo.svg"
-          alt="TGDocs Logo"
-          width="32"
-          height="32"
-          class="w-8 h-8 rounded-xl object-contain shadow-sm"
-          loading="lazy"
-          decoding="async"
-        />
-        <div class="flex flex-col">
-          <div class="font-bold text-[#191b1d] dark:text-[#fafafa] tracking-wider text-sm">
-            <span class="text-[#0082c8]">TG</span>DOCS
+      <!-- Brand & Mission Column (spans 2 cols on desktop) -->
+      <div class="sm:col-span-2 space-y-4">
+        <a href="/" class="flex items-center gap-2.5 group w-fit">
+          <img
+            src="/logo.svg"
+            alt="TGDocs Logo"
+            width="34"
+            height="34"
+            class="w-8.5 h-8.5 rounded-xl object-contain shadow-sm transition-transform duration-200 group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="flex items-baseline tracking-[0.16em] font-semibold text-lg select-none">
+            <span class="text-[#0082c8] font-bold">TG</span>
+            <span class="text-[#191b1d] dark:text-[#fafafa] ml-0.5">DOCS</span>
           </div>
-          <span class="text-[11px] text-[#707579] dark:text-[#8e9295]">Telegram Cloud File Manager</span>
+        </a>
+
+        <p class="text-xs text-[#5d6c7b] dark:text-[#9aa0a6] leading-relaxed max-w-sm">
+          A client-side Google Drive-inspired file manager for Telegram Cloud. 100% client-side, zero middleman servers, unlimited storage, and complete privacy.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-2 pt-1">
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40">
+            ✓ 100% Client-Side
+          </span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-blue-50 dark:bg-blue-950/40 text-[#0082c8] dark:text-[#70b5f5] border border-blue-200 dark:border-blue-800/40">
+            ✓ Zero Middleman Servers
+          </span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/40">
+            ✓ Open Source
+          </span>
         </div>
       </div>
 
-      <!-- Quick Navigation -->
-      <div class="flex flex-wrap items-center justify-center gap-6 text-[13px] text-[#707579] dark:text-[#8e9295]">
-        <a href="/app" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Launch App</a>
-        <a href="#features" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Features</a>
-        <a href="#screenshots" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Preview</a>
-        <a href="#how-it-works" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">How It Works</a>
-        <a href="#security" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">Security</a>
-        <a
-          href="https://github.com/harshimg/tgdocs.com"
-          target="_blank"
-          rel="noreferrer"
-          class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors"
-        >
-          <span>GitHub</span>
-        </a>
+      <!-- Column 1: Product -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#191b1d] dark:text-[#fafafa]">
+          Product
+        </h4>
+        <ul class="space-y-2.5">
+          <li>
+            <a href="/app" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              Get Started
+            </a>
+          </li>
+          <li>
+            <a href="/#features" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              Features
+            </a>
+          </li>
+          <li>
+            <a href="/#screenshots" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              Interface Preview
+            </a>
+          </li>
+          <li>
+            <a href="/#how-it-works" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              How It Works
+            </a>
+          </li>
+          <li>
+            <a href="/#security" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              Security Architecture
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 2: Resources & About -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#191b1d] dark:text-[#fafafa]">
+          Company
+        </h4>
+        <ul class="space-y-2.5">
+          <li>
+            <a href="/about" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              About Us
+            </a>
+          </li>
+          <li>
+            <a href="/contact" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              Contact & FAQ
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/harshimg/tgdocs.com"
+              target="_blank"
+              rel="noreferrer"
+              class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors inline-flex items-center gap-1"
+            >
+              <span>GitHub</span>
+              <svg class="w-3 h-3 text-[#9aa0a6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/harshimg/tgdocs.com/issues"
+              target="_blank"
+              rel="noreferrer"
+              class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors inline-flex items-center gap-1"
+            >
+              <span>Report Bug</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Legal & Trust -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#191b1d] dark:text-[#fafafa]">
+          Legal & Privacy
+        </h4>
+        <ul class="space-y-2.5">
+          <li>
+            <a href="/terms" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              Terms & Conditions
+            </a>
+          </li>
+          <li>
+            <a href="/privacy" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              Privacy Policy
+            </a>
+          </li>
+          <li>
+            <a href="/contact#faq" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              Security FAQ
+            </a>
+          </li>
+        </ul>
       </div>
 
     </div>
 
-    <!-- Bottom Disclaimer & Copyright -->
-    <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#707579] dark:text-[#8e9295]">
-      <div>
-        © {new Date().getFullYear()} TGDocs. Built with open-source client-side code.
+    <!-- Bottom Disclaimer & Copyright Bar -->
+    <div class="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-[#707579] dark:text-[#8e9295]">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-center md:text-left">
+        <span>© {new Date().getFullYear()} TGDocs. Open-source under MIT License.</span>
+        <span>•</span>
+        <a href="/terms" class="hover:underline">Terms</a>
+        <span>•</span>
+        <a href="/privacy" class="hover:underline">Privacy</a>
+        <span>•</span>
+        <a href="/about" class="hover:underline">About</a>
       </div>
-      <div class="text-center sm:text-right max-w-md">
-        Disclaimer: TGDocs is an independent client interface and is not affiliated with Telegram FZ-LLC.
+
+      <div class="text-center md:text-right max-w-xl text-[10.5px] text-[#8e9295] dark:text-[#6b7280] leading-relaxed">
+        Disclaimer: TGDocs is an independent client-side interface and is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Telegram FZ-LLC.
       </div>
     </div>
+
   </div>
 </footer>

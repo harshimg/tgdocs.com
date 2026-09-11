@@ -424,7 +424,9 @@ export async function listTelegramFiles(
           size: Number(doc.size),
           mimeType: doc.mimeType || 'application/octet-stream',
           date: msg.date,
-          folderId: override.folderId !== undefined ? override.folderId : folderId,
+          folderId: (override.folderId !== undefined && override.folderId !== null)
+            ? override.folderId
+            : (folderId || parseFileId(fileId).folderId),
           isFavorite: !!override.isFavorite,
           isTrashed: !!override.isTrashed,
           tags: override.tags || [],
@@ -434,6 +436,25 @@ export async function listTelegramFiles(
   }
 
   return files;
+}
+
+/**
+ * List files across root storage channel and all created folder channels.
+ */
+export async function listAllTelegramFiles(limit = 100): Promise<TelegramDocumentFile[]> {
+  const meta = getLocalCachedMeta();
+  const rootPromise = listTelegramFiles(null, 0, limit);
+  const folderPromises = (meta.folders || []).map(async (folder) => {
+    try {
+      return await listTelegramFiles(folder.id, 0, limit);
+    } catch (err) {
+      console.warn(`Error listing files for folder ${folder.name} (${folder.id}):`, err);
+      return [];
+    }
+  });
+
+  const [rootFiles, ...folderFileArrays] = await Promise.all([rootPromise, ...folderPromises]);
+  return [...rootFiles, ...folderFileArrays.flat()];
 }
 
 /**

@@ -68,6 +68,9 @@ interface FileState {
   trashSelectedFiles: () => Promise<void>;
   restoreSelectedFiles: () => Promise<void>;
   deleteSelectedPermanently: () => Promise<void>;
+  trashFile: (fileId: string) => Promise<void>;
+  restoreFile: (fileId: string) => Promise<void>;
+  deleteFilePermanently: (fileId: string) => Promise<void>;
 }
 
 export const useFileStore = create<FileState>((set, get) => ({
@@ -182,10 +185,11 @@ export const useFileStore = create<FileState>((set, get) => ({
     try {
       const provider = getActiveStorageProvider();
       await provider.init?.();
-      const { currentFolderId } = get();
+      const { currentFolderId, activeFilter } = get();
+      const targetFolderId = activeFilter === 'all' ? (currentFolderId ?? undefined) : undefined;
       const [folders, folderFiles, stats] = await Promise.all([
         provider.getFolders(),
-        provider.listFiles(currentFolderId),
+        provider.listFiles(targetFolderId),
         provider.getStats(),
       ]);
 
@@ -337,6 +341,33 @@ export const useFileStore = create<FileState>((set, get) => ({
     set((state) => ({
       files: state.files.filter((f) => !selectedFileIds.includes(f.id)),
       selectedFileIds: [],
+    }));
+  },
+
+  trashFile: async (fileId: string) => {
+    const provider = getActiveStorageProvider();
+    await provider.trashFiles([fileId]);
+    set((state) => ({
+      files: state.files.map((f) => (f.id === fileId ? { ...f, isTrashed: true } : f)),
+      selectedFileIds: state.selectedFileIds.filter((id) => id !== fileId),
+    }));
+  },
+
+  restoreFile: async (fileId: string) => {
+    const provider = getActiveStorageProvider();
+    await provider.restoreFiles([fileId]);
+    set((state) => ({
+      files: state.files.map((f) => (f.id === fileId ? { ...f, isTrashed: false } : f)),
+      selectedFileIds: state.selectedFileIds.filter((id) => id !== fileId),
+    }));
+  },
+
+  deleteFilePermanently: async (fileId: string) => {
+    const provider = getActiveStorageProvider();
+    await provider.deleteFilesPermanently([fileId]);
+    set((state) => ({
+      files: state.files.filter((f) => f.id !== fileId),
+      selectedFileIds: state.selectedFileIds.filter((id) => id !== fileId),
     }));
   },
 }));

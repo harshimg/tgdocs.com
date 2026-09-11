@@ -17,6 +17,7 @@ import {
   Edit2,
   CheckCircle2,
   ExternalLink,
+  RotateCcw,
 } from 'lucide-react';
 
 interface FileCardProps {
@@ -31,7 +32,9 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview })
     toggleSelectFile,
     downloadFile,
     toggleFavorite,
-    trashSelectedFiles,
+    trashFile,
+    restoreFile,
+    deleteFilePermanently,
     setInspectedItem,
   } = useFileStore();
 
@@ -158,18 +161,44 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview })
                   <span>Rename</span>
                 </button>
                 <div className="my-1 border-t border-[#e0e3e7] dark:border-[#3c4043]" />
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setMenuOpen(false);
-                    toggleSelectFile(file.id, false);
-                    trashSelectedFiles();
-                  }}
-                  className="w-full text-left px-3 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2 cursor-pointer"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>Move to trash</span>
-                </button>
+                {file.isTrashed ? (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuOpen(false);
+                        restoreFile(file.id);
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs text-[#34a853] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] flex items-center gap-2 cursor-pointer"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Restore</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuOpen(false);
+                        deleteFilePermanently(file.id);
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2 cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete forever</span>
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMenuOpen(false);
+                      trashFile(file.id);
+                    }}
+                    className="w-full text-left px-3 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2 cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Move to trash</span>
+                  </button>
+                )}
               </div>
             )}
           </div>

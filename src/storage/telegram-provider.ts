@@ -7,6 +7,8 @@
 import type { StorageProvider, TGFile, TGFolder, StorageStats } from './types';
 import {
   listTelegramFiles,
+  listAllTelegramFiles,
+  parseFileId,
   uploadTelegramFile,
   downloadTelegramFile,
   getTelegramFilePreviewUrl,
@@ -121,7 +123,10 @@ export class TelegramStorageProvider implements StorageProvider {
   }
 
   async listFiles(folderId?: string | null): Promise<TGFile[]> {
-    const rawFiles = await listTelegramFiles(folderId ?? null);
+    const rawFiles =
+      folderId === undefined
+        ? await listAllTelegramFiles()
+        : await listTelegramFiles(folderId);
 
     return rawFiles.map((f) => ({
       id: f.id,
@@ -171,9 +176,10 @@ export class TelegramStorageProvider implements StorageProvider {
   async renameFile(fileId: string, newName: string): Promise<void> {
     const meta = getLocalCachedMeta();
     if (!meta.fileOverrides[fileId]) {
+      const parsed = parseFileId(fileId);
       meta.fileOverrides[fileId] = {
         fileId,
-        folderId: null,
+        folderId: parsed.folderId,
       };
     }
     meta.fileOverrides[fileId].customName = newName.trim();
@@ -195,14 +201,18 @@ export class TelegramStorageProvider implements StorageProvider {
 
   async toggleFavorite(fileId: string): Promise<boolean> {
     const meta = getLocalCachedMeta();
+    const parsed = parseFileId(fileId);
     if (!meta.fileOverrides[fileId]) {
       meta.fileOverrides[fileId] = {
         fileId,
-        folderId: null,
+        folderId: parsed.folderId,
         isFavorite: true,
       };
     } else {
       meta.fileOverrides[fileId].isFavorite = !meta.fileOverrides[fileId].isFavorite;
+      if (!meta.fileOverrides[fileId].folderId && parsed.folderId) {
+        meta.fileOverrides[fileId].folderId = parsed.folderId;
+      }
     }
     await commitMetaToTelegram({ fileOverrides: meta.fileOverrides });
     return !!meta.fileOverrides[fileId].isFavorite;
@@ -211,10 +221,18 @@ export class TelegramStorageProvider implements StorageProvider {
   async trashFiles(fileIds: string[]): Promise<void> {
     const meta = getLocalCachedMeta();
     for (const fid of fileIds) {
+      const parsed = parseFileId(fid);
       if (!meta.fileOverrides[fid]) {
-        meta.fileOverrides[fid] = { fileId: fid, folderId: null, isTrashed: true };
+        meta.fileOverrides[fid] = {
+          fileId: fid,
+          folderId: parsed.folderId,
+          isTrashed: true,
+        };
       } else {
         meta.fileOverrides[fid].isTrashed = true;
+        if (!meta.fileOverrides[fid].folderId && parsed.folderId) {
+          meta.fileOverrides[fid].folderId = parsed.folderId;
+        }
       }
     }
     await commitMetaToTelegram({ fileOverrides: meta.fileOverrides });
@@ -235,7 +253,7 @@ export class TelegramStorageProvider implements StorageProvider {
   }
 
   async getStats(): Promise<StorageStats> {
-    const files = await listTelegramFiles();
+    const files = await listAllTelegramFiles();
     const meta = getLocalCachedMeta();
 
     const usedBytes = files.reduce((acc, f) => acc + f.size, 0);

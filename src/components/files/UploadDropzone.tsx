@@ -91,20 +91,9 @@ export const UploadDropzone: React.FC = () => {
       {/* Full-screen Google Drive Drag Overlay */}
       {isDragging && (
         <div
-          onDragOver={(e) => {
-            e.preventDefault();
-            if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
-          }}
-          onDrop={(e) => {
-            e.preventDefault();
-            setIsDragging(false);
-            if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
-              uploadFiles(e.dataTransfer.files);
-            }
-          }}
-          className="fixed inset-0 z-50 bg-[#0b57d0]/20 dark:bg-[#004a77]/30 backdrop-blur-xs border-4 border-dashed border-[#0b57d0] dark:border-[#a8c7fa] flex flex-col items-center justify-center animate-in fade-in duration-100 select-none cursor-pointer"
+          className="fixed inset-0 z-50 bg-[#0b57d0]/20 dark:bg-[#004a77]/30 backdrop-blur-xs border-4 border-dashed border-[#0b57d0] dark:border-[#a8c7fa] flex flex-col items-center justify-center animate-in fade-in duration-100 select-none pointer-events-none"
         >
-          <div className="p-8 sm:p-10 bg-white dark:bg-[#1e1f20] rounded-3xl shadow-2xl flex flex-col items-center gap-3 border border-[#e0e3e7] dark:border-[#3c4043] pointer-events-none scale-105 transition-transform">
+          <div className="p-8 sm:p-10 bg-white dark:bg-[#1e1f20] rounded-3xl shadow-2xl flex flex-col items-center gap-3 border border-[#e0e3e7] dark:border-[#3c4043] scale-105 transition-transform">
             <div className="w-16 h-16 rounded-2xl bg-[#d3e3fd] dark:bg-[#004a77] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa]">
               <Upload className="w-8 h-8 animate-bounce" />
             </div>

@@ -111,11 +111,22 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) =
           </div>
         </div>
 
-        <div className="flex items-center justify-end pt-4 border-t border-[#e0e3e7] dark:border-[#3c4043]">
+        <div className="flex items-center justify-between pt-4 border-t border-[#e0e3e7] dark:border-[#3c4043] text-[11px] text-[#747775] dark:text-[#8e918f]">
+          <div className="flex items-center gap-3">
+            <a href="/privacy" target="_blank" rel="noreferrer" className="hover:text-[#0b57d0] dark:hover:text-[#a8c7fa] underline flex items-center gap-1">
+              <span>Full Policy</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            <span>•</span>
+            <a href="/terms" target="_blank" rel="noreferrer" className="hover:text-[#0b57d0] dark:hover:text-[#a8c7fa] underline flex items-center gap-1">
+              <span>Terms</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
           <button
             type="button"
             onClick={onClose}
-            className="py-2 px-5 rounded-xl bg-[#0b57d0] hover:bg-[#0842a0] dark:bg-[#a8c7fa] dark:hover:bg-[#d3e3fd] text-white dark:text-[#041e49] text-xs font-semibold transition"
+            className="py-2 px-5 rounded-xl bg-[#0b57d0] hover:bg-[#0842a0] dark:bg-[#a8c7fa] dark:hover:bg-[#d3e3fd] text-white dark:text-[#041e49] text-xs font-semibold transition cursor-pointer"
           >
             Got it
           </button>
