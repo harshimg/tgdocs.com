@@ -12,6 +12,7 @@ export interface TelegramUser {
   lastName?: string;
   username?: string;
   phone?: string;
+  isPremium?: boolean;
 }
 
 /**
@@ -93,6 +94,7 @@ export async function signInWithCode(
           lastName: u.lastName || '',
           username: u.username || '',
           phone: u.phone || '',
+          isPremium: !!u.premium,
         },
       };
     }
@@ -156,6 +158,7 @@ export async function signInWith2FA(password: string): Promise<TelegramUser> {
       lastName: u.lastName || '',
       username: u.username || '',
       phone: u.phone || '',
+      isPremium: !!u.premium,
     };
   }
 
@@ -167,6 +170,7 @@ export async function signInWith2FA(password: string): Promise<TelegramUser> {
       lastName: me.lastName || '',
       username: me.username || '',
       phone: me.phone || '',
+      isPremium: !!(me as any).premium,
     };
   }
   throw new Error('Could not retrieve user information');
@@ -188,6 +192,7 @@ export async function getCurrentUser(): Promise<TelegramUser | null> {
       lastName: me.lastName || '',
       username: me.username || '',
       phone: me.phone || '',
+      isPremium: !!(me as any).premium,
     };
   } catch {
     return null;

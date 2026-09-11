@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFileStore } from '../../store/file-store';
+import { useAuthStore } from '../../store/auth-store';
 import { FolderPlus, X } from 'lucide-react';
+import { getTelegramChannelCount } from '../../telegram/files';
 
 interface NewFolderModalProps {
   isOpen: boolean;
@@ -8,9 +10,29 @@ interface NewFolderModalProps {
 }
 
 export const NewFolderModal: React.FC<NewFolderModalProps> = ({ isOpen, onClose }) => {
-  const { createFolder } = useFileStore();
+  const { createFolder, folders } = useFileStore();
+  const { user } = useAuthStore();
   const [folderName, setFolderName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [channelCount, setChannelCount] = useState<number>(folders.length);
+
+  const isPremium = !!user?.isPremium;
+  const channelLimit = isPremium ? 1000 : 500;
+
+  useEffect(() => {
+    if (!isOpen) return;
+    let isMounted = true;
+    getTelegramChannelCount()
+      .then((count) => {
+        if (isMounted) setChannelCount(count);
+      })
+      .catch(() => {
+        if (isMounted) setChannelCount(folders.length);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, folders.length]);
 
   if (!isOpen) return null;
 
@@ -32,6 +54,9 @@ export const NewFolderModal: React.FC<NewFolderModalProps> = ({ isOpen, onClose 
           <div className="flex items-center gap-2">
             <FolderPlus className="w-5 h-5 text-[#0b57d0] dark:text-[#a8c7fa]" />
             <h3 className="font-semibold text-base text-[#1f1f1f] dark:text-[#e3e3e3]">New folder</h3>
+            <span className="text-xs font-normal text-[#747775] dark:text-[#8e918f] ml-1">
+              {channelCount}/{channelLimit}
+            </span>
           </div>
           <button
             onClick={onClose}

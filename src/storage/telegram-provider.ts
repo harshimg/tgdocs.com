@@ -51,13 +51,10 @@ export class TelegramStorageProvider implements StorageProvider {
 
     let channelId: string | undefined;
     let accessHash: string | undefined;
-    try {
-      const channel = await createFolderChannel(name);
-      channelId = channel.channelId;
-      accessHash = channel.accessHash;
-    } catch (err) {
-      console.warn('Could not create Telegram channel for folder:', err);
-    }
+    // Create dedicated private Telegram channel for this folder
+    const channel = await createFolderChannel(name);
+    channelId = channel.channelId;
+    accessHash = channel.accessHash;
 
     const newFolder: FolderMeta = {
       id: 'fld_' + (channelId || Math.random().toString(36).substring(2, 11)),
@@ -257,13 +254,15 @@ export class TelegramStorageProvider implements StorageProvider {
     const meta = getLocalCachedMeta();
 
     const usedBytes = files.reduce((acc, f) => acc + f.size, 0);
+    const { useAuthStore } = await import('../store/auth-store');
+    const isPremium = !!useAuthStore.getState().user?.isPremium;
 
     return {
       usedBytes,
-      totalBytes: 2 * 1024 * 1024 * 1024 * 1000, // virtually unlimited
+      totalBytes: (isPremium ? 4 : 2) * 1024 * 1024 * 1024 * 1000, // virtually unlimited
       fileCount: files.length,
       folderCount: meta.folders.length,
-      isPremium: false,
+      isPremium,
     };
   }
 }

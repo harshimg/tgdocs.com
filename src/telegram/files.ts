@@ -95,27 +95,79 @@ export async function createFolderChannel(name: string): Promise<{ channelId: st
   const cleanName = name.trim();
   const title = cleanName.startsWith('📁') ? cleanName : `📁 ${cleanName}`;
 
-  const result = await client.invoke(
-    new Api.channels.CreateChannel({
-      title,
-      about: `TGDocs Folder: ${cleanName}. Private and secure.`,
-      broadcast: true,
-      megagroup: false,
-    })
-  );
+  try {
+    const result = await client.invoke(
+      new Api.channels.CreateChannel({
+        title,
+        about: `TGDocs Folder: ${cleanName}. Private and secure.`,
+        broadcast: true,
+        megagroup: false,
+      })
+    );
 
-  if (result instanceof Api.Updates) {
-    const chats = result.chats as any[];
-    if (chats.length > 0) {
-      const chat = chats[0];
-      return {
-        channelId: chat.id.toString(),
-        accessHash: chat.accessHash ? chat.accessHash.toString() : '',
-      };
+    if (result instanceof Api.Updates) {
+      const chats = result.chats as any[];
+      if (chats.length > 0) {
+        const chat = chats[0];
+        updateCachedChannelCount(1);
+        return {
+          channelId: chat.id.toString(),
+          accessHash: chat.accessHash ? chat.accessHash.toString() : '',
+        };
+      }
     }
-  }
 
-  throw new Error('Failed to create private Telegram channel for folder');
+    throw new Error('Failed to create private Telegram channel for folder');
+  } catch (err: any) {
+    const errMsg = (err.errorMessage || err.message || '').toUpperCase();
+    if (errMsg.includes('CHANNELS_TOO_MUCH')) {
+      throw new Error(
+        'Telegram channel limit reached (Free: 500, Premium: 1,000). Please leave or remove some inactive channels in Telegram before creating new folders.'
+      );
+    }
+    if (errMsg.includes('CHANNELS_ADMIN_TOO_MUCH')) {
+      throw new Error(
+        'Telegram administrator limit reached. You are an administrator of too many channels or groups in Telegram.'
+      );
+    }
+    if (errMsg.includes('FLOOD_WAIT')) {
+      throw new Error(
+        `Telegram rate limit: Channel creation paused temporarily by Telegram (${err.errorMessage || err.message}). Please wait a few moments.`
+      );
+    }
+    if (errMsg.includes('USER_RESTRICTED')) {
+      throw new Error(
+        'Your Telegram account is currently restricted from creating new channels.'
+      );
+    }
+    throw err;
+  }
+}
+
+let cachedChannelCount: number | null = null;
+
+/**
+ * Counts total channels and supergroups across the user's Telegram account (including existing ones)
+ */
+export async function getTelegramChannelCount(): Promise<number> {
+  if (cachedChannelCount !== null) return cachedChannelCount;
+  try {
+    const client = await getTelegramClient();
+    const dialogs = await client.getDialogs({ limit: 500 });
+    const count = dialogs.filter((d: any) => d.isChannel).length;
+    cachedChannelCount = count;
+    return count;
+  } catch (e) {
+    console.warn('Failed to fetch Telegram channel count:', e);
+    const meta = getLocalCachedMeta();
+    return meta.folders.length;
+  }
+}
+
+export function updateCachedChannelCount(delta: number): void {
+  if (cachedChannelCount !== null) {
+    cachedChannelCount = Math.max(0, cachedChannelCount + delta);
+  }
 }
 
 /**
@@ -371,6 +423,7 @@ export async function deleteFolderChannel(folderId: string): Promise<void> {
         channel: channelPeer,
       })
     );
+    updateCachedChannelCount(-1);
   } catch (err) {
     console.warn('Failed to delete channel on Telegram:', err);
   }

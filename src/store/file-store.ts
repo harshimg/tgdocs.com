@@ -207,9 +207,10 @@ export const useFileStore = create<FileState>((set, get) => ({
   createFolder: async (name: string) => {
     const provider = getActiveStorageProvider();
     const { currentFolderId } = get();
+    set({ error: null });
     try {
       const newFolder = await provider.createFolder(name, currentFolderId);
-      set((state) => ({ folders: [...state.folders, newFolder] }));
+      set((state) => ({ folders: [...state.folders, newFolder], error: null }));
       return newFolder;
     } catch (e: any) {
       set({ error: e.message || 'Could not create folder' });
