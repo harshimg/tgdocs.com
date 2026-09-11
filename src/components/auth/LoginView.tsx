@@ -13,7 +13,6 @@ import {
   Sparkles,
   Lock,
   KeyRound,
-  ShieldCheck,
 } from 'lucide-react';
 
 export const LoginView: React.FC = () => {
@@ -450,11 +449,7 @@ export const LoginView: React.FC = () => {
           </div>
         </div>
 
-        {/* Client-Side Privacy Notice */}
-        <div className="mt-5 flex items-center justify-center gap-1.5 text-[11px] text-[#6b7280]">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-          <span>Direct browser-to-MTProto encryption</span>
-        </div>
+
       </div>
     </div>
   );
