@@ -56,7 +56,7 @@ let cachedState: TGDocsState = {
     theme: 'system',
     viewMode: 'grid',
   },
-  updatedAt: Date.now(),
+  updatedAt: 0,
 };
 
 let metaChannelEntity: any = null;
@@ -67,7 +67,12 @@ export function getLocalCachedMeta(): TGDocsState {
       const raw = localStorage.getItem(LOCAL_STORAGE_CACHE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        cachedState = { ...cachedState, ...parsed };
+        cachedState = {
+          ...cachedState,
+          ...parsed,
+          folders: Array.isArray(parsed.folders) ? parsed.folders : cachedState.folders,
+          fileOverrides: parsed.fileOverrides || cachedState.fileOverrides,
+        };
       }
     }
   } catch (e) {
@@ -100,21 +105,25 @@ export async function getOrCreateMetaChannel(): Promise<any> {
     }
   }
 
-  const result = await client.invoke(
-    new Api.channels.CreateChannel({
-      title: META_CHANNEL_TITLE,
-      about: META_CHANNEL_ABOUT,
-      broadcast: true,
-      megagroup: false,
-    })
-  );
+  try {
+    const result = await client.invoke(
+      new Api.channels.CreateChannel({
+        title: META_CHANNEL_TITLE,
+        about: META_CHANNEL_ABOUT,
+        broadcast: true,
+        megagroup: false,
+      })
+    );
 
-  if (result instanceof Api.Updates) {
-    const chats = result.chats as any[];
-    if (chats.length > 0) {
-      metaChannelEntity = chats[0];
-      return metaChannelEntity;
+    if (result && 'chats' in result) {
+      const chats = (result as any).chats as any[];
+      if (chats.length > 0) {
+        metaChannelEntity = chats[0];
+        return metaChannelEntity;
+      }
     }
+  } catch (err) {
+    console.warn('Could not create metadata channel:', err);
   }
 
   return null;
@@ -124,23 +133,53 @@ export async function syncMetaFromTelegram(): Promise<TGDocsState> {
   try {
     const client = await getTelegramClient();
     const channel = await getOrCreateMetaChannel();
-    if (!channel) return cachedState;
+    if (!channel) return getLocalCachedMeta();
 
-    const messages = await client.getMessages(channel, { limit: 10 });
+    const messages = await client.getMessages(channel, { limit: 30 });
+    let newestRemoteState: TGDocsState | null = null;
+
     for (const msg of messages) {
       if (msg.message && msg.message.startsWith(META_MAGIC_PREFIX)) {
         const jsonStr = msg.message.replace(META_MAGIC_PREFIX, '');
-        const remoteState: TGDocsState = JSON.parse(jsonStr);
-        if (remoteState.updatedAt > cachedState.updatedAt) {
-          setLocalCachedMeta(remoteState);
+        try {
+          const parsed: TGDocsState = JSON.parse(jsonStr);
+          if (!newestRemoteState || (parsed.updatedAt && parsed.updatedAt > (newestRemoteState.updatedAt || 0))) {
+            newestRemoteState = parsed;
+          }
+        } catch (e) {
+          console.warn('Failed to parse a metadata message from Telegram:', e);
         }
-        return cachedState;
       }
+    }
+
+    if (newestRemoteState) {
+      const currentLocal = getLocalCachedMeta();
+      // Merge remote folders with any local additions
+      const mergedFolders = [...(newestRemoteState.folders || [])];
+      for (const localF of currentLocal.folders || []) {
+        if (!mergedFolders.some((rf) => rf.id === localF.id || (localF.channelId && rf.channelId === localF.channelId))) {
+          mergedFolders.push(localF);
+        }
+      }
+
+      const mergedState: TGDocsState = {
+        ...currentLocal,
+        ...newestRemoteState,
+        folders: mergedFolders,
+        fileOverrides: {
+          ...(newestRemoteState.fileOverrides || {}),
+          ...(currentLocal.fileOverrides || {}),
+        },
+        updatedAt: Math.max(newestRemoteState.updatedAt || 0, currentLocal.updatedAt || 0),
+      };
+
+      setLocalCachedMeta(mergedState);
+      return mergedState;
     }
   } catch (err) {
     console.warn('Metadata sync from Telegram failed:', err);
   }
-  return cachedState;
+  return getLocalCachedMeta();
 }
 
 export async function commitMetaToTelegram(newState: Partial<TGDocsState>): Promise<TGDocsState> {

@@ -58,7 +58,6 @@ export const FileManager: React.FC<FileManagerProps> = ({
   } = useFileStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const fabFileInputRef = useRef<HTMLInputElement>(null);
   const [newFolderModalOpen, setNewFolderModalOpen] = useState(false);
   const [renameItem, setRenameItem] = useState<{ type: 'file' | 'folder'; data: TGFile | TGFolder } | null>(null);
   const [previewFile, setPreviewFile] = useState<TGFile | null>(null);
@@ -178,18 +177,6 @@ export const FileManager: React.FC<FileManagerProps> = ({
           ) : visibleFolders.length === 0 && visibleFiles.length === 0 ? (
             activeFilter === 'all' && !searchQuery ? (
               <div className="h-full min-h-[380px] sm:min-h-[460px] flex flex-col items-center justify-center text-center p-4 sm:p-8 select-none animate-in fade-in duration-200">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  className="hidden"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      uploadFiles(e.target.files);
-                      e.target.value = '';
-                    }
-                  }}
-                />
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
@@ -264,18 +251,6 @@ export const FileManager: React.FC<FileManagerProps> = ({
                   {/* Google Drive Dropzone Area below files */}
                   {activeFilter === 'all' && !searchQuery && (
                     <div className="mt-12 py-8 flex flex-col items-center justify-center text-center select-none">
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        multiple
-                        className="hidden"
-                        onChange={(e) => {
-                          if (e.target.files && e.target.files.length > 0) {
-                            uploadFiles(e.target.files);
-                            e.target.value = '';
-                          }
-                        }}
-                      />
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
@@ -296,18 +271,6 @@ export const FileManager: React.FC<FileManagerProps> = ({
               ) : (
                 activeFilter === 'all' && !searchQuery && (
                   <div className="mt-8 py-8 flex flex-col items-center justify-center text-center select-none">
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      multiple
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files.length > 0) {
-                          uploadFiles(e.target.files);
-                          e.target.value = '';
-                        }
-                      }}
-                    />
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
@@ -333,11 +296,12 @@ export const FileManager: React.FC<FileManagerProps> = ({
         <DetailsPanel />
       </div>
 
-      {/* Hidden file input for FAB file upload */}
+      {/* Hidden file input for file uploads across all buttons */}
       <input
-        ref={fabFileInputRef}
+        ref={fileInputRef}
         type="file"
         multiple
+        accept="*/*"
         className="hidden"
         onChange={(e) => {
           if (e.target.files && e.target.files.length > 0) {
@@ -379,7 +343,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
               <button
                 onClick={() => {
                   setFabOpen(false);
-                  fabFileInputRef.current?.click();
+                  fileInputRef.current?.click();
                 }}
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white dark:bg-[#282a2c] text-[#1f1f1f] dark:text-[#e3e3e3] shadow-xl border border-[#e0e3e7] dark:border-[#3c4043] text-xs font-semibold cursor-pointer active:scale-95 transition"
               >

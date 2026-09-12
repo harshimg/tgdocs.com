@@ -115,6 +115,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
         <input
           type="file"
           multiple
+          accept="*/*"
           ref={fileInputRef}
           onChange={handleFileChange}
           className="hidden"

@@ -251,6 +251,8 @@ export const useFileStore = create<FileState>((set, get) => ({
 
   uploadFiles: async (fileList: FileList | File[]) => {
     const files = Array.from(fileList);
+    if (files.length === 0) return;
+
     const provider = getActiveStorageProvider();
     const { currentFolderId } = get();
 
@@ -273,16 +275,26 @@ export const useFileStore = create<FileState>((set, get) => ({
           }));
         });
 
+        // Update files list and refresh stats
+        let stats: StorageStats | null = null;
+        try {
+          stats = await provider.getStats();
+        } catch {
+          // ignore stats refresh error
+        }
+
         set((s) => ({
-          files: [uploadedFile, ...s.files],
+          files: [uploadedFile, ...s.files.filter((f) => f.id !== uploadedFile.id)],
+          ...(stats ? { stats } : {}),
           uploadQueue: s.uploadQueue.map((t) =>
             t.id === taskId ? { ...t, status: 'completed', progress: 100 } : t
           ),
         }));
       } catch (err: any) {
+        console.error('Upload failed for', file.name, err);
         set((s) => ({
           uploadQueue: s.uploadQueue.map((t) =>
-            t.id === taskId ? { ...t, status: 'error', error: err.message } : t
+            t.id === taskId ? { ...t, status: 'error', error: err.message || 'Upload failed' } : t
           ),
         }));
       }

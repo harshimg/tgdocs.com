@@ -4,8 +4,17 @@
  * Folders are mapped 1-to-1 to dedicated private Telegram channels for true two-way sync.
  */
 
+import { Buffer } from 'buffer';
 import { getTelegramClient } from './client';
 import { getLocalCachedMeta, setLocalCachedMeta, commitMetaToTelegram, type FolderMeta } from './metadata';
+
+if (typeof window !== 'undefined') {
+  (window as any).Buffer = (window as any).Buffer || Buffer;
+  (window as any).global = (window as any).global || window;
+}
+if (typeof globalThis !== 'undefined') {
+  (globalThis as any).Buffer = (globalThis as any).Buffer || Buffer;
+}
 
 export interface TelegramDocumentFile {
   id: string;
@@ -57,29 +66,34 @@ export async function getOrCreateStorageChannel(): Promise<any> {
   const client = await getTelegramClient();
   const { Api } = await import('telegram');
 
-  const dialogs = await client.getDialogs({ limit: 100 });
-  for (const dialog of dialogs) {
-    if (dialog.isChannel && dialog.title === STORAGE_CHANNEL_TITLE) {
-      storageChannelEntity = dialog.entity;
-      return storageChannelEntity;
+  try {
+    const dialogs = await client.getDialogs({ limit: 100 });
+    for (const dialog of dialogs) {
+      if (dialog.isChannel && dialog.title === STORAGE_CHANNEL_TITLE) {
+        storageChannelEntity = dialog.entity;
+        return storageChannelEntity;
+      }
     }
-  }
 
-  const result = await client.invoke(
-    new Api.channels.CreateChannel({
-      title: STORAGE_CHANNEL_TITLE,
-      about: STORAGE_CHANNEL_ABOUT,
-      broadcast: true,
-      megagroup: false,
-    })
-  );
+    const result = await client.invoke(
+      new Api.channels.CreateChannel({
+        title: STORAGE_CHANNEL_TITLE,
+        about: STORAGE_CHANNEL_ABOUT,
+        broadcast: true,
+        megagroup: false,
+      })
+    );
 
-  if (result instanceof Api.Updates) {
-    const chats = result.chats as any[];
-    if (chats.length > 0) {
-      storageChannelEntity = chats[0];
-      return storageChannelEntity;
+    if (result && 'chats' in result) {
+      const chats = (result as any).chats as any[];
+      if (chats.length > 0) {
+        storageChannelEntity = chats[0];
+        return storageChannelEntity;
+      }
     }
+  } catch (err) {
+    console.warn('Could not create or get dedicated storage channel, falling back to Saved Messages ("me"):', err);
+    return 'me';
   }
 
   return 'me';
@@ -181,32 +195,48 @@ export function cleanChannelId(channelId: string): string {
 export function getExtensionFromMime(mimeType: string): string {
   const map: Record<string, string> = {
     'image/jpeg': '.jpg',
+    'image/jpg': '.jpg',
     'image/png': '.png',
     'image/gif': '.gif',
     'image/webp': '.webp',
     'image/svg+xml': '.svg',
     'image/bmp': '.bmp',
+    'image/x-icon': '.ico',
+    'image/vnd.microsoft.icon': '.ico',
+    'image/avif': '.avif',
+    'image/tiff': '.tiff',
     'video/mp4': '.mp4',
     'video/quicktime': '.mov',
     'video/x-matroska': '.mkv',
     'video/webm': '.webm',
     'video/x-msvideo': '.avi',
     'audio/mpeg': '.mp3',
+    'audio/mp3': '.mp3',
     'audio/ogg': '.ogg',
     'audio/wav': '.wav',
     'audio/mp4': '.m4a',
+    'audio/x-m4a': '.m4a',
     'audio/flac': '.flac',
     'audio/aac': '.aac',
+    'audio/webm': '.weba',
     'application/pdf': '.pdf',
     'application/zip': '.zip',
+    'application/x-zip-compressed': '.zip',
     'application/x-rar-compressed': '.rar',
+    'application/vnd.rar': '.rar',
     'application/x-7z-compressed': '.7z',
     'application/x-tar': '.tar',
+    'application/gzip': '.gz',
     'application/json': '.json',
     'text/plain': '.txt',
     'text/html': '.html',
+    'text/css': '.css',
+    'text/javascript': '.js',
+    'application/javascript': '.js',
     'text/csv': '.csv',
     'text/markdown': '.md',
+    'text/xml': '.xml',
+    'application/xml': '.xml',
     'application/msword': '.doc',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
     'application/vnd.ms-excel': '.xls',
@@ -568,8 +598,8 @@ export async function validateFolderChannels(force = false): Promise<FolderMeta[
   lastValidationTime = now;
 
   const meta = getLocalCachedMeta();
-  if (!meta.folders || meta.folders.length === 0) {
-    return [];
+  if (!meta.folders) {
+    meta.folders = [];
   }
 
   try {
@@ -580,6 +610,8 @@ export async function validateFolderChannels(force = false): Promise<FolderMeta[
     // 1. Fetch user's active dialogs to check channels quickly
     const activeDialogChannelIds = new Set<string>();
     let totalDialogs = 0;
+    let hasDiscoveredFolders = false;
+
     try {
       const dialogs = await client.getDialogs({ limit: 200 });
       totalDialogs = dialogs.length;
@@ -590,18 +622,48 @@ export async function validateFolderChannels(force = false): Promise<FolderMeta[
             const cleanId = cleanChannelId(rawId);
             activeDialogChannelIds.add(cleanId);
             activeDialogChannelIds.add(rawId);
-            if ((d.entity as any)?.accessHash) {
-              const hashStr = (d.entity as any).accessHash.toString();
-              for (const f of meta.folders) {
-                if (f.channelId && (f.channelId === rawId || cleanChannelId(f.channelId) === cleanId)) {
-                  if (f.accessHash !== hashStr) {
-                    f.accessHash = hashStr;
-                  }
+            const title = d.title || '';
+            const about = (d.entity as any)?.about || '';
+            const isTgdocsFolderChannel =
+              title.startsWith('📁') ||
+              about.includes('TGDocs Folder') ||
+              (title.toLowerCase().includes('tgdocs') && !title.includes('Cloud Storage') && !title.includes('Sync'));
+            const accessHash = (d.entity as any)?.accessHash ? (d.entity as any).accessHash.toString() : '';
+
+            // Update accessHash for known folders
+            for (const f of meta.folders) {
+              if (f.channelId && (f.channelId === rawId || cleanChannelId(f.channelId) === cleanId)) {
+                if (accessHash && f.accessHash !== accessHash) {
+                  f.accessHash = accessHash;
                 }
+              }
+            }
+
+            // Auto-discover previous TGDocs folder channels missing from local metadata
+            if (isTgdocsFolderChannel && !title.includes('Cloud Storage') && !title.includes('Sync (Do Not Delete)')) {
+              const alreadyExists = meta.folders.some(
+                (f) => f.channelId === rawId || (f.channelId && cleanChannelId(f.channelId) === cleanId)
+              );
+              if (!alreadyExists) {
+                const folderName = title.replace(/^📁\s*/, '').trim() || 'Folder';
+                meta.folders.push({
+                  id: 'fld_' + cleanId,
+                  name: folderName,
+                  parentId: null,
+                  createdAt: (d as any).date ? (d as any).date * 1000 : Date.now(),
+                  channelId: rawId,
+                  accessHash: accessHash,
+                });
+                hasDiscoveredFolders = true;
               }
             }
           }
         }
+      }
+
+      if (hasDiscoveredFolders) {
+        setLocalCachedMeta(meta);
+        await commitMetaToTelegram({ folders: meta.folders }).catch(() => {});
       }
     } catch (e) {
       console.warn('[TGDocs] Could not fetch dialogs for folder validation:', e);
@@ -874,17 +936,13 @@ export async function uploadTelegramFile(
 ): Promise<TelegramDocumentFile> {
   const client = await getTelegramClient();
   const { Api } = await import('telegram');
-  const { CustomFile } = await import('telegram/client/uploads');
   const targetPeer = await getFolderPeer(folderId);
 
-  // Read the File bytes into an ArrayBuffer and convert to a Buffer for GramJS
-  const arrayBuffer = await file.arrayBuffer();
-  const fileBuffer = Buffer.from(arrayBuffer);
-  const customFile = new CustomFile(file.name, file.size, '', fileBuffer);
-
+  // Upload file with high parallelism (8 workers) for maximum throughput matching Telegram desktop speed
   const uploadedFile = await client.uploadFile({
-    file: customFile,
-    workers: 4,
+    file: file,
+    workers: 8,
+    maxBufferSize: Number.MAX_SAFE_INTEGER,
     onProgress: (percent: number) => {
       if (onProgress) {
         onProgress(Math.round(percent * 100));
@@ -892,12 +950,16 @@ export async function uploadTelegramFile(
     },
   });
 
+  const mimeType = file.type || 'application/octet-stream';
+
   let sentMessage: any;
   try {
     sentMessage = await client.sendFile(targetPeer, {
       file: uploadedFile,
       caption: file.name,
       forceDocument: true,
+      fileSize: file.size,
+      mimeType,
       attributes: [
         new Api.DocumentAttributeFilename({ fileName: file.name }),
       ],

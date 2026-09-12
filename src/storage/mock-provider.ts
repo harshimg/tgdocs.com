@@ -108,9 +108,20 @@ export class MockStorageProvider implements StorageProvider {
     return [...this.files];
   }
 
-  async uploadFile(file: File, folderId: string | null): Promise<TGFile> {
+  private uploadedBlobs = new Map<string, { blob: Blob; url: string; name: string }>();
+
+  async uploadFile(file: File, folderId: string | null, onProgress?: (pct: number) => void): Promise<TGFile> {
+    if (onProgress) {
+      onProgress(35);
+      setTimeout(() => onProgress?.(75), 40);
+      setTimeout(() => onProgress?.(100), 80);
+    }
+    const id = 'mock_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+    const url = URL.createObjectURL(file);
+    this.uploadedBlobs.set(id, { blob: file, url, name: file.name });
+
     const newFile: TGFile = {
-      id: 'mock_' + Date.now(),
+      id,
       name: file.name,
       size: file.size,
       mimeType: file.type || 'application/octet-stream',
@@ -127,16 +138,23 @@ export class MockStorageProvider implements StorageProvider {
   async downloadFile(fileId: string): Promise<void> {
     const f = this.files.find((x) => x.id === fileId);
     if (!f) return;
-    const blob = new Blob([`Mock file content for ${f.name}`], { type: 'text/plain' });
+    const uploaded = this.uploadedBlobs.get(fileId);
+    const blob = uploaded ? uploaded.blob : new Blob([`Mock file content for ${f.name}`], { type: f.mimeType || 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = f.name;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
 
   async getFilePreviewUrl(fileId: string): Promise<string> {
+    const uploaded = this.uploadedBlobs.get(fileId);
+    if (uploaded) {
+      return uploaded.url;
+    }
     return '';
   }
 

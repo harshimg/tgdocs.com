@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Lock, Cloud, FileCode, CheckCircle, X, ExternalLink } from 'lucide-react';
+import { Shield, Lock, Cloud, Code2, X, ExternalLink } from 'lucide-react';
 
 interface PrivacyModalProps {
   isOpen: boolean;
@@ -12,15 +12,18 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) =
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-100">
       <div className="w-full max-w-lg bg-white dark:bg-[#1e1f20] rounded-3xl p-4 sm:p-6 shadow-xl border border-[#e0e3e7] dark:border-[#3c4043] max-h-[90dvh] overflow-y-auto">
+        {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[#e0e3e7] dark:border-[#3c4043]">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-[#34a853] shrink-0" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-full bg-[#f0f4f9] dark:bg-[#282a2c] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa] shrink-0">
+              <Shield className="w-5 h-5" />
+            </div>
             <div>
               <h3 className="font-semibold text-base text-[#1f1f1f] dark:text-[#e3e3e3]">
                 Privacy & Architecture
               </h3>
               <p className="text-[11px] text-[#747775] dark:text-[#8e918f]">
-                How TGDocs protects your files and privacy
+                How TGDocs handles your data and privacy
               </p>
             </div>
           </div>
@@ -32,85 +35,81 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) =
           </button>
         </div>
 
+        {/* Content */}
         <div className="py-4 space-y-4 text-xs text-[#444746] dark:text-[#c4c7c5]">
-          {/* Visual Architecture */}
-          <div className="p-3.5 sm:p-4 rounded-2xl bg-[#f0f4f9] dark:bg-[#282a2c] border border-[#e0e3e7] dark:border-[#3c4043] text-center">
-            <p className="text-[11px] font-semibold text-[#1f1f1f] dark:text-[#e3e3e3] mb-2 uppercase tracking-wider">
-              Direct Peer-to-Peer Cloud Connection
-            </p>
-            <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 sm:gap-4 py-2 font-mono text-xs">
-              <span className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1e1f20] shadow-xs font-semibold">
-                Your Browser
-              </span>
-              <span className="text-[#0b57d0] dark:text-[#a8c7fa] font-bold text-[11px] sm:text-xs">
-                ══ MTProto (WSS) ══▶
-              </span>
-              <span className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1e1f20] shadow-xs font-semibold">
-                Telegram DC
-              </span>
-            </div>
-            <p className="text-[11px] text-[#747775] dark:text-[#8e918f] mt-1">
-              Zero intermediary servers. TGDocs acts purely as a client-side interface layer.
+          {/* Brief Overview */}
+          <div className="p-3.5 rounded-2xl bg-[#f0f4f9] dark:bg-[#282a2c] border border-[#e0e3e7] dark:border-[#3c4043]">
+            <p className="text-xs text-[#444746] dark:text-[#c4c7c5] leading-relaxed">
+              TGDocs runs entirely in your browser as a client-side interface. Your files and authentication keys are sent directly to Telegram without passing through any intermediate proxy or server.
             </p>
           </div>
 
-          {/* Core Guarantees */}
-          <div className="space-y-3">
-            <div className="flex items-start gap-2.5">
-              <CheckCircle className="w-4 h-4 text-[#34a853] shrink-0 mt-0.5" />
+          {/* Key Points */}
+          <div className="space-y-3.5">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-[#e9eef6] dark:bg-[#333538] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa] shrink-0 mt-0.5">
+                <Cloud className="w-4 h-4" />
+              </div>
               <div>
-                <p className="font-semibold text-[#1f1f1f] dark:text-[#e3e3e3]">
-                  No Backend File Storage or Proxy
+                <p className="font-medium text-xs text-[#1f1f1f] dark:text-[#e3e3e3]">
+                  Direct Telegram Connection
                 </p>
-                <p className="text-[11px] text-[#747775] dark:text-[#8e918f]">
-                  Files are transferred directly between your browser and Telegram's data centers. No TGDocs server ever sees or buffers your file data.
+                <p className="text-[11px] text-[#747775] dark:text-[#8e918f] mt-0.5 leading-relaxed">
+                  Files upload and download straight between your browser and Telegram's data centers. No TGDocs server ever stores, proxies, or reads your files.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5">
-              <Lock className="w-4 h-4 text-[#0b57d0] dark:text-[#a8c7fa] shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-[#e9eef6] dark:bg-[#333538] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa] shrink-0 mt-0.5">
+                <Lock className="w-4 h-4" />
+              </div>
               <div>
-                <p className="font-semibold text-[#1f1f1f] dark:text-[#e3e3e3]">
-                  Hardware-Grade Session Encryption
+                <p className="font-medium text-xs text-[#1f1f1f] dark:text-[#e3e3e3]">
+                  Local Session Storage
                 </p>
-                <p className="text-[11px] text-[#747775] dark:text-[#8e918f]">
-                  Your Telegram login session is encrypted via AES-GCM 256-bit with non-extractable Web Crypto keys stored only in your local IndexedDB.
+                <p className="text-[11px] text-[#747775] dark:text-[#8e918f] mt-0.5 leading-relaxed">
+                  Your Telegram login session is encrypted and stored strictly on your local device (IndexedDB). Your credentials are never transmitted to third parties.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5">
-              <Cloud className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-[#e9eef6] dark:bg-[#333538] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa] shrink-0 mt-0.5">
+                <Shield className="w-4 h-4" />
+              </div>
               <div>
-                <p className="font-semibold text-[#1f1f1f] dark:text-[#e3e3e3]">
-                  Cross-Device Sync Without Databases
+                <p className="font-medium text-xs text-[#1f1f1f] dark:text-[#e3e3e3]">
+                  In-Account Sync
                 </p>
-                <p className="text-[11px] text-[#747775] dark:text-[#8e918f]">
-                  Your folder structure, tags, and favorites are synced directly inside a private Telegram channel in your own account.
+                <p className="text-[11px] text-[#747775] dark:text-[#8e918f] mt-0.5 leading-relaxed">
+                  Your folder structure, tags, and favorites are synced directly inside your own private Telegram storage chat — eliminating external databases entirely.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5">
-              <FileCode className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-[#e9eef6] dark:bg-[#333538] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa] shrink-0 mt-0.5">
+                <Code2 className="w-4 h-4" />
+              </div>
               <div>
-                <p className="font-semibold text-[#1f1f1f] dark:text-[#e3e3e3]">
-                  100% Free & Open-Source
+                <p className="font-medium text-xs text-[#1f1f1f] dark:text-[#e3e3e3]">
+                  Open Source & Transparent
                 </p>
-                <p className="text-[11px] text-[#747775] dark:text-[#8e918f]">
-                  Licensed under MIT. Fully self-hostable on Cloudflare Pages, Vercel, or any static hosting provider.
+                <p className="text-[11px] text-[#747775] dark:text-[#8e918f] mt-0.5 leading-relaxed">
+                  TGDocs is 100% open source under the MIT license. You can inspect the code, verify the network calls, or self-host it on your own static domain.
                 </p>
               </div>
             </div>
           </div>
 
           {/* Legal Disclaimer */}
-          <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40 text-[11px] text-amber-800 dark:text-amber-300">
-            <strong>Disclaimer:</strong> TGDocs is an independent, community-driven open-source project and is not affiliated with, endorsed by, or sponsored by Telegram FZ-LLC.
+          <div className="p-3 rounded-xl bg-[#f0f4f9] dark:bg-[#282a2c] border border-[#e0e3e7] dark:border-[#3c4043] text-[11px] text-[#747775] dark:text-[#8e918f] leading-relaxed">
+            <strong className="text-[#1f1f1f] dark:text-[#e3e3e3]">Disclaimer:</strong> TGDocs is an independent, community-driven open-source project and is not affiliated with, endorsed by, or sponsored by Telegram FZ-LLC.
           </div>
         </div>
 
+        {/* Footer */}
         <div className="flex items-center justify-between pt-4 border-t border-[#e0e3e7] dark:border-[#3c4043] text-[11px] text-[#747775] dark:text-[#8e918f]">
           <div className="flex items-center gap-3">
             <a href="/privacy" target="_blank" rel="noreferrer" className="hover:text-[#0b57d0] dark:hover:text-[#a8c7fa] underline flex items-center gap-1">
