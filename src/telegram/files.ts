@@ -5,7 +5,7 @@
  */
 
 import { getTelegramClient } from './client';
-import { getLocalCachedMeta, commitMetaToTelegram } from './metadata';
+import { getLocalCachedMeta, setLocalCachedMeta, commitMetaToTelegram, type FolderMeta } from './metadata';
 
 export interface TelegramDocumentFile {
   id: string;
@@ -342,8 +342,9 @@ export async function getFolderPeer(folderId: string | null = null): Promise<any
       const dialogs = await client.getDialogs({ limit: 100 });
       for (const d of dialogs) {
         if (d.entity && d.entity.id && d.entity.id.toString() === folder.channelId) {
-          if (d.entity.accessHash) {
-            folder.accessHash = d.entity.accessHash.toString();
+          const entityAny = d.entity as any;
+          if (entityAny.accessHash) {
+            folder.accessHash = entityAny.accessHash.toString();
             await commitMetaToTelegram({ folders: meta.folders });
           }
           return d.entity;
@@ -396,7 +397,15 @@ export async function renameFolderChannel(folderId: string, newTitle: string): P
         title,
       })
     );
-  } catch (err) {
+  } catch (err: any) {
+    const errMsg = (err.errorMessage || err.message || '').toUpperCase();
+    if (
+      errMsg.includes('CHANNEL_INVALID') ||
+      errMsg.includes('CHANNEL_PRIVATE') ||
+      errMsg.includes('PEER_ID_INVALID')
+    ) {
+      await removeDeletedFolder(folderId);
+    }
     console.warn('Failed to edit channel title on Telegram:', err);
   }
 }
@@ -424,9 +433,179 @@ export async function deleteFolderChannel(folderId: string): Promise<void> {
       })
     );
     updateCachedChannelCount(-1);
-  } catch (err) {
+  } catch (err: any) {
+    const errMsg = (err.errorMessage || err.message || '').toUpperCase();
+    if (
+      errMsg.includes('CHANNEL_INVALID') ||
+      errMsg.includes('CHANNEL_PRIVATE') ||
+      errMsg.includes('PEER_ID_INVALID')
+    ) {
+      updateCachedChannelCount(-1);
+    }
     console.warn('Failed to delete channel on Telegram:', err);
   }
+}
+
+/**
+ * Immediately removes a specific folder from metadata when its channel is confirmed deleted or invalid.
+ */
+export async function removeDeletedFolder(folderId: string): Promise<void> {
+  const meta = getLocalCachedMeta();
+  const deadFolderIds = new Set<string>([folderId]);
+
+  let added = true;
+  while (added) {
+    added = false;
+    for (const f of meta.folders) {
+      if (f.parentId && deadFolderIds.has(f.parentId) && !deadFolderIds.has(f.id)) {
+        deadFolderIds.add(f.id);
+        added = true;
+      }
+    }
+  }
+
+  meta.folders = meta.folders.filter((f) => !deadFolderIds.has(f.id));
+  for (const fileId in meta.fileOverrides) {
+    if (meta.fileOverrides[fileId]?.folderId && deadFolderIds.has(meta.fileOverrides[fileId].folderId!)) {
+      meta.fileOverrides[fileId].folderId = null;
+    }
+  }
+
+  setLocalCachedMeta(meta);
+
+  try {
+    await commitMetaToTelegram({
+      folders: meta.folders,
+      fileOverrides: meta.fileOverrides,
+    });
+    updateCachedChannelCount(-deadFolderIds.size);
+    ensureTgdocsFolderInTelegram().catch(() => {});
+  } catch (err) {
+    console.warn('[TGDocs] Failed to commit meta after removeDeletedFolder:', err);
+  }
+}
+
+let lastValidationTime = 0;
+const VALIDATION_CACHE_TTL = 3000; // 3-second throttle to avoid spamming Telegram during rapid UI transitions
+
+/**
+ * Validates that all folders recorded in metadata still correspond to active channels in Telegram.
+ * If a channel was deleted or is inaccessible on Telegram, removes the folder and cleans up references.
+ */
+export async function validateFolderChannels(force = false): Promise<FolderMeta[]> {
+  const now = Date.now();
+  if (!force && now - lastValidationTime < VALIDATION_CACHE_TTL) {
+    return getLocalCachedMeta().folders;
+  }
+  lastValidationTime = now;
+
+  const meta = getLocalCachedMeta();
+  if (!meta.folders || meta.folders.length === 0) {
+    return [];
+  }
+
+  try {
+    const client = await getTelegramClient();
+    const { Api } = await import('telegram');
+    const bigInt = (await import('big-integer')).default;
+
+    // 1. Fetch user's active dialogs to check channels quickly
+    const activeDialogChannelIds = new Set<string>();
+    let totalDialogs = 0;
+    try {
+      const dialogs = await client.getDialogs({ limit: 200 });
+      totalDialogs = dialogs.length;
+      for (const d of dialogs) {
+        if (d.isChannel || d.isGroup) {
+          const idStr = d.entity?.id?.toString();
+          if (idStr) {
+            activeDialogChannelIds.add(idStr);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('[TGDocs] Could not fetch dialogs for folder validation:', e);
+    }
+
+    const deadFolderIds = new Set<string>();
+
+    for (const folder of meta.folders) {
+      if (!folder.channelId) continue;
+
+      // Fast check: if the channel is present in active dialogs, it is 100% active
+      if (activeDialogChannelIds.has(folder.channelId)) {
+        continue;
+      }
+
+      // Channel is not in recent dialogs.
+      // If user has < 200 dialogs, this means the channel is definitely not in the user's account.
+      // To be 100% resilient and verify whether the channel is truly deleted or just inactive:
+      if (folder.accessHash) {
+        try {
+          const inputChannel = new Api.InputChannel({
+            channelId: bigInt(folder.channelId),
+            accessHash: bigInt(folder.accessHash),
+          });
+          await client.invoke(new Api.channels.GetFullChannel({ channel: inputChannel }));
+        } catch (err: any) {
+          const errMsg = (err.errorMessage || err.message || '').toUpperCase();
+          if (
+            errMsg.includes('CHANNEL_INVALID') ||
+            errMsg.includes('CHANNEL_PRIVATE') ||
+            errMsg.includes('PEER_ID_INVALID') ||
+            errMsg.includes('CHAT_NOT_MODIFIED')
+          ) {
+            console.warn(`[TGDocs] Folder channel was deleted in Telegram: "${folder.name}" (${folder.channelId})`);
+            deadFolderIds.add(folder.id);
+          }
+        }
+      } else {
+        // No access hash and not in dialogs -> cannot be accessed
+        if (totalDialogs > 0) {
+          deadFolderIds.add(folder.id);
+        }
+      }
+    }
+
+    if (deadFolderIds.size > 0) {
+      let added = true;
+      while (added) {
+        added = false;
+        for (const f of meta.folders) {
+          if (f.parentId && deadFolderIds.has(f.parentId) && !deadFolderIds.has(f.id)) {
+            deadFolderIds.add(f.id);
+            added = true;
+          }
+        }
+      }
+
+      console.log(`[TGDocs] Pruning ${deadFolderIds.size} deleted folder(s) from metadata.`);
+      meta.folders = meta.folders.filter((f) => !deadFolderIds.has(f.id));
+
+      for (const fileId in meta.fileOverrides) {
+        if (meta.fileOverrides[fileId]?.folderId && deadFolderIds.has(meta.fileOverrides[fileId].folderId!)) {
+          meta.fileOverrides[fileId].folderId = null;
+        }
+      }
+
+      setLocalCachedMeta(meta);
+
+      try {
+        await commitMetaToTelegram({
+          folders: meta.folders,
+          fileOverrides: meta.fileOverrides,
+        });
+        updateCachedChannelCount(-deadFolderIds.size);
+        ensureTgdocsFolderInTelegram().catch(() => {});
+      } catch (e) {
+        console.warn('[TGDocs] Failed to commit meta after pruning dead folders:', e);
+      }
+    }
+  } catch (err) {
+    console.warn('[TGDocs] Folder channel validation error:', err);
+  }
+
+  return getLocalCachedMeta().folders;
 }
 
 /**
@@ -448,8 +627,20 @@ export async function listTelegramFiles(
       limit,
       offsetId,
     });
-  } catch (err) {
-    console.warn(`Error getting messages for peer (folderId=${folderId}):`, err);
+  } catch (err: any) {
+    const errMsg = (err.errorMessage || err.message || '').toUpperCase();
+    if (
+      errMsg.includes('CHANNEL_INVALID') ||
+      errMsg.includes('CHANNEL_PRIVATE') ||
+      errMsg.includes('PEER_ID_INVALID')
+    ) {
+      console.warn(`[TGDocs] Folder channel was deleted on Telegram (folderId=${folderId}). Purging.`);
+      if (folderId && folderId !== 'root') {
+        await removeDeletedFolder(folderId);
+      }
+    } else {
+      console.warn(`Error getting messages for peer (folderId=${folderId}):`, err);
+    }
     return [];
   }
 
@@ -538,14 +729,30 @@ export async function uploadTelegramFile(
     },
   });
 
-  const sentMessage = await client.sendFile(targetPeer, {
-    file: uploadedFile,
-    caption: file.name,
-    forceDocument: true,
-    attributes: [
-      new Api.DocumentAttributeFilename({ fileName: file.name }),
-    ],
-  });
+  let sentMessage: any;
+  try {
+    sentMessage = await client.sendFile(targetPeer, {
+      file: uploadedFile,
+      caption: file.name,
+      forceDocument: true,
+      attributes: [
+        new Api.DocumentAttributeFilename({ fileName: file.name }),
+      ],
+    });
+  } catch (err: any) {
+    const errMsg = (err.errorMessage || err.message || '').toUpperCase();
+    if (
+      errMsg.includes('CHANNEL_INVALID') ||
+      errMsg.includes('CHANNEL_PRIVATE') ||
+      errMsg.includes('PEER_ID_INVALID')
+    ) {
+      if (folderId && folderId !== 'root') {
+        await removeDeletedFolder(folderId);
+      }
+      throw new Error('This folder channel was deleted from Telegram and is no longer available.');
+    }
+    throw err;
+  }
 
   const fileId = `${folderId || 'root'}_${sentMessage.id}`;
 

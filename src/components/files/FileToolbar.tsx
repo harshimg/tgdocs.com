@@ -11,6 +11,7 @@ import {
   Info,
   Star,
   CheckSquare,
+  RefreshCw,
 } from 'lucide-react';
 
 export const FileToolbar: React.FC = () => {
@@ -30,6 +31,8 @@ export const FileToolbar: React.FC = () => {
     deleteSelectedPermanently,
     detailsPanelOpen,
     toggleDetailsPanel,
+    loadAll,
+    isLoading,
   } = useFileStore();
 
   const isSelectionActive = selectedFileIds.length > 0;
@@ -172,6 +175,16 @@ export const FileToolbar: React.FC = () => {
           }`}
         >
           <Info className="w-4 h-4" />
+        </button>
+
+        {/* Refresh / Sync Button */}
+        <button
+          onClick={() => loadAll()}
+          disabled={isLoading}
+          title="Sync with Telegram"
+          className="p-1.5 rounded-lg hover:bg-[#e9eef6] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] transition cursor-pointer disabled:opacity-50"
+        >
+          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-[#0b57d0] dark:text-[#a8c7fa]' : ''}`} />
         </button>
       </div>
     </div>

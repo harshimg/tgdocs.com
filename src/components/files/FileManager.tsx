@@ -69,6 +69,20 @@ export const FileManager: React.FC<FileManagerProps> = ({
 
   useEffect(() => {
     loadAll();
+
+    let lastFocusSync = 0;
+    const handleFocus = () => {
+      const now = Date.now();
+      if (now - lastFocusSync > 5000) {
+        lastFocusSync = now;
+        loadAll();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
   }, []);
 
   // Filter folders

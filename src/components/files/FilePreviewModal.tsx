@@ -3,7 +3,7 @@ import type { TGFile } from '../../storage/types';
 import { useFileStore } from '../../store/file-store';
 import { getActiveStorageProvider } from '../../storage';
 import { formatBytes, getFileTypeCategory } from '../../utils/file-utils';
-import { X, Download, Star, ExternalLink, Loader2, File } from 'lucide-react';
+import { X, Download, Star, ExternalLink, Loader2, File, Music } from 'lucide-react';
 
 interface FilePreviewModalProps {
   file: TGFile | null;

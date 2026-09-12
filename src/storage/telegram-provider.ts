@@ -17,6 +17,7 @@ import {
   renameFolderChannel,
   deleteFolderChannel,
   ensureTgdocsFolderInTelegram,
+  validateFolderChannels,
 } from '../telegram/files';
 import {
   getLocalCachedMeta,
@@ -30,12 +31,13 @@ export class TelegramStorageProvider implements StorageProvider {
 
   async init(): Promise<void> {
     await syncMetaFromTelegram();
+    await validateFolderChannels();
     await ensureTgdocsFolderInTelegram();
   }
 
   async getFolders(): Promise<TGFolder[]> {
-    const meta = getLocalCachedMeta();
-    return meta.folders.map((f) => ({
+    const folders = await validateFolderChannels();
+    return folders.map((f) => ({
       id: f.id,
       name: f.name,
       parentId: f.parentId,
@@ -185,6 +187,9 @@ export class TelegramStorageProvider implements StorageProvider {
 
   async moveFile(fileId: string, targetFolderId: string | null): Promise<void> {
     const meta = getLocalCachedMeta();
+    if (targetFolderId && !meta.folders.some((f) => f.id === targetFolderId)) {
+      throw new Error('Target folder no longer exists');
+    }
     if (!meta.fileOverrides[fileId]) {
       meta.fileOverrides[fileId] = {
         fileId,

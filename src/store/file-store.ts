@@ -185,15 +185,22 @@ export const useFileStore = create<FileState>((set, get) => ({
     try {
       const provider = getActiveStorageProvider();
       await provider.init?.();
+      const folders = await provider.getFolders();
+
       const { currentFolderId, activeFilter } = get();
-      const targetFolderId = activeFilter === 'all' ? (currentFolderId ?? undefined) : undefined;
-      const [folders, folderFiles, stats] = await Promise.all([
-        provider.getFolders(),
+      let validFolderId = currentFolderId;
+      if (currentFolderId && !folders.some((f) => f.id === currentFolderId)) {
+        validFolderId = null;
+      }
+
+      const targetFolderId = activeFilter === 'all' ? (validFolderId ?? undefined) : undefined;
+      const [folderFiles, stats] = await Promise.all([
         provider.listFiles(targetFolderId),
         provider.getStats(),
       ]);
 
       set({
+        currentFolderId: validFolderId,
         folders,
         files: folderFiles,
         stats,

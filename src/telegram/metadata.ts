@@ -76,7 +76,7 @@ export function getLocalCachedMeta(): TGDocsState {
   return cachedState;
 }
 
-function setLocalCachedMeta(state: TGDocsState) {
+export function setLocalCachedMeta(state: TGDocsState) {
   cachedState = state;
   try {
     if (typeof localStorage !== 'undefined') {
