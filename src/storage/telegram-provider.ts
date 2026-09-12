@@ -164,12 +164,21 @@ export class TelegramStorageProvider implements StorageProvider {
   async downloadFile(fileId: string, onProgress?: (pct: number) => void): Promise<void> {
     const meta = getLocalCachedMeta();
     const override = meta.fileOverrides[fileId];
-    const name = override?.customName || `file_${fileId}`;
-    await downloadTelegramFile(fileId, name, onProgress);
+    let name = override?.customName;
+    if (!name) {
+      const { useFileStore } = await import('../store/file-store');
+      const storeFile = useFileStore.getState().files.find((f) => f.id === fileId);
+      if (storeFile?.name) {
+        name = storeFile.name;
+      }
+    }
+    await downloadTelegramFile(fileId, name || `file_${fileId}`, onProgress);
   }
 
   async getFilePreviewUrl(fileId: string): Promise<string> {
-    return await getTelegramFilePreviewUrl(fileId);
+    const { useFileStore } = await import('../store/file-store');
+    const storeFile = useFileStore.getState().files.find((f) => f.id === fileId);
+    return await getTelegramFilePreviewUrl(fileId, storeFile?.mimeType || 'application/octet-stream');
   }
 
   async renameFile(fileId: string, newName: string): Promise<void> {

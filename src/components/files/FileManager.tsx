@@ -70,18 +70,21 @@ export const FileManager: React.FC<FileManagerProps> = ({
   useEffect(() => {
     loadAll();
 
-    let lastFocusSync = 0;
-    const handleFocus = () => {
+    let lastSync = 0;
+    const handleSync = () => {
+      if (document.visibilityState === 'hidden') return;
       const now = Date.now();
-      if (now - lastFocusSync > 5000) {
-        lastFocusSync = now;
+      if (now - lastSync > 3000) {
+        lastSync = now;
         loadAll();
       }
     };
 
-    window.addEventListener('focus', handleFocus);
+    window.addEventListener('focus', handleSync);
+    document.addEventListener('visibilitychange', handleSync);
     return () => {
-      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('focus', handleSync);
+      document.removeEventListener('visibilitychange', handleSync);
     };
   }, []);
 

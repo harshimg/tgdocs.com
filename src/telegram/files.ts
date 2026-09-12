@@ -174,6 +174,49 @@ export function updateCachedChannelCount(delta: number): void {
  * Ensures a Telegram Chat Folder (Dialog Filter) named "TGDocs" exists in the user's Telegram app,
  * containing all TGDocs channels (root cloud storage and all folder channels).
  */
+export function cleanChannelId(channelId: string): string {
+  return (channelId || '').replace(/^-100/, '');
+}
+
+export function getExtensionFromMime(mimeType: string): string {
+  const map: Record<string, string> = {
+    'image/jpeg': '.jpg',
+    'image/png': '.png',
+    'image/gif': '.gif',
+    'image/webp': '.webp',
+    'image/svg+xml': '.svg',
+    'image/bmp': '.bmp',
+    'video/mp4': '.mp4',
+    'video/quicktime': '.mov',
+    'video/x-matroska': '.mkv',
+    'video/webm': '.webm',
+    'video/x-msvideo': '.avi',
+    'audio/mpeg': '.mp3',
+    'audio/ogg': '.ogg',
+    'audio/wav': '.wav',
+    'audio/mp4': '.m4a',
+    'audio/flac': '.flac',
+    'audio/aac': '.aac',
+    'application/pdf': '.pdf',
+    'application/zip': '.zip',
+    'application/x-rar-compressed': '.rar',
+    'application/x-7z-compressed': '.7z',
+    'application/x-tar': '.tar',
+    'application/json': '.json',
+    'text/plain': '.txt',
+    'text/html': '.html',
+    'text/csv': '.csv',
+    'text/markdown': '.md',
+    'application/msword': '.doc',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+    'application/vnd.ms-excel': '.xls',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+    'application/vnd.ms-powerpoint': '.ppt',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+  };
+  return map[(mimeType || '').toLowerCase()] || '';
+}
+
 export async function ensureTgdocsFolderInTelegram(): Promise<void> {
   try {
     const client = await getTelegramClient();
@@ -191,13 +234,13 @@ export async function ensureTgdocsFolderInTelegram(): Promise<void> {
       try {
         const inputPeer = await client.getInputEntity(entityOrPeer);
         if (inputPeer && 'channelId' in inputPeer) {
-          const key = inputPeer.channelId.toString();
+          const key = cleanChannelId(inputPeer.channelId.toString());
           if (!seenIds.has(key)) {
             seenIds.add(key);
             peersToInclude.push(inputPeer);
           }
         } else if (inputPeer && 'chatId' in inputPeer) {
-          const key = inputPeer.chatId.toString();
+          const key = cleanChannelId(inputPeer.chatId.toString());
           if (!seenIds.has(key)) {
             seenIds.add(key);
             peersToInclude.push(inputPeer);
@@ -229,7 +272,7 @@ export async function ensureTgdocsFolderInTelegram(): Promise<void> {
       if (folder.channelId && folder.accessHash) {
         try {
           const p = new Api.InputPeerChannel({
-            channelId: bigInt(folder.channelId),
+            channelId: bigInt(cleanChannelId(folder.channelId)),
             accessHash: bigInt(folder.accessHash),
           });
           await addPeer(p);
@@ -327,8 +370,9 @@ export async function getFolderPeer(folderId: string | null = null): Promise<any
   // 1. If folder already has channelId & accessHash, construct InputPeerChannel
   if (folder.channelId && folder.accessHash) {
     try {
+      const cleanId = cleanChannelId(folder.channelId);
       return new Api.InputPeerChannel({
-        channelId: bigInt(folder.channelId),
+        channelId: bigInt(cleanId),
         accessHash: bigInt(folder.accessHash),
       });
     } catch (e) {
@@ -339,37 +383,61 @@ export async function getFolderPeer(folderId: string | null = null): Promise<any
   // 2. If folder has channelId, check dialogs for accessHash
   if (folder.channelId) {
     try {
-      const dialogs = await client.getDialogs({ limit: 100 });
+      const cleanFolderId = cleanChannelId(folder.channelId);
+      const dialogs = await client.getDialogs({ limit: 150 });
       for (const d of dialogs) {
-        if (d.entity && d.entity.id && d.entity.id.toString() === folder.channelId) {
-          const entityAny = d.entity as any;
-          if (entityAny.accessHash) {
-            folder.accessHash = entityAny.accessHash.toString();
-            await commitMetaToTelegram({ folders: meta.folders });
+        if (d.entity && d.entity.id) {
+          const cleanEntityId = cleanChannelId(d.entity.id.toString());
+          if (cleanEntityId === cleanFolderId) {
+            const entityAny = d.entity as any;
+            if (entityAny.accessHash) {
+              folder.accessHash = entityAny.accessHash.toString();
+              await commitMetaToTelegram({ folders: meta.folders });
+            }
+            return d.entity;
           }
-          return d.entity;
         }
       }
     } catch (e) {
       console.warn('Error finding folder channel in dialogs:', e);
     }
+
+    // Try resolving entity directly if channelId is known
+    try {
+      const cleanId = cleanChannelId(folder.channelId);
+      const entity = await client.getEntity(bigInt(cleanId));
+      if (entity) {
+        const entityAny = entity as any;
+        if (entityAny.accessHash && !folder.accessHash) {
+          folder.accessHash = entityAny.accessHash.toString();
+          await commitMetaToTelegram({ folders: meta.folders });
+        }
+        return entity;
+      }
+    } catch (e) {
+      console.warn(`Could not get entity for channel ${folder.channelId}:`, e);
+    }
   }
 
-  // 3. Lazy creation: if legacy folder without channel, create channel now
-  try {
-    const created = await createFolderChannel(folder.name);
-    folder.channelId = created.channelId;
-    folder.accessHash = created.accessHash;
-    await commitMetaToTelegram({ folders: meta.folders });
+  // 3. Lazy creation: ONLY IF folder has NO channelId at all (legacy folder created before channel mapping)
+  if (!folder.channelId) {
+    try {
+      const created = await createFolderChannel(folder.name);
+      folder.channelId = created.channelId;
+      folder.accessHash = created.accessHash;
+      await commitMetaToTelegram({ folders: meta.folders });
 
-    return new Api.InputPeerChannel({
-      channelId: bigInt(folder.channelId),
-      accessHash: bigInt(folder.accessHash),
-    });
-  } catch (err) {
-    console.warn(`Could not create channel for folder "${folder.name}", falling back to root storage:`, err);
-    return await getOrCreateStorageChannel();
+      return new Api.InputPeerChannel({
+        channelId: bigInt(cleanChannelId(folder.channelId)),
+        accessHash: bigInt(folder.accessHash),
+      });
+    } catch (err) {
+      console.warn(`Could not create channel for folder "${folder.name}", falling back to root storage:`, err);
+      return await getOrCreateStorageChannel();
+    }
   }
+
+  return await getOrCreateStorageChannel();
 }
 
 /**
@@ -386,7 +454,7 @@ export async function renameFolderChannel(folderId: string, newTitle: string): P
 
   try {
     const channelPeer = new Api.InputChannel({
-      channelId: bigInt(folder.channelId),
+      channelId: bigInt(cleanChannelId(folder.channelId)),
       accessHash: bigInt(folder.accessHash),
     });
     const cleanName = newTitle.trim();
@@ -424,7 +492,7 @@ export async function deleteFolderChannel(folderId: string): Promise<void> {
 
   try {
     const channelPeer = new Api.InputChannel({
-      channelId: bigInt(folder.channelId),
+      channelId: bigInt(cleanChannelId(folder.channelId)),
       accessHash: bigInt(folder.accessHash),
     });
     await client.invoke(
@@ -517,9 +585,21 @@ export async function validateFolderChannels(force = false): Promise<FolderMeta[
       totalDialogs = dialogs.length;
       for (const d of dialogs) {
         if (d.isChannel || d.isGroup) {
-          const idStr = d.entity?.id?.toString();
-          if (idStr) {
-            activeDialogChannelIds.add(idStr);
+          const rawId = d.entity?.id?.toString();
+          if (rawId) {
+            const cleanId = cleanChannelId(rawId);
+            activeDialogChannelIds.add(cleanId);
+            activeDialogChannelIds.add(rawId);
+            if ((d.entity as any)?.accessHash) {
+              const hashStr = (d.entity as any).accessHash.toString();
+              for (const f of meta.folders) {
+                if (f.channelId && (f.channelId === rawId || cleanChannelId(f.channelId) === cleanId)) {
+                  if (f.accessHash !== hashStr) {
+                    f.accessHash = hashStr;
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -531,9 +611,10 @@ export async function validateFolderChannels(force = false): Promise<FolderMeta[
 
     for (const folder of meta.folders) {
       if (!folder.channelId) continue;
+      const cleanFolderChannelId = cleanChannelId(folder.channelId);
 
       // Fast check: if the channel is present in active dialogs, it is 100% active
-      if (activeDialogChannelIds.has(folder.channelId)) {
+      if (activeDialogChannelIds.has(cleanFolderChannelId) || activeDialogChannelIds.has(folder.channelId)) {
         continue;
       }
 
@@ -543,7 +624,7 @@ export async function validateFolderChannels(force = false): Promise<FolderMeta[
       if (folder.accessHash) {
         try {
           const inputChannel = new Api.InputChannel({
-            channelId: bigInt(folder.channelId),
+            channelId: bigInt(cleanFolderChannelId),
             accessHash: bigInt(folder.accessHash),
           });
           await client.invoke(new Api.channels.GetFullChannel({ channel: inputChannel }));
@@ -634,9 +715,13 @@ export async function listTelegramFiles(
       errMsg.includes('CHANNEL_PRIVATE') ||
       errMsg.includes('PEER_ID_INVALID')
     ) {
-      console.warn(`[TGDocs] Folder channel was deleted on Telegram (folderId=${folderId}). Purging.`);
+      console.warn(`[TGDocs] Folder channel warning for folderId=${folderId}:`, errMsg);
+      // Verify via validateFolderChannels before deciding it is dead
       if (folderId && folderId !== 'root') {
-        await removeDeletedFolder(folderId);
+        const folders = await validateFolderChannels(true);
+        if (!folders.some((f) => f.id === folderId)) {
+          return [];
+        }
       }
     } else {
       console.warn(`Error getting messages for peer (folderId=${folderId}):`, err);
@@ -647,15 +732,49 @@ export async function listTelegramFiles(
   const files: TelegramDocumentFile[] = [];
 
   for (const msg of messages) {
+    // 1. MessageMediaDocument (files, videos, audio, documents, uncompressed photos)
     if (msg.media && msg.media instanceof Api.MessageMediaDocument) {
       const doc = msg.media.document;
       if (doc instanceof Api.Document) {
-        let fileName = 'Unnamed_File';
+        let fileName = '';
+        let isAudio = false;
+        let isVideo = false;
+        let audioTitle = '';
+        let audioPerformer = '';
+
         for (const attr of doc.attributes) {
           if (attr instanceof Api.DocumentAttributeFilename) {
             fileName = attr.fileName;
-            break;
+          } else if (attr instanceof Api.DocumentAttributeAudio) {
+            isAudio = true;
+            if (attr.title) audioTitle = attr.title;
+            if (attr.performer) audioPerformer = attr.performer;
+          } else if (attr instanceof Api.DocumentAttributeVideo) {
+            isVideo = true;
           }
+        }
+
+        // If no filename in attributes, check caption or audio title
+        if (!fileName) {
+          if (msg.message && msg.message.trim()) {
+            fileName = msg.message.trim().split('\n')[0].replace(/[\\/:*?"<>|]/g, '_');
+          } else if (isAudio && audioTitle) {
+            fileName = audioPerformer ? `${audioPerformer} - ${audioTitle}` : audioTitle;
+          }
+        }
+
+        const ext = getExtensionFromMime(doc.mimeType || '');
+        if (!fileName) {
+          const dateStr = new Date(msg.date * 1000).toISOString().slice(0, 19).replace(/[:T]/g, '-');
+          if (isVideo) {
+            fileName = `Video_${dateStr}${ext || '.mp4'}`;
+          } else if (isAudio) {
+            fileName = `Audio_${dateStr}${ext || '.mp3'}`;
+          } else {
+            fileName = `File_${dateStr}${ext || ''}`;
+          }
+        } else if (ext && !fileName.includes('.')) {
+          fileName = `${fileName}${ext}`;
         }
 
         const fileId = `${folderId || 'root'}_${msg.id}`;
@@ -667,6 +786,50 @@ export async function listTelegramFiles(
           name: override.customName || fileName,
           size: Number(doc.size),
           mimeType: doc.mimeType || 'application/octet-stream',
+          date: msg.date,
+          folderId: (override.folderId !== undefined && override.folderId !== null)
+            ? override.folderId
+            : (folderId || parseFileId(fileId).folderId),
+          isFavorite: !!override.isFavorite,
+          isTrashed: !!override.isTrashed,
+          tags: override.tags || [],
+        });
+      }
+    }
+    // 2. MessageMediaPhoto (compressed images/photos uploaded directly via Telegram)
+    else if (msg.media && msg.media instanceof Api.MessageMediaPhoto) {
+      const photo = msg.media.photo;
+      if (photo instanceof Api.Photo) {
+        let photoSize = 0;
+        if (Array.isArray(photo.sizes)) {
+          for (const s of photo.sizes) {
+            if ('size' in s && typeof s.size === 'number' && s.size > photoSize) {
+              photoSize = s.size;
+            } else if ('sizes' in s && Array.isArray((s as any).sizes)) {
+              const maxS = Math.max(...(s as any).sizes);
+              if (maxS > photoSize) photoSize = maxS;
+            }
+          }
+        }
+
+        let fileName = '';
+        if (msg.message && msg.message.trim()) {
+          const captionName = msg.message.trim().split('\n')[0].replace(/[\\/:*?"<>|]/g, '_');
+          fileName = captionName.includes('.') ? captionName : `${captionName}.jpg`;
+        } else {
+          const dateStr = new Date(msg.date * 1000).toISOString().slice(0, 19).replace(/[:T]/g, '-');
+          fileName = `Photo_${dateStr}.jpg`;
+        }
+
+        const fileId = `${folderId || 'root'}_${msg.id}`;
+        const override = meta.fileOverrides[fileId] || meta.fileOverrides[msg.id.toString()] || {};
+
+        files.push({
+          id: fileId,
+          messageId: msg.id,
+          name: override.customName || fileName,
+          size: photoSize || 50000,
+          mimeType: 'image/jpeg',
           date: msg.date,
           folderId: (override.folderId !== undefined && override.folderId !== null)
             ? override.folderId
@@ -812,11 +975,31 @@ export async function downloadTelegramFile(
     throw new Error('Could not download file buffer from Telegram');
   }
 
+  // Resolve best fileName
+  let resolvedFileName = fileName;
+  const { Api } = await import('telegram');
+  if (!resolvedFileName || resolvedFileName.startsWith('file_')) {
+    if (msg.media instanceof Api.MessageMediaDocument && msg.media.document instanceof Api.Document) {
+      for (const attr of msg.media.document.attributes) {
+        if (attr instanceof Api.DocumentAttributeFilename) {
+          resolvedFileName = attr.fileName;
+          break;
+        }
+      }
+      if (!resolvedFileName || resolvedFileName.startsWith('file_')) {
+        const ext = getExtensionFromMime(msg.media.document.mimeType || '');
+        resolvedFileName = `File_${msg.id}${ext}`;
+      }
+    } else if (msg.media instanceof Api.MessageMediaPhoto) {
+      resolvedFileName = `Photo_${msg.id}.jpg`;
+    }
+  }
+
   const blob = new Blob([buffer as any]);
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = fileName;
+  a.download = resolvedFileName || `file_${msg.id}`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -834,10 +1017,22 @@ export async function getTelegramFilePreviewUrl(fileId: string, mimeType = 'appl
   const messages = await client.getMessages(targetPeer, { ids: messageId });
   if (!messages || messages.length === 0) return '';
 
-  const buffer = await client.downloadMedia(messages[0], {});
+  const msg = messages[0];
+  const { Api } = await import('telegram');
+
+  let resolvedMime = mimeType;
+  if (resolvedMime === 'application/octet-stream') {
+    if (msg.media instanceof Api.MessageMediaPhoto) {
+      resolvedMime = 'image/jpeg';
+    } else if (msg.media instanceof Api.MessageMediaDocument && msg.media.document instanceof Api.Document) {
+      resolvedMime = msg.media.document.mimeType || 'application/octet-stream';
+    }
+  }
+
+  const buffer = await client.downloadMedia(msg, {});
   if (!buffer) return '';
 
-  const blob = new Blob([buffer as any], { type: mimeType });
+  const blob = new Blob([buffer as any], { type: resolvedMime });
   return URL.createObjectURL(blob);
 }
 

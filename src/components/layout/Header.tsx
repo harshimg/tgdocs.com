@@ -68,14 +68,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
           />
           <div className="hidden min-[380px]:flex items-center gap-1.5">
             <span className="text-base sm:text-lg font-semibold text-[#1f1f1f] dark:text-[#e3e3e3] tracking-tight">TGDocs</span>
-            {isDemoMode ? (
+            {isDemoMode && (
               <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
                 Demo
-              </span>
-            ) : (
-              <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 items-center gap-0.5">
-                <Shield className="w-2.5 h-2.5" />
-                MTProto
               </span>
             )}
           </div>
