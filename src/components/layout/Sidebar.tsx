@@ -94,10 +94,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
       >
         {/* Mobile Header with Close Button */}
         <div className="flex items-center justify-between pb-3 mb-1 border-b border-[#e0e3e7] dark:border-[#3c4043] lg:hidden">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#0b57d0] dark:bg-[#a8c7fa] flex items-center justify-center text-white dark:text-[#041e49]">
-              <HardDrive className="w-4 h-4" />
-            </div>
+          <div className="flex items-center gap-2.5">
+            <img
+              src="/logo.svg"
+              alt="TGDocs Logo"
+              className="w-8 h-8 rounded-lg object-contain shrink-0"
+            />
             <span className="font-semibold text-sm text-[#1f1f1f] dark:text-[#e3e3e3]">TGDocs Drive</span>
           </div>
           <button
