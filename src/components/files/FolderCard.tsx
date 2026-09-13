@@ -23,12 +23,12 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, onRename }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleClick = () => {
-    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-      setCurrentFolder(folder.id);
-    } else {
-      setInspectedItem({ type: 'folder', data: folder });
+  const handleClick = (e: React.MouseEvent) => {
+    // If clicking menu trigger or menu itself, don't trigger folder open
+    if (menuRef.current && menuRef.current.contains(e.target as Node)) {
+      return;
     }
+    setCurrentFolder(folder.id);
   };
 
   return (

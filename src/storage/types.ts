@@ -59,6 +59,7 @@ export interface StorageProvider {
   uploadFile(file: File, folderId: string | null, onProgress?: (pct: number) => void): Promise<TGFile>;
   downloadFile(fileId: string, onProgress?: (pct: number) => void): Promise<void>;
   getFilePreviewUrl(fileId: string): Promise<string>;
+  getFileThumbnailUrl?(fileId: string): Promise<string>;
   renameFile(fileId: string, newName: string): Promise<void>;
   moveFile(fileId: string, targetFolderId: string | null): Promise<void>;
   toggleFavorite(fileId: string): Promise<boolean>;

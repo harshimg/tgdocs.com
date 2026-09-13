@@ -158,6 +158,20 @@ export class MockStorageProvider implements StorageProvider {
     return '';
   }
 
+  async getFileThumbnailUrl(fileId: string): Promise<string> {
+    const uploaded = this.uploadedBlobs.get(fileId);
+    if (uploaded) {
+      return uploaded.url;
+    }
+    if (fileId === 'mock_2') {
+      return 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=60';
+    }
+    if (fileId === 'mock_4') {
+      return 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&auto=format&fit=crop&q=60';
+    }
+    return '';
+  }
+
   async renameFile(fileId: string, newName: string): Promise<void> {
     const f = this.files.find((x) => x.id === fileId);
     if (f) f.name = newName;

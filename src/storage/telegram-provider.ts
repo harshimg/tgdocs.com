@@ -12,6 +12,7 @@ import {
   uploadTelegramFile,
   downloadTelegramFile,
   getTelegramFilePreviewUrl,
+  getTelegramFileThumbnailUrl,
   deleteTelegramFiles,
   createFolderChannel,
   renameFolderChannel,
@@ -179,6 +180,10 @@ export class TelegramStorageProvider implements StorageProvider {
     const { useFileStore } = await import('../store/file-store');
     const storeFile = useFileStore.getState().files.find((f) => f.id === fileId);
     return await getTelegramFilePreviewUrl(fileId, storeFile?.mimeType || 'application/octet-stream');
+  }
+
+  async getFileThumbnailUrl(fileId: string): Promise<string> {
+    return await getTelegramFileThumbnailUrl(fileId);
   }
 
   async renameFile(fileId: string, newName: string): Promise<void> {

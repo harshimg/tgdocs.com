@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFileStore } from '../../store/file-store';
+import { getActiveStorageProvider } from '../../storage';
 import { formatBytes, formatDate, getFileTypeCategory } from '../../utils/file-utils';
 import {
   X,
@@ -11,6 +12,9 @@ import {
   Tag,
   Clock,
   HardDrive,
+  Play,
+  Image as ImageIcon,
+  Film,
 } from 'lucide-react';
 import type { TGFile, TGFolder } from '../../storage/types';
 
@@ -38,6 +42,39 @@ export const DetailsPanel: React.FC = () => {
   const folderItemCount = folder
     ? files.filter((f) => f.folderId === folder.id).length
     : 0;
+
+  const category = file ? getFileTypeCategory(file.mimeType, file.name) : 'other';
+  const isMedia = category === 'image' || category === 'video';
+  const [thumbUrl, setThumbUrl] = useState<string>('');
+  const [thumbLoading, setThumbLoading] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!file || !isMedia) {
+      setThumbUrl('');
+      return;
+    }
+
+    const provider = getActiveStorageProvider();
+    if (!provider.getFileThumbnailUrl) return;
+
+    setThumbLoading(true);
+    provider
+      .getFileThumbnailUrl(file.id)
+      .then((url) => {
+        if (isMounted) setThumbUrl(url || '');
+      })
+      .catch(() => {
+        if (isMounted) setThumbUrl('');
+      })
+      .finally(() => {
+        if (isMounted) setThumbLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [file?.id, isMedia]);
 
   return (
     <>
@@ -73,8 +110,33 @@ export const DetailsPanel: React.FC = () => {
           ) : isFile && file ? (
             <div className="py-4 space-y-4 text-xs">
               {/* Thumbnail Box */}
-              <div className="h-32 rounded-xl bg-[#f0f4f9] dark:bg-[#282a2c] flex items-center justify-center border border-[#e0e3e7] dark:border-[#3c4043]">
-                <FileText className="w-10 h-10 text-[#0b57d0] dark:text-[#a8c7fa]" />
+              <div className="relative h-36 rounded-xl bg-[#f0f4f9] dark:bg-[#282a2c] flex items-center justify-center border border-[#e0e3e7] dark:border-[#3c4043] overflow-hidden">
+                {thumbUrl ? (
+                  <div className="relative w-full h-full flex items-center justify-center bg-black/5 dark:bg-black/20">
+                    <img
+                      src={thumbUrl}
+                      alt={file.name}
+                      className="w-full h-full object-contain"
+                    />
+                    {category === 'video' && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                        <div className="w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-white shadow-lg">
+                          <Play className="w-5 h-5 ml-0.5 fill-white text-white" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : thumbLoading ? (
+                  <div className="w-full h-full flex items-center justify-center animate-pulse bg-black/5 dark:bg-white/5">
+                    <span className="text-xs text-[#747775] dark:text-[#8e918f]">Loading preview...</span>
+                  </div>
+                ) : category === 'image' ? (
+                  <ImageIcon className="w-10 h-10 text-red-500" />
+                ) : category === 'video' ? (
+                  <Film className="w-10 h-10 text-red-600" />
+                ) : (
+                  <FileText className="w-10 h-10 text-[#0b57d0] dark:text-[#a8c7fa]" />
+                )}
               </div>
 
               {/* Quick Actions */}

@@ -695,17 +695,11 @@ export async function validateFolderChannels(force = false): Promise<FolderMeta[
           if (
             errMsg.includes('CHANNEL_INVALID') ||
             errMsg.includes('CHANNEL_PRIVATE') ||
-            errMsg.includes('PEER_ID_INVALID') ||
-            errMsg.includes('CHAT_NOT_MODIFIED')
+            errMsg.includes('PEER_ID_INVALID')
           ) {
             console.warn(`[TGDocs] Folder channel was deleted in Telegram: "${folder.name}" (${folder.channelId})`);
             deadFolderIds.add(folder.id);
           }
-        }
-      } else {
-        // No access hash and not in dialogs -> cannot be accessed
-        if (totalDialogs > 0) {
-          deadFolderIds.add(folder.id);
         }
       }
     }
@@ -963,7 +957,7 @@ export async function uploadTelegramFile(
       attributes: [
         new Api.DocumentAttributeFilename({ fileName: file.name }),
       ],
-    });
+    } as any);
   } catch (err: any) {
     const errMsg = (err.errorMessage || err.message || '').toUpperCase();
     if (
@@ -1097,6 +1091,210 @@ export async function getTelegramFilePreviewUrl(fileId: string, mimeType = 'appl
   const blob = new Blob([buffer as any], { type: resolvedMime });
   return URL.createObjectURL(blob);
 }
+
+// Thumbnail URL in-memory cache to prevent duplicate network downloads
+const thumbnailCache = new Map<string, string>();
+const thumbnailPending = new Map<string, Promise<string>>();
+
+/**
+ * Gets a lightweight blob thumbnail URL for an image, video, or document
+ * Uses Telegram's native small thumbnail sizes or stripped inline JPEG.
+ */
+export async function getTelegramFileThumbnailUrl(fileId: string): Promise<string> {
+  if (thumbnailCache.has(fileId)) {
+    return thumbnailCache.get(fileId)!;
+  }
+  if (thumbnailPending.has(fileId)) {
+    return thumbnailPending.get(fileId)!;
+  }
+
+  const promise = (async () => {
+    try {
+      const { folderId, messageId } = parseFileId(fileId);
+      const client = await getTelegramClient();
+      const targetPeer = await getFolderPeer(folderId);
+
+      const messages = await client.getMessages(targetPeer, { ids: messageId });
+      if (!messages || messages.length === 0) return '';
+
+      const msg = messages[0];
+      if (!msg.media) return '';
+
+      const { Api } = await import('telegram');
+      let buffer: any = null;
+
+      // 1. Photo message
+      if (msg.media instanceof Api.MessageMediaPhoto && msg.media.photo instanceof Api.Photo) {
+        const photo = msg.media.photo;
+        const sizes = photo.sizes || [];
+
+        // Check for instant stripped photo size
+        const stripped = sizes.find((s: any) => s instanceof Api.PhotoStrippedSize);
+        if (stripped && (stripped as any).bytes) {
+          try {
+            const { strippedPhotoToJpg } = await import('telegram/Utils');
+            const jpgBuf = strippedPhotoToJpg((stripped as any).bytes);
+            const blob = new Blob([jpgBuf as any], { type: 'image/jpeg' });
+            const url = URL.createObjectURL(blob);
+            thumbnailCache.set(fileId, url);
+            return url;
+          } catch (err) {
+            console.warn('[TGDocs] Failed to parse stripped photo thumb:', err);
+          }
+        }
+
+        // Download lightweight thumbnail
+        try {
+          buffer = await client.downloadMedia(msg, { thumb: 1 });
+        } catch {
+          buffer = null;
+        }
+        if (!buffer) {
+          try {
+            buffer = await client.downloadMedia(msg, { thumb: 0 });
+          } catch {
+            buffer = null;
+          }
+        }
+      }
+      // 2. Document message (videos, images uploaded as files, PDFs, etc.)
+      else if (msg.media instanceof Api.MessageMediaDocument && msg.media.document instanceof Api.Document) {
+        const doc = msg.media.document;
+        const thumbs = (doc.thumbs || []).filter((t: any) => !(t instanceof Api.PhotoPathSize));
+
+        // Check for instant stripped thumbnail in doc.thumbs
+        const stripped = thumbs.find((s: any) => s instanceof Api.PhotoStrippedSize);
+        if (stripped && (stripped as any).bytes) {
+          try {
+            const { strippedPhotoToJpg } = await import('telegram/Utils');
+            const jpgBuf = strippedPhotoToJpg((stripped as any).bytes);
+            const blob = new Blob([jpgBuf as any], { type: 'image/jpeg' });
+            const url = URL.createObjectURL(blob);
+            thumbnailCache.set(fileId, url);
+            return url;
+          } catch (err) {
+            console.warn('[TGDocs] Failed to parse stripped doc thumb:', err);
+          }
+        }
+
+        // Determine filename and mime type to support all image/video formats (SVG, PNG, WebP, GIF, MP4, etc.)
+        let docFileName = '';
+        for (const attr of doc.attributes) {
+          if (attr instanceof Api.DocumentAttributeFilename) {
+            docFileName = attr.fileName;
+          }
+        }
+        if (!docFileName && msg.message) {
+          docFileName = msg.message.trim().split('\n')[0];
+        }
+
+        const meta = getLocalCachedMeta();
+        const override = meta.fileOverrides[fileId];
+        const effectiveName = (override?.customName || docFileName || '').toLowerCase();
+        const rawMime = (doc.mimeType || '').toLowerCase();
+
+        const isSvg = effectiveName.endsWith('.svg') || effectiveName.endsWith('.svgz') || rawMime.includes('svg');
+        const isImage =
+          isSvg ||
+          rawMime.startsWith('image/') ||
+          /\.(jpg|jpeg|png|gif|webp|bmp|ico|avif|tiff|tif|heic|heif)$/i.test(effectiveName);
+        const isVideo =
+          rawMime.startsWith('video/') ||
+          /\.(mp4|mkv|mov|webm|avi|flv|wmv|m4v|3gp|ts)$/i.test(effectiveName);
+
+        let resolvedBlobMime = 'image/jpeg';
+        let isDirect = false;
+
+        // Try downloading official Telegram thumbnail first (videos & photos uploaded as documents)
+        if (thumbs.length > 0) {
+          const thumbIndex = Math.min(1, thumbs.length - 1);
+          try {
+            buffer = await client.downloadMedia(msg, { thumb: thumbIndex });
+          } catch {
+            buffer = null;
+          }
+          if (!buffer && thumbIndex !== 0) {
+            try {
+              buffer = await client.downloadMedia(msg, { thumb: 0 });
+            } catch {
+              buffer = null;
+            }
+          }
+        }
+
+        // If no thumbnail was generated (e.g. SVG files, raw images) or thumb download failed:
+        // For SVG and images under 10MB, download the file itself directly
+        if (!buffer && isImage && Number(doc.size) < 10 * 1024 * 1024) {
+          try {
+            buffer = await client.downloadMedia(msg, {});
+            isDirect = true;
+          } catch {
+            buffer = null;
+          }
+        }
+
+        // Apply correct MIME type so browsers render SVG and images properly
+        if (isDirect) {
+          if (isSvg) {
+            resolvedBlobMime = 'image/svg+xml';
+          } else if (rawMime && rawMime.startsWith('image/')) {
+            resolvedBlobMime = rawMime;
+          } else if (effectiveName.endsWith('.png')) {
+            resolvedBlobMime = 'image/png';
+          } else if (effectiveName.endsWith('.webp')) {
+            resolvedBlobMime = 'image/webp';
+          } else if (effectiveName.endsWith('.gif')) {
+            resolvedBlobMime = 'image/gif';
+          } else if (effectiveName.endsWith('.ico')) {
+            resolvedBlobMime = 'image/x-icon';
+          } else if (effectiveName.endsWith('.bmp')) {
+            resolvedBlobMime = 'image/bmp';
+          } else if (effectiveName.endsWith('.avif')) {
+            resolvedBlobMime = 'image/avif';
+          }
+        }
+      }
+
+      if (buffer && buffer.length > 0) {
+        let finalMime = 'image/jpeg';
+        // If buffer starts with SVG xml header or tag
+        if (buffer[0] === 0x3c) { // '<' character
+          const snippet = buffer.slice(0, 100).toString();
+          if (snippet.includes('<svg') || snippet.includes('<?xml')) {
+            finalMime = 'image/svg+xml';
+          }
+        } else if (
+          buffer[0] === 0x89 &&
+          buffer[1] === 0x50 &&
+          buffer[2] === 0x4e &&
+          buffer[3] === 0x47
+        ) {
+          finalMime = 'image/png';
+        } else if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46) {
+          finalMime = 'image/gif';
+        } else if (buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46) {
+          finalMime = 'image/webp';
+        }
+
+        const blob = new Blob([buffer as any], { type: finalMime });
+        const url = URL.createObjectURL(blob);
+        thumbnailCache.set(fileId, url);
+        return url;
+      }
+
+      return '';
+    } catch (e) {
+      console.warn(`[TGDocs] Could not load thumbnail for file ${fileId}:`, e);
+      return '';
+    } finally {
+      thumbnailPending.delete(fileId);
+    }
+  })();
+
+  thumbnailPending.set(fileId, promise);
+  return promise;
+}
+
 
 /**
  * Deletes files from Telegram channels

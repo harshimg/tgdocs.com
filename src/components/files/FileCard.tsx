@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { TGFile } from '../../storage/types';
+import { getActiveStorageProvider } from '../../storage';
 import { useFileStore } from '../../store/file-store';
 import { formatBytes, formatDate, getFileTypeCategory } from '../../utils/file-utils';
 import {
@@ -18,6 +19,7 @@ import {
   CheckCircle2,
   ExternalLink,
   RotateCcw,
+  Play,
 } from 'lucide-react';
 
 interface FileCardProps {
@@ -53,6 +55,44 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview })
   }, []);
 
   const category = getFileTypeCategory(file.mimeType, file.name);
+  const isMedia = category === 'image' || category === 'video';
+
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
+  const [thumbLoading, setThumbLoading] = useState(false);
+  const [thumbError, setThumbError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!isMedia) return;
+
+    const provider = getActiveStorageProvider();
+    if (!provider.getFileThumbnailUrl) return;
+
+    setThumbLoading(true);
+    setThumbError(false);
+
+    provider
+      .getFileThumbnailUrl(file.id)
+      .then((url) => {
+        if (isMounted) {
+          if (url) {
+            setThumbnailUrl(url);
+          } else {
+            setThumbError(true);
+          }
+        }
+      })
+      .catch(() => {
+        if (isMounted) setThumbError(true);
+      })
+      .finally(() => {
+        if (isMounted) setThumbLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [file.id, isMedia]);
 
   const renderIcon = () => {
     switch (category) {
@@ -206,13 +246,43 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview })
       </div>
 
       {/* Card Body: Thumbnail / Preview Area */}
-      <div className="h-20 sm:h-28 my-2 sm:my-3 rounded-xl bg-white/70 dark:bg-[#131314]/50 border border-[#e0e3e7]/50 dark:border-[#3c4043]/50 flex items-center justify-center overflow-hidden">
-        <div className="p-2 sm:p-4 flex flex-col items-center gap-1 text-[#747775] dark:text-[#8e918f]">
-          {renderIcon()}
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-wider font-medium">
-            {file.name.split('.').pop() || 'FILE'}
-          </span>
-        </div>
+      <div className="relative h-20 sm:h-28 my-2 sm:my-3 rounded-xl bg-white/70 dark:bg-[#131314]/50 border border-[#e0e3e7]/50 dark:border-[#3c4043]/50 flex items-center justify-center overflow-hidden group/thumb">
+        {thumbnailUrl && !thumbError ? (
+          <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-black/5 dark:bg-black/20">
+            <img
+              src={thumbnailUrl}
+              alt={file.name}
+              loading="lazy"
+              onError={() => setThumbError(true)}
+              className={`w-full h-full transition-transform duration-300 group-hover:scale-105 ${
+                file.name.toLowerCase().endsWith('.svg') || file.mimeType.includes('svg')
+                  ? 'object-contain p-2'
+                  : 'object-cover'
+              }`}
+            />
+            {category === 'video' && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/15 transition-colors">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 backdrop-blur-xs flex items-center justify-center text-white shadow-lg transition-transform group-hover:scale-110">
+                  <Play className="w-4 h-4 ml-0.5 fill-white text-white" />
+                </div>
+              </div>
+            )}
+          </div>
+        ) : thumbLoading ? (
+          <div className="w-full h-full flex items-center justify-center animate-pulse bg-black/5 dark:bg-white/5">
+            <div className="flex flex-col items-center gap-1 text-[#747775]/60 dark:text-[#8e918f]/60">
+              {renderIcon()}
+              <span className="text-[10px] uppercase tracking-wider font-medium">Loading...</span>
+            </div>
+          </div>
+        ) : (
+          <div className="p-2 sm:p-4 flex flex-col items-center gap-1 text-[#747775] dark:text-[#8e918f]">
+            {renderIcon()}
+            <span className="text-[10px] sm:text-[11px] uppercase tracking-wider font-medium">
+              {file.name.split('.').pop() || 'FILE'}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Card Footer: Metadata */}
