@@ -1,0 +1,120 @@
+---
+// ScrollToTop.astro - Floating circular scroll progress indicator with smooth scroll to top
+---
+
+<div
+  id="scroll-to-top-container"
+  class="fixed bottom-6 right-6 z-50 transition-all duration-300 ease-out opacity-0 translate-y-4 pointer-events-none"
+>
+  <button
+    id="scroll-to-top-btn"
+    type="button"
+    aria-label="Scroll to top"
+    class="group relative flex items-center justify-center w-12 h-12 rounded-full bg-white/95 dark:bg-[#1f2226]/95 backdrop-blur-md shadow-md hover:shadow-xl shadow-black/5 dark:shadow-black/40 border border-[#e2e8f0] dark:border-[#2e3236] text-[#4b5563] dark:text-[#cbd5e1] hover:text-[#0082c8] dark:hover:text-[#0082c8] transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0082c8] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#191b1d]"
+  >
+    <!-- Circular Progress SVG Ring -->
+    <svg
+      class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none"
+      viewBox="0 0 48 48"
+      aria-hidden="true"
+    >
+      <!-- Background track circle -->
+      <circle
+        cx="24"
+        cy="24"
+        r="20.5"
+        fill="none"
+        stroke-width="2.5"
+        class="stroke-[#0082c8]/15 dark:stroke-white/10"
+      />
+      <!-- Dynamic progress stroke circle -->
+      <circle
+        id="scroll-progress-ring"
+        cx="24"
+        cy="24"
+        r="20.5"
+        fill="none"
+        stroke="#0082c8"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        class="transition-[stroke-dashoffset] duration-75 ease-out"
+      />
+    </svg>
+
+    <!-- Upward chevron icon -->
+    <svg
+      class="w-5 h-5 transition-transform duration-200 group-hover:-translate-y-0.5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m18 15-6-6-6 6" />
+    </svg>
+  </button>
+</div>
+
+<script is:inline>
+  (function () {
+    const container = document.getElementById('scroll-to-top-container');
+    const btn = document.getElementById('scroll-to-top-btn');
+    const progressCircle = document.getElementById('scroll-progress-ring');
+    if (!container || !btn || !progressCircle) return;
+
+    const RADIUS = 20.5;
+    const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+    // Initialize strokeDasharray & strokeDashoffset
+    progressCircle.style.strokeDasharray = `${CIRCUMFERENCE} ${CIRCUMFERENCE}`;
+    progressCircle.style.strokeDashoffset = `${CIRCUMFERENCE}`;
+
+    let isTicking = false;
+    const SCROLL_THRESHOLD = 180; // Past ~150-200px threshold
+
+    function updateProgress() {
+      const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollHeight > 0 ? Math.min(Math.max(scrollY / scrollHeight, 0), 1) : 0;
+
+      // Calculate stroke dashoffset (fills clockwise down, unwinds smoothly up)
+      const offset = CIRCUMFERENCE - progress * CIRCUMFERENCE;
+      progressCircle.style.strokeDashoffset = offset.toFixed(2);
+
+      // Smooth fade-in & slide-up visibility toggle
+      if (scrollY > SCROLL_THRESHOLD) {
+        container.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+        container.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+      } else {
+        container.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+        container.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+      }
+
+      isTicking = false;
+    }
+
+    function onScroll() {
+      if (!isTicking) {
+        isTicking = true;
+        window.requestAnimationFrame(updateProgress);
+      }
+    }
+
+    // High performance passive listeners
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+
+    // Smooth scroll back to top on click
+    btn.addEventListener('click', function () {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    });
+
+    // Run initial state calculation
+    updateProgress();
+  })();
+</script>
