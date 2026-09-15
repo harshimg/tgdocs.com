@@ -1,5 +1,8 @@
 ---
-// StatsSection.astro - Clean user-friendly overview metrics
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section class="relative py-10 border-y border-[#e5e7eb] dark:border-[#26292c] bg-white/60 dark:bg-[#191b1d]/80 backdrop-blur-sm">
@@ -9,52 +12,52 @@
       <!-- Metric 1 -->
       <div class="flex flex-col items-center text-center p-5 sm:p-6 rounded-xl bg-[#f8fafc] dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#282b2e] transition-transform duration-150 hover:-translate-y-0.5">
         <div class="text-3xl sm:text-4xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-1">
-          100%
+          {t('stats.privateTitle')}
         </div>
         <div class="text-xs sm:text-sm font-semibold text-[#0082c8] mb-1">
-          Private & Secure
+          {t('stats.privateSubtitle')}
         </div>
         <p class="text-[11px] sm:text-xs text-[#707579] dark:text-[#8e9295] leading-normal">
-          Your files stay strictly in your own Telegram account.
+          {t('stats.privateDesc')}
         </p>
       </div>
 
       <!-- Metric 2 -->
       <div class="flex flex-col items-center text-center p-5 sm:p-6 rounded-xl bg-[#f8fafc] dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#282b2e] transition-transform duration-150 hover:-translate-y-0.5">
         <div class="text-3xl sm:text-4xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-1">
-          2 GB
+          {t('stats.fileLimitTitle')}
         </div>
         <div class="text-xs sm:text-sm font-semibold text-[#0082c8] mb-1">
-          Per File Limit
+          {t('stats.fileLimitSubtitle')}
         </div>
         <p class="text-[11px] sm:text-xs text-[#707579] dark:text-[#8e9295] leading-normal">
-          Standard limit (up to 4 GB with Telegram Premium).
+          {t('stats.fileLimitDesc')}
         </p>
       </div>
 
       <!-- Metric 3 -->
       <div class="flex flex-col items-center text-center p-5 sm:p-6 rounded-xl bg-[#f8fafc] dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#282b2e] transition-transform duration-150 hover:-translate-y-0.5">
         <div class="text-3xl sm:text-4xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-1">
-          &infin;
+          {t('stats.storageTitle')}
         </div>
         <div class="text-xs sm:text-sm font-semibold text-[#0082c8] mb-1">
-          Unlimited Space
+          {t('stats.storageSubtitle')}
         </div>
         <p class="text-[11px] sm:text-xs text-[#707579] dark:text-[#8e9295] leading-normal">
-          Store as many files as you need with zero monthly fees.
+          {t('stats.storageDesc')}
         </p>
       </div>
 
       <!-- Metric 4 -->
       <div class="flex flex-col items-center text-center p-5 sm:p-6 rounded-xl bg-[#f8fafc] dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#282b2e] transition-transform duration-150 hover:-translate-y-0.5">
         <div class="text-3xl sm:text-4xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-1">
-          Zero
+          {t('stats.installTitle')}
         </div>
         <div class="text-xs sm:text-sm font-semibold text-[#0082c8] mb-1">
-          Installation Needed
+          {t('stats.installSubtitle')}
         </div>
         <p class="text-[11px] sm:text-xs text-[#707579] dark:text-[#8e9295] leading-normal">
-          Works directly in your browser on desktop and mobile.
+          {t('stats.installDesc')}
         </p>
       </div>
 

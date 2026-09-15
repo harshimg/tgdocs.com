@@ -1,0 +1,214 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import LandingNavbar from '../landing/LandingNavbar.astro';
+import LandingFooter from '../landing/LandingFooter.astro';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+---
+
+<Layout
+  title="Contact & FAQ — TGDocs"
+  description="Have questions about TGDocs? Browse frequently asked questions or get in touch with the open-source community."
+  lang={lang}
+  isApp={false}
+>
+  <div class="relative min-h-screen bg-[#f5f5f6] dark:bg-[#191b1d] text-[#212427] dark:text-[#fafafa] flex flex-col transition-colors duration-200">
+    <LandingNavbar />
+
+    <main class="flex-1 py-12 sm:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#f0f4f8] dark:bg-[#212427] text-[#0082c8] text-xs font-semibold uppercase tracking-wider mb-4 border border-[#e2e8f0] dark:border-[#2e3236]">
+            <span>Help & Support</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-4">
+            How Can We Help You?
+          </h1>
+          <p class="text-base text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
+            Find answers to common questions about TGDocs security, file limits, and architecture, or connect with our open-source community.
+          </p>
+        </div>
+
+        <!-- Contact Channels Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+          
+          <!-- GitHub Issues -->
+          <div class="bg-white dark:bg-[#212427] rounded-2xl p-6 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-[#0082c8] flex items-center justify-center mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-1">
+                Bug Reports & Issues
+              </h3>
+              <p class="text-xs text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed mb-4">
+                Found a glitch or unexpected behavior? Submit an issue on our GitHub tracker with reproduction steps.
+              </p>
+            </div>
+            <a
+              href="https://github.com/harshimg/tgdocs.com/issues"
+              target="_blank"
+              rel="noreferrer"
+              class="inline-flex items-center text-xs font-semibold text-[#0082c8] hover:underline"
+            >
+              <span>Open GitHub Issue &rarr;</span>
+            </a>
+          </div>
+
+          <!-- Feature Requests / Discussions -->
+          <div class="bg-white dark:bg-[#212427] rounded-2xl p-6 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-1">
+                Discussions & Ideas
+              </h3>
+              <p class="text-xs text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed mb-4">
+                Have an idea for a feature or workflow enhancement? Share your thoughts with contributors in GitHub Discussions.
+              </p>
+            </div>
+            <a
+              href="https://github.com/harshimg/tgdocs.com/discussions"
+              target="_blank"
+              rel="noreferrer"
+              class="inline-flex items-center text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+            >
+              <span>Join Discussions &rarr;</span>
+            </a>
+          </div>
+
+          <!-- Open Source Community -->
+          <div class="bg-white dark:bg-[#212427] rounded-2xl p-6 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+              </div>
+              <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-1">
+                Contribute Code
+              </h3>
+              <p class="text-xs text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed mb-4">
+                TGDocs is 100% open-source. Fork the repo, build locally, and open a Pull Request to help improve TGDocs for everyone.
+              </p>
+            </div>
+            <a
+              href="https://github.com/harshimg/tgdocs.com"
+              target="_blank"
+              rel="noreferrer"
+              class="inline-flex items-center text-xs font-semibold text-purple-600 dark:text-purple-400 hover:underline"
+            >
+              <span>View Repository &rarr;</span>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- FAQ Section -->
+        <div id="faq" class="mb-16">
+          <div class="text-center mb-10">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-3">
+              Frequently Asked Questions
+            </h2>
+            <p class="text-sm text-[#5d6c7b] dark:text-[#8e9295]">
+              Everything you need to know about safety, privacy, and how TGDocs works.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            
+            <!-- FAQ Item 1 -->
+            <div class="bg-white dark:bg-[#212427] rounded-2xl p-6 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs">
+              <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
+                Is TGDocs safe to use with my personal Telegram account?
+              </h3>
+              <p class="text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
+                Yes. TGDocs executes 100% inside your web browser. When you log in, your browser communicates directly with Telegram's official servers via Telegram's official MTProto protocol over secure WebSockets (<code class="text-xs bg-[#f0f4f8] dark:bg-[#191b1d] px-1 py-0.5 rounded">wss://*.web.telegram.org</code>). There are no intermediary proxy servers, databases, or third-party loggers.
+              </p>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="bg-white dark:bg-[#212427] rounded-2xl p-6 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs">
+              <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
+                Can TGDocs or anyone else see my files?
+              </h3>
+              <p class="text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
+                No. All files uploaded through TGDocs are stored in a private channel or in your Saved Messages inside your own Telegram account. No third-party server ever receives or holds your files. Only you, with your Telegram authentication credentials, have access to them.
+              </p>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="bg-white dark:bg-[#212427] rounded-2xl p-6 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs">
+              <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
+                What is the file size limit and storage capacity?
+              </h3>
+              <p class="text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
+                Telegram provides unlimited total cloud storage. Standard Telegram accounts can upload individual files up to <strong>2 GB</strong> each. Users with Telegram Premium can upload individual files up to <strong>4 GB</strong> each.
+              </p>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="bg-white dark:bg-[#212427] rounded-2xl p-6 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs">
+              <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
+                What happens to my files if I log out or close TGDocs?
+              </h3>
+              <p class="text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
+                Your files remain completely safe in Telegram Cloud! Logging out of TGDocs only wipes your local browser session token and metadata cache. When you log back in on any browser, TGDocs reads your private metadata channel and restores your full folder tree automatically. You can also view and download every file directly inside official Telegram mobile or desktop apps.
+              </p>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="bg-white dark:bg-[#212427] rounded-2xl p-6 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs">
+              <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
+                Is TGDocs free? Are there any subscriptions?
+              </h3>
+              <p class="text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
+                TGDocs is 100% free and open-source under the MIT license. There are no subscription tiers, no hidden storage fees, and no paywalls.
+              </p>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="bg-white dark:bg-[#212427] rounded-2xl p-6 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs">
+              <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
+                How do I revoke TGDocs access from my Telegram account?
+              </h3>
+              <p class="text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
+                You can either click "Log Out" inside TGDocs, or open your official Telegram app on your phone/computer and go to <em>Settings → Devices → Active Sessions</em>. Tap on the "TGDocs Cloud Web" session and choose <em>Terminate Session</em>.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Call to Action Banner -->
+        <div class="bg-gradient-to-br from-[#0082c8] to-[#005a8c] rounded-3xl p-8 sm:p-12 text-center text-white shadow-lg">
+          <h2 class="text-2xl sm:text-3xl font-bold mb-3">
+            Experience Fast, Private Cloud Storage
+          </h2>
+          <p class="text-sm sm:text-base text-blue-100 max-w-lg mx-auto mb-8">
+            Access and organize your Telegram files with folders, search, and instant previews.
+          </p>
+          <a
+            href="/app"
+            class="inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-white text-[#0082c8] hover:bg-blue-50 font-semibold text-sm sm:text-base shadow-md transition-all duration-150 cursor-pointer"
+          >
+            <span>Get Started</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+
+    <LandingFooter />
+  </div>
+</Layout>

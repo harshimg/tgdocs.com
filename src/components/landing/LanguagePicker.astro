@@ -1,0 +1,129 @@
+---
+import { languages, type SupportedLanguage } from '../../i18n/ui';
+import { getLangFromUrl, useTranslatedPath, getRouteFromUrl } from '../../i18n/utils';
+
+const currentLang = getLangFromUrl(Astro.url);
+const currentRoute = getRouteFromUrl(Astro.url);
+const translatePath = useTranslatedPath(currentLang);
+
+const languageCodes: Record<SupportedLanguage, string> = {
+  en: 'EN',
+  es: 'ES',
+  ru: 'RU',
+  ja: 'JA',
+  fr: 'FR',
+  de: 'DE',
+  pt: 'PT',
+  ko: 'KO',
+  it: 'IT',
+  hi: 'HI',
+};
+---
+
+<div class="relative inline-block text-left language-picker-root">
+  <!-- Language Trigger Button -->
+  <button
+    type="button"
+    aria-label="Select Language"
+    aria-expanded="false"
+    class="lang-picker-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[#e2e8f0] dark:border-[#2e3236] bg-white dark:bg-[#212427] text-[#5d6c7b] dark:text-[#c4c7c5] hover:text-[#0082c8] dark:hover:text-white hover:border-[#0082c8]/40 transition-all duration-150 text-xs font-medium cursor-pointer shadow-xs"
+  >
+    <!-- Globe Icon -->
+    <svg class="w-3.5 h-3.5 text-[#0082c8] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
+
+    <span class="font-semibold tracking-wider">{languageCodes[currentLang]}</span>
+
+    <!-- Chevron Icon -->
+    <svg class="w-3 h-3 text-[#9aa0a6] transition-transform duration-200 chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </button>
+
+  <!-- Language Dropdown Menu -->
+  <div
+    class="lang-picker-menu hidden absolute right-0 mt-1.5 w-44 rounded-2xl bg-white dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#2e3236] shadow-xl shadow-black/10 dark:shadow-black/50 py-1.5 z-50 focus:outline-none backdrop-blur-md transition-all duration-150 transform origin-top-right"
+  >
+    <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9aa0a6] border-b border-[#f1f3f4] dark:border-[#2b2f34] mb-1">
+      Languages
+    </div>
+
+    <div class="max-h-64 overflow-y-auto overscroll-contain py-0.5">
+      {
+        (Object.entries(languages) as [SupportedLanguage, string][]).map(([langKey, label]) => {
+          const targetUrl = translatePath(currentRoute ? `/${currentRoute}` : '/', langKey);
+          const isActive = langKey === currentLang;
+
+          return (
+            <a
+              href={targetUrl}
+              hreflang={langKey}
+              class={`flex items-center justify-between px-3 py-1.5 text-xs rounded-lg mx-1 transition-colors ${
+                isActive
+                  ? 'bg-[#0082c8]/10 text-[#0082c8] font-bold dark:bg-[#0082c8]/20'
+                  : 'text-[#4b5563] dark:text-[#d1d5db] hover:bg-[#f3f4f6] dark:hover:bg-[#2c3035] hover:text-[#191b1d] dark:hover:text-white'
+              }`}
+            >
+              <div class="flex items-center gap-2">
+                <span class="w-5 text-[10px] font-mono text-[#9aa0a6] uppercase">{langKey}</span>
+                <span>{label}</span>
+              </div>
+              {isActive && (
+                <svg class="w-3.5 h-3.5 text-[#0082c8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              )}
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    document.querySelectorAll('.language-picker-root').forEach((root) => {
+      const btn = root.querySelector('.lang-picker-btn');
+      const menu = root.querySelector('.lang-picker-menu');
+      const chevron = root.querySelector('.chevron-icon');
+
+      if (!btn || !menu) return;
+
+      function toggleMenu(show) {
+        const isHidden = menu.classList.contains('hidden');
+        const willShow = show !== undefined ? show : isHidden;
+
+        if (willShow) {
+          menu.classList.remove('hidden');
+          btn.setAttribute('aria-expanded', 'true');
+          if (chevron) chevron.classList.add('rotate-180');
+        } else {
+          menu.classList.add('hidden');
+          btn.setAttribute('aria-expanded', 'false');
+          if (chevron) chevron.classList.remove('rotate-180');
+        }
+      }
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!root.contains(e.target)) {
+          toggleMenu(false);
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          toggleMenu(false);
+        }
+      });
+    });
+  })();
+</script>

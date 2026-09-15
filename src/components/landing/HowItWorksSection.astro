@@ -1,5 +1,8 @@
 ---
-// HowItWorksSection.astro - Clean 3-Step Setup Guide
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section id="how-it-works" class="relative py-20 bg-white dark:bg-[#191b1d] border-b border-[#e5e7eb] dark:border-[#26292c]">
@@ -8,13 +11,13 @@
     <!-- Section Header -->
     <div class="text-center max-w-2xl mx-auto mb-16">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#f0f4f8] dark:bg-[#212427] text-[#0082c8] text-xs font-semibold uppercase tracking-wider mb-3 border border-[#e2e8f0] dark:border-[#2e3236]">
-        <span>Quick Setup</span>
+        <span>{t('howItWorks.tag')}</span>
       </div>
       <h2 class="text-3xl sm:text-4xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-3">
-        How TGDocs Works
+        {t('howItWorks.title')}
       </h2>
       <p class="text-base text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-        Start managing your Telegram cloud files in under 30 seconds. No registration forms, no payment methods, and zero third-party accounts.
+        {t('howItWorks.subtitle')}
       </p>
     </div>
 
@@ -28,16 +31,16 @@
       <div class="relative z-10 flex flex-col items-center text-center p-6 sm:p-7 rounded-2xl bg-[#f8fafc] dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#282b2e] transition-transform duration-150 hover:-translate-y-1 shadow-sm">
         <!-- Numbered Step Badge -->
         <div class="w-12 h-12 rounded-xl bg-[#0082c8] text-white font-bold text-lg flex items-center justify-center mb-5 shadow-sm">
-          1
+          {t('howItWorks.step1Badge')}
         </div>
         <h3 class="text-base sm:text-lg font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-          Connect via Telegram
+          {t('howItWorks.step1Title')}
         </h3>
         <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed mb-5">
-          Enter your phone number and verify via the official Telegram login code sent directly to your existing Telegram session.
+          {t('howItWorks.step1Desc')}
         </p>
-        <div class="mt-auto px-3 py-1 rounded-md bg-white dark:bg-[#191b1d] text-[11px] font-mono text-[#5d6c7b] dark:text-[#8e9295] border border-[#e2e8f0] dark:border-[#282b2e]">
-          MTProto Browser Auth
+        <div class="mt-auto px-3 py-1 rounded-md bg-white dark:bg-[#191b1d] text-[11px] font-mono text-[#5d6c7b] dark:text-[#8e9295] border border-[#e2e8f0] dark:border-[#2e3236]">
+          {t('howItWorks.step1Pill')}
         </div>
       </div>
 
@@ -45,16 +48,16 @@
       <div class="relative z-10 flex flex-col items-center text-center p-6 sm:p-7 rounded-2xl bg-[#f8fafc] dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#282b2e] transition-transform duration-150 hover:-translate-y-1 shadow-sm">
         <!-- Numbered Step Badge -->
         <div class="w-12 h-12 rounded-xl bg-[#0082c8] text-white font-bold text-lg flex items-center justify-center mb-5 shadow-sm">
-          2
+          {t('howItWorks.step2Badge')}
         </div>
         <h3 class="text-base sm:text-lg font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-          Virtual Folder Indexing
+          {t('howItWorks.step2Title')}
         </h3>
         <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed mb-5">
-          TGDocs indexes your personal Saved Messages chat and builds a high-speed virtual folder hierarchy in your browser.
+          {t('howItWorks.step2Desc')}
         </p>
         <div class="mt-auto px-3 py-1 rounded-md bg-white dark:bg-[#191b1d] text-[11px] font-mono text-[#5d6c7b] dark:text-[#8e9295] border border-[#e2e8f0] dark:border-[#282b2e]">
-          IndexedDB Local Cache
+          {t('howItWorks.step2Pill')}
         </div>
       </div>
 
@@ -62,16 +65,16 @@
       <div class="relative z-10 flex flex-col items-center text-center p-6 sm:p-7 rounded-2xl bg-[#f8fafc] dark:bg-[#212427] border border-[#e2e8f0] dark:border-[#282b2e] transition-transform duration-150 hover:-translate-y-1 shadow-sm">
         <!-- Numbered Step Badge -->
         <div class="w-12 h-12 rounded-xl bg-[#0082c8] text-white font-bold text-lg flex items-center justify-center mb-5 shadow-sm">
-          3
+          {t('howItWorks.step3Badge')}
         </div>
         <h3 class="text-base sm:text-lg font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-          Upload & Access Anywhere
+          {t('howItWorks.step3Title')}
         </h3>
         <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed mb-5">
-          Enjoy clean file management. Upload up to 4GB files, create folders, search filenames, and download at full line speed.
+          {t('howItWorks.step3Desc')}
         </p>
         <div class="mt-auto px-3 py-1 rounded-md bg-white dark:bg-[#191b1d] text-[11px] font-mono text-[#5d6c7b] dark:text-[#8e9295] border border-[#e2e8f0] dark:border-[#282b2e]">
-          Google Drive Experience
+          {t('howItWorks.step3Pill')}
         </div>
       </div>
 

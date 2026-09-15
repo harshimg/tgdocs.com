@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import LandingNavbar from '../../components/landing/LandingNavbar.astro';
+import HeroSection from '../../components/landing/HeroSection.astro';
+import StatsSection from '../../components/landing/StatsSection.astro';
+import ScreenshotsSection from '../../components/landing/ScreenshotsSection.astro';
+import FeaturesSection from '../../components/landing/FeaturesSection.astro';
+import HowItWorksSection from '../../components/landing/HowItWorksSection.astro';
+import SecuritySection from '../../components/landing/SecuritySection.astro';
+import CTASection from '../../components/landing/CTASection.astro';
+import LandingFooter from '../../components/landing/LandingFooter.astro';
+import ScrollToTop from '../../components/landing/ScrollToTop.astro';
+import { languages, defaultLang, type SupportedLanguage } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return (Object.keys(languages) as SupportedLanguage[])
+    .filter((lang) => lang !== defaultLang)
+    .map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: SupportedLanguage };
+const t = useTranslations(lang);
+---
+
+<Layout
+  title={t('meta.title')}
+  description={t('meta.description')}
+  keywords={t('meta.keywords')}
+  lang={lang}
+  isApp={false}
+>
+  <div class="relative min-h-screen bg-[#f5f5f6] dark:bg-[#191b1d] text-[#212427] dark:text-[#fafafa] flex flex-col transition-colors duration-200">
+    <!-- Sticky Glassmorphic Navbar -->
+    <LandingNavbar />
+
+    <!-- Main Content Flow -->
+    <main class="flex-1 flex flex-col">
+      <!-- 3D Interactive Hero Section -->
+      <HeroSection />
+
+      <!-- High-Impact Key Metrics -->
+      <StatsSection />
+
+      <!-- Interactive 3D App Screenshots & UI Tour -->
+      <ScreenshotsSection />
+
+      <!-- 3D Tilt Feature Matrix -->
+      <FeaturesSection />
+
+      <!-- 3-Step Visual Process -->
+      <HowItWorksSection />
+
+      <!-- Security Comparison -->
+      <SecuritySection />
+
+      <!-- High-Conversion Bottom CTA Banner -->
+      <CTASection />
+    </main>
+
+    <!-- Clean Minimal Footer -->
+    <LandingFooter />
+
+    <!-- Interactive Circular Scroll to Top -->
+    <ScrollToTop />
+  </div>
+</Layout>

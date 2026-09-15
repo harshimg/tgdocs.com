@@ -1,0 +1,12 @@
+---
+import AboutView from '../../components/pages/AboutView.astro';
+import { languages, defaultLang, type SupportedLanguage } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return (Object.keys(languages) as SupportedLanguage[])
+    .filter((lang) => lang !== defaultLang)
+    .map((lang) => ({ params: { lang } }));
+}
+---
+
+<AboutView />

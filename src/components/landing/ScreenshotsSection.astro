@@ -1,5 +1,8 @@
 ---
-// ScreenshotsSection.astro - Clean App Preview Showcase
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section id="screenshots" class="relative py-20 bg-[#f8fafc] dark:bg-[#151719] border-b border-[#e5e7eb] dark:border-[#26292c]">
@@ -8,13 +11,13 @@
     <!-- Section Header -->
     <div class="text-center max-w-2xl mx-auto mb-10">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#f0f4f8] dark:bg-[#212427] text-[#0082c8] text-xs font-semibold uppercase tracking-wider mb-3 border border-[#e2e8f0] dark:border-[#2e3236]">
-        <span>Interface Preview</span>
+        <span>{t('screenshots.tag')}</span>
       </div>
       <h2 class="text-3xl sm:text-4xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-3">
-        Familiar Google Drive Interface.
+        {t('screenshots.title')}
       </h2>
       <p class="text-base text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-        Everything you expect from modern cloud storage - nested folders, instant search, and thumbnail previews - powered directly by your Telegram account.
+        {t('screenshots.subtitle')}
       </p>
     </div>
 
@@ -25,14 +28,14 @@
         type="button"
         class="px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 bg-[#0082c8] text-white shadow-sm cursor-pointer"
       >
-        <span>🖥️ Desktop View</span>
+        <span>{t('screenshots.desktopTab')}</span>
       </button>
       <button
         id="tab-mobile-btn"
         type="button"
         class="px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 bg-white dark:bg-[#212427] text-[#707579] dark:text-[#8e9295] hover:text-[#191b1d] dark:hover:text-white border border-[#e2e8f0] dark:border-[#282b2e] cursor-pointer"
       >
-        <span>📱 Mobile Preview</span>
+        <span>{t('screenshots.mobileTab')}</span>
       </button>
     </div>
 

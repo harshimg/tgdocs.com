@@ -1,5 +1,8 @@
 ---
-// FeaturesSection.astro - Clean 3D Tilt Feature Grid (tgstorage styling)
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section id="features" class="relative py-20 bg-white dark:bg-[#191b1d] border-b border-[#e5e7eb] dark:border-[#26292c]">
@@ -8,13 +11,13 @@
     <!-- Section Header -->
     <div class="text-center max-w-2xl mx-auto mb-14">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#f0f4f8] dark:bg-[#212427] text-[#0082c8] text-xs font-semibold uppercase tracking-wider mb-3 border border-[#e2e8f0] dark:border-[#2e3236]">
-        <span>Features</span>
+        <span>{t('features.tag')}</span>
       </div>
       <h2 class="text-3xl sm:text-4xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-3">
-        Cloud Storage. No Middlemen.
+        {t('features.title')}
       </h2>
       <p class="text-base text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-        TGDocs turns Telegram’s fast global cloud infrastructure into a private, full-featured web drive that only you control.
+        {t('features.subtitle')}
       </p>
     </div>
 
@@ -29,10 +32,10 @@
           </svg>
         </div>
         <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-          Direct MTProto Protocol
+          {t('features.f1Title')}
         </h3>
         <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-          Your browser opens direct binary WebSocket connections to Telegram data centers. Your data never passes through any intermediate proxy.
+          {t('features.f1Desc')}
         </p>
       </div>
 
@@ -44,10 +47,10 @@
           </svg>
         </div>
         <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-          Google Drive Experience
+          {t('features.f2Title')}
         </h3>
         <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-          Organize Telegram messages into real nested folders, switch between grid and list views, drag & drop files, and sort by date or size.
+          {t('features.f2Desc')}
         </p>
       </div>
 
@@ -60,10 +63,10 @@
           </svg>
         </div>
         <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-          Full 2FA & Session Security
+          {t('features.f3Title')}
         </h3>
         <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-          Full support for Telegram Two-Step Verification (Cloud Password). Sessions are encrypted in your browser's IndexedDB and can be terminated anytime.
+          {t('features.f3Desc')}
         </p>
       </div>
 
@@ -75,10 +78,10 @@
           </svg>
         </div>
         <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-          Truly Unlimited Storage
+          {t('features.f4Title')}
         </h3>
         <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-          Telegram imposes no quota on the total volume of files in your Saved Messages. Store documents, videos, backups, and photos without limits.
+          {t('features.f4Desc')}
         </p>
       </div>
 
@@ -90,10 +93,10 @@
           </svg>
         </div>
         <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-          Up to 4GB Single Files
+          {t('features.f5Title')}
         </h3>
         <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-          Upload files up to 2GB on standard accounts, or 4GB on Telegram Premium. Multi-part chunking ensures fast, reliable transfers.
+          {t('features.f5Desc')}
         </p>
       </div>
 
@@ -106,10 +109,10 @@
           </svg>
         </div>
         <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-          Zero Vendor Lock-In
+          {t('features.f6Title')}
         </h3>
         <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-          Every file is directly visible inside your official Telegram app under Saved Messages. You always retain 100% access.
+          {t('features.f6Desc')}
         </p>
       </div>
 

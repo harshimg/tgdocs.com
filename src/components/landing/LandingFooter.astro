@@ -1,5 +1,9 @@
 ---
-// LandingFooter.astro - Comprehensive production footer with legal, navigation, and trust links
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 ---
 
 <footer class="border-t border-[#e5e7eb] dark:border-[#26292c] bg-white dark:bg-[#191b1d] pt-14 pb-10 text-[#707579] dark:text-[#8e918f] text-xs transition-colors duration-200">
@@ -10,7 +14,7 @@
       
       <!-- Brand & Mission Column (spans 2 cols on desktop) -->
       <div class="sm:col-span-2 space-y-4">
-        <a href="/" class="flex items-center gap-2.5 group w-fit">
+        <a href={translatePath('/')} class="flex items-center gap-2.5 group w-fit">
           <img
             src="/logo.svg"
             alt="TGDocs Logo"
@@ -27,39 +31,39 @@
         </a>
 
         <p class="text-xs text-[#5d6c7b] dark:text-[#9aa0a6] leading-relaxed max-w-sm">
-          A client-side Google Drive-inspired file manager for Telegram Cloud. 100% client-side, zero middleman servers, unlimited storage, and complete privacy.
+          {t('footer.description')}
         </p>
       </div>
 
       <!-- Column 1: Product -->
       <div class="space-y-3">
         <h4 class="text-xs font-semibold uppercase tracking-wider text-[#191b1d] dark:text-[#fafafa]">
-          Product
+          {t('footer.colProduct')}
         </h4>
         <ul class="space-y-2.5">
           <li>
             <a href="/app" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
-              Get Started
+              {t('nav.getStarted')}
             </a>
           </li>
           <li>
-            <a href="/#features" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
-              Features
+            <a href={translatePath('/#features')} class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              {t('footer.features')}
             </a>
           </li>
           <li>
-            <a href="/#screenshots" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
-              Interface Preview
+            <a href={translatePath('/#screenshots')} class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              {t('footer.preview')}
             </a>
           </li>
           <li>
-            <a href="/#how-it-works" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
-              How It Works
+            <a href={translatePath('/#how-it-works')} class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              {t('footer.howItWorks')}
             </a>
           </li>
           <li>
-            <a href="/#security" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
-              Security Architecture
+            <a href={translatePath('/#security')} class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              {t('footer.security')}
             </a>
           </li>
         </ul>
@@ -68,17 +72,17 @@
       <!-- Column 2: Resources & About -->
       <div class="space-y-3">
         <h4 class="text-xs font-semibold uppercase tracking-wider text-[#191b1d] dark:text-[#fafafa]">
-          Company
+          {t('footer.colCompany')}
         </h4>
         <ul class="space-y-2.5">
           <li>
-            <a href="/about" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
-              About Us
+            <a href={translatePath('/about')} class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              {t('footer.about')}
             </a>
           </li>
           <li>
-            <a href="/contact" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
-              Contact & FAQ
+            <a href={translatePath('/contact')} class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              {t('footer.contact')}
             </a>
           </li>
           <li>
@@ -103,7 +107,7 @@
               rel="noreferrer"
               class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors inline-flex items-center gap-1"
             >
-              <span>Report Bug</span>
+              <span>{t('footer.reportBug')}</span>
             </a>
           </li>
         </ul>
@@ -112,22 +116,22 @@
       <!-- Column 3: Legal & Trust -->
       <div class="space-y-3">
         <h4 class="text-xs font-semibold uppercase tracking-wider text-[#191b1d] dark:text-[#fafafa]">
-          Legal & Privacy
+          {t('footer.colLegal')}
         </h4>
         <ul class="space-y-2.5">
           <li>
-            <a href="/terms" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
-              Terms & Conditions
+            <a href={translatePath('/terms')} class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              {t('footer.terms')}
             </a>
           </li>
           <li>
-            <a href="/privacy" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
-              Privacy Policy
+            <a href={translatePath('/privacy')} class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              {t('footer.privacy')}
             </a>
           </li>
           <li>
-            <a href="/contact#faq" class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
-              Security FAQ
+            <a href={translatePath('/contact#faq')} class="hover:text-[#0082c8] dark:hover:text-[#fafafa] transition-colors">
+              {t('footer.securityFaq')}
             </a>
           </li>
         </ul>
@@ -138,17 +142,17 @@
     <!-- Bottom Disclaimer & Copyright Bar -->
     <div class="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-[#707579] dark:text-[#8e9295]">
       <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-center md:text-left">
-        <span>© {new Date().getFullYear()} TGDocs. Open-source under MIT License.</span>
+        <span>© {new Date().getFullYear()} {t('footer.copyright')}</span>
         <span>•</span>
-        <a href="/terms" class="hover:underline">Terms</a>
+        <a href={translatePath('/terms')} class="hover:underline">{t('footer.terms')}</a>
         <span>•</span>
-        <a href="/privacy" class="hover:underline">Privacy</a>
+        <a href={translatePath('/privacy')} class="hover:underline">{t('footer.privacy')}</a>
         <span>•</span>
-        <a href="/about" class="hover:underline">About</a>
+        <a href={translatePath('/about')} class="hover:underline">{t('footer.about')}</a>
       </div>
 
       <div class="text-center md:text-right max-w-xl text-[10.5px] text-[#8e9295] dark:text-[#6b7280] leading-relaxed">
-        Disclaimer: TGDocs is an independent client-side interface and is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Telegram FZ-LLC.
+        {t('footer.disclaimer')}
       </div>
     </div>
 

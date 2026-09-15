@@ -1,19 +1,37 @@
 ---
+import { getLangFromUrl, getHreflangList, getOgLocale } from '../i18n/utils';
+import { ui, type SupportedLanguage } from '../i18n/ui';
+
 interface Props {
   title?: string;
   description?: string;
+  keywords?: string;
+  lang?: SupportedLanguage;
   isApp?: boolean;
 }
 
+const detectedLang = getLangFromUrl(Astro.url);
+const lang = Astro.props.lang || detectedLang;
+
+const defaultTitle = ui[lang]?.['meta.title'] || "TGDocs — Privacy-First Telegram Cloud File Manager";
+const defaultDesc = ui[lang]?.['meta.description'] || "A Google Drive-inspired client layer for managing your personal files stored securely in Telegram Cloud. 100% client-side, zero middleman servers, free & open source.";
+const defaultKeywords = ui[lang]?.['meta.keywords'] || "Telegram cloud storage, Telegram file manager, Google Drive Telegram, unlimited storage";
+
 const {
-  title = "TGDocs - Privacy-First Telegram Cloud File Manager",
-  description = "A Google Drive-inspired client layer for managing your personal files stored securely in Telegram Cloud. 100% client-side, zero middleman servers, free & open source.",
+  title = defaultTitle,
+  description = defaultDesc,
+  keywords = defaultKeywords,
   isApp = false,
 } = Astro.props;
+
+const siteUrl = Astro.site ? Astro.site.toString() : 'https://tgdocs.com';
+const hreflangList = !isApp ? getHreflangList(Astro.url.pathname, siteUrl) : [];
+const canonicalUrl = `${siteUrl.replace(/\/$/, '')}${Astro.url.pathname}`;
+const ogLocale = getOgLocale(lang);
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang={lang} class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -27,13 +45,23 @@ const {
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
     <meta name="theme-color" content="#0088cc" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Multi-Language Hreflang Tags for International SEO -->
+    {hreflangList.map(({ hreflang, href }) => (
+      <link rel="alternate" hreflang={hreflang} href={href} />
+    ))}
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content={ogLocale} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content="https://tgdocs.com" />
+    <meta property="og:url" content={canonicalUrl} />
 
     <!-- Inline script to prevent theme flash -->
     <script is:inline>

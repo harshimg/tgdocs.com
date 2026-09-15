@@ -6,7 +6,13 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://tgdocs.com',
   output: 'static',
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'es', 'ru', 'ja', 'fr', 'de', 'pt', 'ko', 'it', 'hi'],
+    routing: 'manual',
+  },
   integrations: [react()],
   vite: {
     plugins: [

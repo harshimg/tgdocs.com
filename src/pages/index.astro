@@ -10,11 +10,17 @@ import SecuritySection from '../components/landing/SecuritySection.astro';
 import CTASection from '../components/landing/CTASection.astro';
 import LandingFooter from '../components/landing/LandingFooter.astro';
 import ScrollToTop from '../components/landing/ScrollToTop.astro';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <Layout
-  title="TGDocs — Privacy-First Telegram Cloud File Manager"
-  description="A modern Google Drive-style file manager for your personal files stored in Telegram Cloud. 100% client-side, zero middleman servers, unlimited storage."
+  title={t('meta.title')}
+  description={t('meta.description')}
+  keywords={t('meta.keywords')}
+  lang={lang}
   isApp={false}
 >
   <div class="relative min-h-screen bg-[#f5f5f6] dark:bg-[#191b1d] text-[#212427] dark:text-[#fafafa] flex flex-col transition-colors duration-200">
