@@ -18,6 +18,9 @@ const MIME_TYPES = {
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
+  '.xml': 'application/xml',
+  '.txt': 'text/plain',
+  '.webmanifest': 'application/manifest+json',
 };
 
 const server = http.createServer((req, res) => {
@@ -28,7 +31,9 @@ const server = http.createServer((req, res) => {
 
   // Check if direct file exists
   if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
-    if (fs.existsSync(path.join(filePath, 'index.html'))) {
+    if (reqUrl === '/sitemap.xml' && fs.existsSync(path.join(DIST_DIR, 'sitemap-index.xml'))) {
+      filePath = path.join(DIST_DIR, 'sitemap-index.xml');
+    } else if (fs.existsSync(path.join(filePath, 'index.html'))) {
       filePath = path.join(filePath, 'index.html');
     } else if (fs.existsSync(filePath + '.html')) {
       filePath = filePath + '.html';

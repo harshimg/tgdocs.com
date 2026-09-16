@@ -1,6 +1,8 @@
 {
   "name": "TGDocs",
   "short_name": "TGDocs",
+  "start_url": "/app",
+  "scope": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

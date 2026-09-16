@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
@@ -13,7 +14,26 @@ export default defineConfig({
     locales: ['en', 'es', 'ru', 'ja', 'fr', 'de', 'pt', 'ko', 'it', 'hi'],
     routing: 'manual',
   },
-  integrations: [react()],
+  integrations: [
+    react(),
+    sitemap(),
+    {
+      name: 'sitemap-xml-alias',
+      hooks: {
+        'astro:build:done': async ({ dir }) => {
+          const fs = await import('node:fs');
+          const path = await import('node:path');
+          const { fileURLToPath } = await import('node:url');
+          const distPath = fileURLToPath(dir);
+          const indexXml = path.join(distPath, 'sitemap-index.xml');
+          const sitemapXml = path.join(distPath, 'sitemap.xml');
+          if (fs.existsSync(indexXml)) {
+            fs.copyFileSync(indexXml, sitemapXml);
+          }
+        },
+      },
+    },
+  ],
   vite: {
     plugins: [
       tailwindcss(),

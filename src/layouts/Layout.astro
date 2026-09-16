@@ -6,6 +6,7 @@ interface Props {
   title?: string;
   description?: string;
   keywords?: string;
+  image?: string;
   lang?: SupportedLanguage;
   isApp?: boolean;
 }
@@ -21,6 +22,7 @@ const {
   title = defaultTitle,
   description = defaultDesc,
   keywords = defaultKeywords,
+  image = '/images/dashboard-preview.png',
   isApp = false,
 } = Astro.props;
 
@@ -28,6 +30,7 @@ const siteUrl = Astro.site ? Astro.site.toString() : 'https://tgdocs.com';
 const hreflangList = !isApp ? getHreflangList(Astro.url.pathname, siteUrl) : [];
 const canonicalUrl = `${siteUrl.replace(/\/$/, '')}${Astro.url.pathname}`;
 const ogLocale = getOgLocale(lang);
+const ogImageUrl = image.startsWith('http') ? image : `${siteUrl.replace(/\/$/, '')}${image.startsWith('/') ? '' : '/'}${image}`;
 ---
 
 <!doctype html>
@@ -51,6 +54,9 @@ const ogLocale = getOgLocale(lang);
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalUrl} />
 
+    <!-- Sitemap -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
     <!-- Multi-Language Hreflang Tags for International SEO -->
     {hreflangList.map(({ hreflang, href }) => (
       <link rel="alternate" hreflang={hreflang} href={href} />
@@ -62,6 +68,14 @@ const ogLocale = getOgLocale(lang);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:site_name" content="TGDocs" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Inline script to prevent theme flash -->
     <script is:inline>
