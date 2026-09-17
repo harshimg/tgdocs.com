@@ -14,6 +14,7 @@ import {
   Lock,
   KeyRound,
 } from 'lucide-react';
+import { LanguagePickerDropdown } from '../layout/LanguagePickerDropdown';
 
 export const LoginView: React.FC = () => {
   const {
@@ -119,7 +120,12 @@ export const LoginView: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center px-4 py-8 bg-[#18191c] text-white select-none">
+    <div className="min-h-screen w-full flex flex-col justify-center items-center px-4 py-8 bg-[#18191c] text-white select-none relative">
+      {/* Top Bar Controls: Language Selector */}
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2 z-30">
+        <LanguagePickerDropdown variant="login" />
+      </div>
+
       {/* Country Selection Modal */}
       <CountryModal
         isOpen={isCountryModalOpen}
@@ -133,18 +139,18 @@ export const LoginView: React.FC = () => {
         {!phoneCodeHash && !requires2FA && (
           <>
             {/* TGSTORAGE / TGDocs Logo Header */}
-            <div className="flex items-center gap-3.5 mb-10">
+            <a href="/" className="flex items-center gap-3.5 mb-10 group hover:opacity-90 transition">
               <img
                 src="/logo.svg"
                 alt="TGDocs Logo"
-                className="w-13 h-13 rounded-2xl object-contain shadow-lg shadow-[#0088cc]/20"
+                className="w-13 h-13 rounded-2xl object-contain shadow-lg shadow-[#0088cc]/20 transition-transform duration-200 group-hover:scale-105"
               />
 
               <div className="flex items-center tracking-[0.22em] font-medium text-2xl">
                 <span className="text-[#24a1de] font-bold">TG</span>
                 <span className="text-white ml-1">DOCS</span>
               </div>
-            </div>
+            </a>
 
             {/* Subtitle & Prompt */}
             <div className="text-center mb-6">

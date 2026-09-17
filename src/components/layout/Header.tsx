@@ -14,6 +14,7 @@ import {
   Sparkles,
   Menu,
 } from 'lucide-react';
+import { LanguagePickerDropdown } from './LanguagePickerDropdown';
 
 interface HeaderProps {
   onOpenPrivacyModal: () => void;
@@ -103,6 +104,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
 
       {/* Right Controls */}
       <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        {/* Language Picker */}
+        <LanguagePickerDropdown variant="header" />
+
         {/* Privacy / Architecture Info */}
         <button
           onClick={onOpenPrivacyModal}

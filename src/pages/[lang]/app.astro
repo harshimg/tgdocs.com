@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { App } from '../../components/App';
+import { languages, defaultLang, type SupportedLanguage } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return (Object.keys(languages) as SupportedLanguage[])
+    .filter((lang) => lang !== defaultLang)
+    .map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: SupportedLanguage };
+const t = useTranslations(lang);
+---
+
+<Layout
+  title={t('meta.title')}
+  description={t('meta.description')}
+  keywords={t('meta.keywords')}
+  lang={lang}
+  isApp={true}
+>
+  <App client:only="react" />
+</Layout>
