@@ -5,19 +5,6 @@ import { getLangFromUrl, useTranslatedPath, getRouteFromUrl } from '../../i18n/u
 const currentLang = getLangFromUrl(Astro.url);
 const currentRoute = getRouteFromUrl(Astro.url);
 const translatePath = useTranslatedPath(currentLang);
-
-const languageCodes: Record<SupportedLanguage, string> = {
-  en: 'EN',
-  es: 'ES',
-  ru: 'RU',
-  ja: 'JA',
-  fr: 'FR',
-  de: 'DE',
-  pt: 'PT',
-  ko: 'KO',
-  it: 'IT',
-  hi: 'HI',
-};
 ---
 
 <div class="relative inline-block text-left language-picker-root">
@@ -25,21 +12,18 @@ const languageCodes: Record<SupportedLanguage, string> = {
   <button
     type="button"
     aria-label="Select Language"
+    title="Select Language"
     aria-expanded="false"
-    class="lang-picker-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[#e2e8f0] dark:border-[#2e3236] bg-white dark:bg-[#212427] text-[#5d6c7b] dark:text-[#c4c7c5] hover:text-[#0082c8] dark:hover:text-white hover:border-[#0082c8]/40 transition-all duration-150 text-xs font-medium cursor-pointer shadow-xs"
+    class="lang-picker-btn flex items-center justify-center p-2 rounded-xl border border-[#e2e8f0] dark:border-[#2e3236] bg-white dark:bg-[#212427] text-[#707579] dark:text-[#8e9295] hover:text-[#0082c8] dark:hover:text-white hover:border-[#0082c8]/40 transition-all duration-150 cursor-pointer shadow-xs"
   >
-    <!-- Globe Icon -->
-    <svg class="w-3.5 h-3.5 text-[#0082c8] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"></circle>
-      <line x1="2" y1="12" x2="22" y2="12"></line>
-      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-    </svg>
-
-    <span class="font-semibold tracking-wider">{languageCodes[currentLang]}</span>
-
-    <!-- Chevron Icon -->
-    <svg class="w-3 h-3 text-[#9aa0a6] transition-transform duration-200 chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="6 9 12 15 18 9"></polyline>
+    <!-- Translate / Languages Icon (文A) -->
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m5 8 6 6"></path>
+      <path d="m4 14 6-6 2-3"></path>
+      <path d="M2 5h12"></path>
+      <path d="M7 2h1"></path>
+      <path d="m22 22-5-10-5 10"></path>
+      <path d="M14 18h6"></path>
     </svg>
   </button>
 
