@@ -1,8 +1,9 @@
 ---
-import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 ---
 
 <section id="screenshots" class="relative py-20 bg-[#f8fafc] dark:bg-[#151719] border-b border-[#e5e7eb] dark:border-[#26292c]">
@@ -85,17 +86,17 @@ const t = useTranslations(lang);
             <div class="flex items-center gap-3">
               <div class="flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-[#27a644]"></span>
-                <span class="text-[#191b1d] dark:text-white font-medium">Telegram Connected</span>
+                <span class="text-[#191b1d] dark:text-white font-medium">{t('screenshots.telegramConnected')}</span>
               </div>
               <span class="text-[#cbd5e1] dark:text-[#3a3e44]">•</span>
-              <span>Private & Encrypted</span>
+              <span>{t('stats.privateSubtitle')}</span>
             </div>
 
             <a
-              href="/app"
+              href={translatePath('/app')}
               class="inline-flex items-center text-[#0082c8] hover:underline font-medium transition-colors cursor-pointer"
             >
-              <span>Get Started &rarr;</span>
+              <span>{t('nav.getStarted')} &rarr;</span>
             </a>
           </div>
         </div>
@@ -130,15 +131,15 @@ const t = useTranslations(lang);
             <div class="flex items-center gap-2">
               <div class="flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-[#27a644]"></span>
-                <span class="text-[#191b1d] dark:text-white font-medium">Telegram Connected</span>
+                <span class="text-[#191b1d] dark:text-white font-medium">{t('screenshots.telegramConnected')}</span>
               </div>
             </div>
 
             <a
-              href="/app"
+              href={translatePath('/app')}
               class="inline-flex items-center text-[#0082c8] hover:underline font-medium transition-colors cursor-pointer"
             >
-              <span>Get Started &rarr;</span>
+              <span>{t('nav.getStarted')} &rarr;</span>
             </a>
           </div>
         </div>

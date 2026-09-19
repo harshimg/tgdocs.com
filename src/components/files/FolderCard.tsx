@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { TGFolder } from '../../storage/types';
 import { useFileStore } from '../../store/file-store';
+import { useTranslation } from '../../i18n/context';
 import { Folder, MoreVertical, Edit2, Trash2, Info } from 'lucide-react';
 
 interface FolderCardProps {
@@ -9,6 +10,7 @@ interface FolderCardProps {
 }
 
 export const FolderCard: React.FC<FolderCardProps> = ({ folder, onRename }) => {
+  const { t } = useTranslation();
   const { setCurrentFolder, deleteFolder, setInspectedItem, setDetailsPanelOpen } = useFileStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -73,7 +75,7 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, onRename }) => {
               className="w-full text-left px-3 py-2 text-xs text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] flex items-center gap-2 cursor-pointer"
             >
               <Info className="w-3.5 h-3.5 text-[#747775]" />
-              <span>Folder details</span>
+              <span>{t('files.fileDetails')}</span>
             </button>
             <button
               onClick={(e) => {
@@ -84,7 +86,7 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, onRename }) => {
               className="w-full text-left px-3 py-2 text-xs text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] flex items-center gap-2 cursor-pointer"
             >
               <Edit2 className="w-3.5 h-3.5 text-[#747775]" />
-              <span>Rename</span>
+              <span>{t('files.rename')}</span>
             </button>
             <div className="my-1 border-t border-[#e0e3e7] dark:border-[#3c4043]" />
             <button
@@ -96,7 +98,7 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, onRename }) => {
               className="w-full text-left px-3 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2 cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>Delete folder</span>
+              <span>{t('files.trashAction')}</span>
             </button>
           </div>
         )}

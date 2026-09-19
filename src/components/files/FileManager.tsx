@@ -12,6 +12,7 @@ import { NewFolderModal } from '../modals/NewFolderModal';
 import { RenameModal } from '../modals/RenameModal';
 import { SettingsModal } from '../modals/SettingsModal';
 import { PrivacyModal } from '../modals/PrivacyModal';
+import { useTranslation } from '../../i18n/context';
 import type { TGFile, TGFolder } from '../../storage/types';
 import {
   Folder,
@@ -43,6 +44,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
   setPrivacyModalOpen,
   setSettingsModalOpen,
 }) => {
+  const { t } = useTranslation();
   const {
     folders,
     files,
@@ -143,11 +145,11 @@ export const FileManager: React.FC<FileManagerProps> = ({
     });
 
   const getEmptyStateMessage = () => {
-    if (searchQuery) return 'No matching files or folders found';
-    if (activeFilter === 'favorites') return 'No starred items yet';
-    if (activeFilter === 'recent') return 'No recent files';
-    if (activeFilter === 'trash') return 'Trash is empty';
-    return 'This folder is empty';
+    if (searchQuery) return t('files.emptySearch');
+    if (activeFilter === 'favorites') return t('files.emptyStarred');
+    if (activeFilter === 'recent') return t('files.lastModified');
+    if (activeFilter === 'trash') return t('files.emptyTrash');
+    return t('files.emptyFolder');
   };
 
   const getEmptyStateIcon = () => {
@@ -172,7 +174,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
           {isLoading ? (
             <div className="h-64 flex flex-col items-center justify-center gap-3 text-[#747775] dark:text-[#8e918f]">
               <Loader2 className="w-8 h-8 animate-spin text-[#0b57d0] dark:text-[#a8c7fa]" />
-              <p className="text-xs">Loading storage files...</p>
+              <p className="text-xs">{t('files.uploading')}</p>
             </div>
           ) : visibleFolders.length === 0 && visibleFiles.length === 0 ? (
             activeFilter === 'all' && !searchQuery ? (
@@ -181,15 +183,15 @@ export const FileManager: React.FC<FileManagerProps> = ({
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className="w-16 h-16 rounded-2xl bg-[#d3e3fd]/60 dark:bg-[#004a77]/50 hover:bg-[#c2e7ff] dark:hover:bg-[#004a77] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa] mb-4 transition-transform hover:scale-110 active:scale-95 cursor-pointer shadow-sm"
-                  title="Click to browse files"
+                  title={t('sidebar.fileUpload')}
                 >
                   <Upload className="w-7 h-7" />
                 </button>
                 <h3 className="text-lg sm:text-xl font-semibold text-[#1f1f1f] dark:text-[#e3e3e3] mb-1 tracking-tight">
-                  Drop files here to upload to {currentFolderName}
+                  {t('files.emptyFolder')}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#747775] dark:text-[#8e918f]">
-                  or click the upload icon to browse from your device
+                <p className="text-xs sm:text-sm text-[#747775] dark:text-[#8e918f] max-w-sm">
+                  {t('files.emptyFolderDesc')}
                 </p>
               </div>
             ) : (
@@ -199,7 +201,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                   {getEmptyStateMessage()}
                 </h4>
                 <p className="text-xs max-w-xs">
-                  Drag and drop files here, or click '+ New' to upload files directly to your Telegram Cloud.
+                  {t('files.emptyFolderDesc')}
                 </p>
               </div>
             )
@@ -217,7 +219,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
               {visibleFolders.length > 0 && (
                 <div>
                   <h3 className="text-xs font-semibold text-[#444746] dark:text-[#c4c7c5] uppercase tracking-wider mb-2.5 sm:mb-3">
-                    Folders
+                    {t('files.folders')}
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3">
                     {visibleFolders.map((folder) => (
@@ -235,7 +237,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
               {visibleFiles.length > 0 ? (
                 <div>
                   <h3 className="text-xs font-semibold text-[#444746] dark:text-[#c4c7c5] uppercase tracking-wider mb-2.5 sm:mb-3">
-                    Files
+                    {t('files.files')}
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4">
                     {visibleFiles.map((file) => (
@@ -255,15 +257,15 @@ export const FileManager: React.FC<FileManagerProps> = ({
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         className="w-14 h-14 rounded-2xl bg-[#d3e3fd]/60 dark:bg-[#004a77]/50 hover:bg-[#c2e7ff] dark:hover:bg-[#004a77] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa] mb-3 transition-transform hover:scale-110 active:scale-95 cursor-pointer shadow-sm"
-                        title="Click to browse files"
+                        title={t('sidebar.fileUpload')}
                       >
                         <Upload className="w-6 h-6" />
                       </button>
                       <h4 className="text-sm font-semibold text-[#1f1f1f] dark:text-[#e3e3e3] mb-1">
-                        Drop files here to upload to {currentFolderName}
+                        {t('files.dragDropTitle')}
                       </h4>
                       <p className="text-xs text-[#747775] dark:text-[#8e918f]">
-                        or click the upload icon to browse from your device
+                        {t('files.dropFiles')}
                       </p>
                     </div>
                   )}
@@ -275,15 +277,15 @@ export const FileManager: React.FC<FileManagerProps> = ({
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       className="w-14 h-14 rounded-2xl bg-[#d3e3fd]/60 dark:bg-[#004a77]/50 hover:bg-[#c2e7ff] dark:hover:bg-[#004a77] flex items-center justify-center text-[#0b57d0] dark:text-[#a8c7fa] mb-3 transition-transform hover:scale-110 active:scale-95 cursor-pointer shadow-sm"
-                      title="Click to browse files"
+                      title={t('sidebar.fileUpload')}
                     >
                       <Upload className="w-6 h-6" />
                     </button>
                     <h4 className="text-sm font-semibold text-[#1f1f1f] dark:text-[#e3e3e3] mb-1">
-                      Drop files here to upload to {currentFolderName}
+                      {t('files.dragDropTitle')}
                     </h4>
                     <p className="text-xs text-[#747775] dark:text-[#8e918f]">
-                      or click the upload icon to browse from your device
+                      {t('files.dropFiles')}
                     </p>
                   </div>
                 )
@@ -336,7 +338,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                 }}
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white dark:bg-[#282a2c] text-[#1f1f1f] dark:text-[#e3e3e3] shadow-xl border border-[#e0e3e7] dark:border-[#3c4043] text-xs font-semibold cursor-pointer active:scale-95 transition"
               >
-                <span>New folder</span>
+                <span>{t('sidebar.newFolder')}</span>
                 <FolderPlus className="w-4 h-4 text-[#0b57d0] dark:text-[#a8c7fa]" />
               </button>
 
@@ -347,7 +349,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                 }}
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white dark:bg-[#282a2c] text-[#1f1f1f] dark:text-[#e3e3e3] shadow-xl border border-[#e0e3e7] dark:border-[#3c4043] text-xs font-semibold cursor-pointer active:scale-95 transition"
               >
-                <span>Upload files</span>
+                <span>{t('sidebar.fileUpload')}</span>
                 <Upload className="w-4 h-4 text-[#0b57d0] dark:text-[#a8c7fa]" />
               </button>
             </div>

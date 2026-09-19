@@ -15,8 +15,10 @@ import {
   KeyRound,
 } from 'lucide-react';
 import { LanguagePickerDropdown } from '../layout/LanguagePickerDropdown';
+import { useTranslation } from '../../i18n/context';
 
 export const LoginView: React.FC = () => {
+  const { t } = useTranslation();
   const {
     isLoading,
     error,
@@ -155,10 +157,10 @@ export const LoginView: React.FC = () => {
             {/* Subtitle & Prompt */}
             <div className="text-center mb-6">
               <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8e9299] mb-2.5">
-                SIGN IN
+                {t('login.signIn')}
               </div>
               <p className="text-[13.5px] text-[#e0e2e5] font-normal leading-relaxed max-w-[270px] mx-auto">
-                Please confirm your country and enter your Telegram phone number.
+                {t('login.phonePrompt')}
               </p>
             </div>
           </>
@@ -176,15 +178,15 @@ export const LoginView: React.FC = () => {
               <button
                 type="button"
                 onClick={handleBackToPhone}
-                className="p-1 text-[#8e9299] hover:text-white rounded transition"
-                title="Edit phone number"
+                className="p-1 text-[#8e9299] hover:text-white rounded transition cursor-pointer"
+                title={t('login.editPhone')}
               >
                 <Pencil className="w-3.5 h-3.5" />
               </button>
             </div>
 
             <p className="text-[13.5px] text-[#8e9299] max-w-[260px] mx-auto leading-relaxed">
-              We've sent the code to the Telegram app on your device.
+              {t('login.codePrompt')}
             </p>
           </div>
         )}
@@ -197,10 +199,10 @@ export const LoginView: React.FC = () => {
             </div>
 
             <h2 className="text-xl font-semibold text-white tracking-tight mb-1.5">
-              Two-Step Verification
+              {t('login.twoStepTitle')}
             </h2>
             <p className="text-[13.5px] text-[#8e9299] max-w-[270px] mx-auto leading-relaxed">
-              Your account is protected with an additional cloud password.
+              {t('login.twoStepPrompt')}
             </p>
           </div>
         )}
@@ -219,7 +221,7 @@ export const LoginView: React.FC = () => {
             {/* Country Selector Field */}
             <div className="relative group">
               <span className="absolute -top-2 left-3 px-1.5 bg-[#18191c] text-[11px] text-[#8e9299] group-focus-within:text-[#24a1de] font-medium z-10 transition-colors pointer-events-none">
-                Country
+                {t('login.country')}
               </span>
               <button
                 type="button"
@@ -239,7 +241,7 @@ export const LoginView: React.FC = () => {
             {/* Phone Number Field */}
             <div className="relative group">
               <span className="absolute -top-2 left-3 px-1.5 bg-[#18191c] text-[11px] text-[#8e9299] group-focus-within:text-[#24a1de] font-medium z-10 transition-colors pointer-events-none">
-                Phone Number
+                {t('login.phoneNumber')}
               </span>
               <input
                 type="tel"
@@ -276,7 +278,7 @@ export const LoginView: React.FC = () => {
                   )}
                 </div>
                 <span className="text-[13px] text-[#e0e2e5] select-none">
-                  Keep me signed in
+                  {t('login.keepSignedIn')}
                 </span>
               </label>
             </div>
@@ -290,7 +292,7 @@ export const LoginView: React.FC = () => {
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                'NEXT'
+                t('login.next')
               )}
             </button>
           </form>
@@ -301,7 +303,7 @@ export const LoginView: React.FC = () => {
           <form onSubmit={handleCodeSubmit} className="w-full space-y-4">
             <div className="relative group">
               <span className="absolute -top-2 left-3 px-1.5 bg-[#18191c] text-[11px] text-[#8e9299] group-focus-within:text-[#24a1de] font-medium z-10 transition-colors pointer-events-none">
-                Code
+                {t('login.enterCode')}
               </span>
               <input
                 type="text"
@@ -322,7 +324,7 @@ export const LoginView: React.FC = () => {
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                'NEXT'
+                t('login.next')
               )}
             </button>
 
@@ -330,9 +332,9 @@ export const LoginView: React.FC = () => {
               <button
                 type="button"
                 onClick={handleBackToPhone}
-                className="text-xs text-[#24a1de] hover:underline"
+                className="text-xs text-[#24a1de] hover:underline cursor-pointer"
               >
-                Wrong number?
+                {t('login.editPhone')}
               </button>
             </div>
           </form>
@@ -343,7 +345,7 @@ export const LoginView: React.FC = () => {
           <form onSubmit={handle2FASubmit} className="w-full space-y-4">
             <div className="relative group">
               <span className="absolute -top-2 left-3 px-1.5 bg-[#18191c] text-[11px] text-[#8e9299] group-focus-within:text-[#24a1de] font-medium z-10 transition-colors pointer-events-none">
-                Password
+                {t('login.password')}
               </span>
               <div className="relative">
                 <input
@@ -351,14 +353,14 @@ export const LoginView: React.FC = () => {
                   autoFocus
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your 2FA password"
+                  placeholder={t('login.password')}
                   required
                   className="w-full pl-3.5 pr-10 py-3 rounded-xl border border-[#333742] hover:border-[#4c5161] focus:border-[#24a1de] focus:outline-none bg-transparent text-base sm:text-sm text-white placeholder-[#5a606d] transition"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8e9299] hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8e9299] hover:text-white cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -373,7 +375,7 @@ export const LoginView: React.FC = () => {
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                'NEXT'
+                t('login.next')
               )}
             </button>
 
@@ -381,9 +383,9 @@ export const LoginView: React.FC = () => {
               <button
                 type="button"
                 onClick={handleBackToPhone}
-                className="text-xs text-[#24a1de] hover:underline"
+                className="text-xs text-[#24a1de] hover:underline cursor-pointer"
               >
-                Back to Sign In
+                {t('login.editPhone')}
               </button>
             </div>
           </form>
@@ -398,7 +400,7 @@ export const LoginView: React.FC = () => {
             className="w-full py-2.5 px-3 rounded-xl border border-[#2e323b] hover:border-[#3e434f] hover:bg-white/5 text-[#c8cbd0] hover:text-white text-xs font-medium transition flex items-center justify-center gap-2 cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#24a1de]" />
-            <span>Launch Interactive Demo</span>
+            <span>{t('login.demoMode')}</span>
           </button>
 
           {/* Advanced Telegram API Settings Toggle */}
@@ -406,9 +408,9 @@ export const LoginView: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="w-full flex items-center justify-between text-[11px] text-[#6b7280] hover:text-[#9ca3af] transition py-1"
+              className="w-full flex items-center justify-between text-[11px] text-[#6b7280] hover:text-[#9ca3af] transition py-1 cursor-pointer"
             >
-              <span>Custom Telegram API Settings</span>
+              <span>{t('login.advancedSettings')}</span>
               {showAdvanced ? (
                 <ChevronUp className="w-3.5 h-3.5" />
               ) : (
@@ -418,28 +420,16 @@ export const LoginView: React.FC = () => {
 
             {showAdvanced && (
               <form onSubmit={handleSaveCreds} className="mt-2.5 space-y-2.5 animate-in fade-in">
-                <p className="text-[10.5px] text-[#6b7280] leading-normal">
-                  Optionally provide custom API credentials from{' '}
-                  <a
-                    href="https://my.telegram.org"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[#24a1de] hover:underline"
-                  >
-                    my.telegram.org
-                  </a>
-                  . Defaults are pre-configured.
-                </p>
                 <input
                   type="number"
-                  placeholder="API ID (e.g. 1234567)"
+                  placeholder={t('login.apiId')}
                   value={apiId}
                   onChange={(e) => setApiId(e.target.value)}
                   className="w-full px-3 py-2 text-xs rounded-lg bg-[#141518] border border-[#2e323b] text-white placeholder-[#5a606d] focus:outline-none focus:border-[#24a1de]"
                 />
                 <input
                   type="text"
-                  placeholder="API Hash (e.g. 0123456789abcdef...)"
+                  placeholder={t('login.apiHash')}
                   value={apiHash}
                   onChange={(e) => setApiHash(e.target.value)}
                   className="w-full px-3 py-2 text-xs rounded-lg bg-[#141518] border border-[#2e323b] text-white placeholder-[#5a606d] focus:outline-none focus:border-[#24a1de]"
@@ -448,7 +438,7 @@ export const LoginView: React.FC = () => {
                   type="submit"
                   className="w-full py-1.5 rounded-lg bg-[#2e323b] hover:bg-[#3e434f] text-[11px] font-medium text-white transition cursor-pointer"
                 >
-                  {credsSaved ? '✓ Saved to Browser' : 'Save Credentials'}
+                  {credsSaved ? `✓ ${t('login.credsSaved')}` : t('login.saveCreds')}
                 </button>
               </form>
             )}

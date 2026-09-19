@@ -9,10 +9,17 @@ import { NewFolderModal } from './modals/NewFolderModal';
 import { SettingsModal } from './modals/SettingsModal';
 import { PrivacyModal } from './modals/PrivacyModal';
 import { Loader2 } from 'lucide-react';
+import { I18nProvider, useTranslation } from '../i18n/context';
+import type { SupportedLanguage } from '../i18n/ui';
 
-export const App: React.FC = () => {
+interface AppProps {
+  initialLang?: SupportedLanguage;
+}
+
+const AppContent: React.FC = () => {
   const { isAuthenticated, isInitializing, initAuth } = useAuthStore();
   const { isDarkMode } = useFileStore();
+  const { t } = useTranslation();
 
   const [newFolderModalOpen, setNewFolderModalOpen] = useState(false);
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
@@ -42,7 +49,7 @@ export const App: React.FC = () => {
         <h2 className="text-xl font-bold tracking-tight mb-2">TGDocs</h2>
         <div className="flex items-center gap-2 text-xs text-[#747775] dark:text-[#8e918f]">
           <Loader2 className="w-4 h-4 animate-spin text-[#0b57d0] dark:text-[#a8c7fa]" />
-          <span>Verifying secure session in browser...</span>
+          <span>{t('login.verifyingSession')}</span>
         </div>
       </div>
     );
@@ -92,5 +99,13 @@ export const App: React.FC = () => {
         onClose={() => setPrivacyModalOpen(false)}
       />
     </div>
+  );
+};
+
+export const App: React.FC<AppProps> = ({ initialLang }) => {
+  return (
+    <I18nProvider initialLang={initialLang}>
+      <AppContent />
+    </I18nProvider>
   );
 };

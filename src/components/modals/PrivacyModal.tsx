@@ -1,5 +1,6 @@
 import React from 'react';
 import { Shield, Lock, Cloud, Code2, X, ExternalLink } from 'lucide-react';
+import { useTranslation } from '../../i18n/context';
 
 interface PrivacyModalProps {
   isOpen: boolean;
@@ -7,6 +8,7 @@ interface PrivacyModalProps {
 }
 
 export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -20,10 +22,10 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) =
             </div>
             <div>
               <h3 className="font-semibold text-base text-[#1f1f1f] dark:text-[#e3e3e3]">
-                Privacy & Architecture
+                {t('modals.privacyTitle')}
               </h3>
               <p className="text-[11px] text-[#747775] dark:text-[#8e918f]">
-                How TGDocs handles your data and privacy
+                {t('modals.privacySubtitle')}
               </p>
             </div>
           </div>
@@ -127,7 +129,7 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) =
             onClick={onClose}
             className="py-2 px-5 rounded-xl bg-[#0b57d0] hover:bg-[#0842a0] dark:bg-[#a8c7fa] dark:hover:bg-[#d3e3fd] text-white dark:text-[#041e49] text-xs font-semibold transition cursor-pointer"
           >
-            Got it
+            {t('modals.cancel')}
           </button>
         </div>
       </div>

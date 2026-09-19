@@ -10,8 +10,8 @@ const translatePath = useTranslatedPath(lang);
 ---
 
 <Layout
-  title="About TGDocs — Client-Side Telegram Cloud File Manager"
-  description="Learn about the mission, architecture, and open-source principles behind TGDocs, a zero-server Google Drive-style client for Telegram Cloud."
+  title={t('about.metaTitle')}
+  description={t('about.metaDesc')}
   lang={lang}
   isApp={false}
 >
@@ -24,34 +24,28 @@ const translatePath = useTranslatedPath(lang);
         <!-- Hero Section -->
         <div class="text-center max-w-2xl mx-auto mb-16">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#f0f4f8] dark:bg-[#212427] text-[#0082c8] text-xs font-semibold uppercase tracking-wider mb-4 border border-[#e2e8f0] dark:border-[#2e3236]">
-            <span>Our Mission</span>
+            <span>{t('about.tag')}</span>
           </div>
           <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight leading-tight mb-5">
-            Cloud Storage Reimagined: <br />
-            <span class="text-[#0082c8]">Private, Serverless, Free.</span>
+            {t('about.title1')} <br />
+            <span class="text-[#0082c8]">{t('about.title2')}</span>
           </h1>
           <p class="text-base sm:text-lg text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-            TGDocs bridges the gap between Telegram's unlimited cloud infrastructure and Google Drive's familiar folder-based file organization — executed completely inside your browser.
+            {t('about.subtitle')}
           </p>
         </div>
 
         <!-- The Origin Story & Problem -->
         <div class="bg-white dark:bg-[#212427] rounded-3xl p-6 sm:p-10 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs mb-12">
           <h2 class="text-2xl font-bold text-[#191b1d] dark:text-[#fafafa] mb-4">
-            Why TGDocs was Created
+            {t('about.whyTitle')}
           </h2>
           <div class="space-y-4 text-[#4b5563] dark:text-[#c4c7c5] text-sm sm:text-base leading-relaxed">
-            <p>
-              Telegram offers one of the most resilient, globally distributed cloud infrastructures in the world. Users have long used Telegram's <strong>"Saved Messages"</strong> and private channels as an ad-hoc personal cloud drive to store photos, documents, archives, and videos up to 2 GB (or 4 GB for Premium users) with unlimited storage.
-            </p>
-            <p>
-              However, chat lists were never designed to be file managers. As you accumulate thousands of files over years, searching through linear chat histories becomes disorganized: no nested folders, no drag-and-drop hierarchy, and no Google Drive-style workspace view.
-            </p>
-            <p>
-              Traditional third-party cloud storage providers solve this by asking you to upload files to <em>their</em> proprietary servers, paying hefty monthly subscription fees, and surrendering your data privacy.
-            </p>
+            <p>{t('about.whyP1')}</p>
+            <p>{t('about.whyP2')}</p>
+            <p>{t('about.whyP3')}</p>
             <p class="font-medium text-[#191b1d] dark:text-[#fafafa]">
-              TGDocs solves this elegantly: a modern, clean web file manager that speaks directly to Telegram via official MTProto protocols without a single intermediary server in between.
+              {t('about.whyP4')}
             </p>
           </div>
         </div>
@@ -59,7 +53,7 @@ const translatePath = useTranslatedPath(lang);
         <!-- Core Architectural Pillars Grid -->
         <div class="mb-14">
           <h2 class="text-xl sm:text-2xl font-bold text-center text-[#191b1d] dark:text-[#fafafa] mb-8">
-            The Three Foundational Pillars
+            {t('about.pillarsTitle')}
           </h2>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -72,10 +66,10 @@ const translatePath = useTranslatedPath(lang);
                 </svg>
               </div>
               <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-                100% Client-Side
+                {t('about.p1Title')}
               </h3>
               <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-                TGDocs has no backend servers, no user database, and no logs. The web app is static JavaScript running solely in your local browser sandbox.
+                {t('about.p1Desc')}
               </p>
             </div>
 
@@ -87,10 +81,10 @@ const translatePath = useTranslatedPath(lang);
                 </svg>
               </div>
               <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-                Direct MTProto WSS
+                {t('about.p2Title')}
               </h3>
               <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-                Your browser connects directly to Telegram's official Data Centers over secure WebSockets (<code class="text-[11px] bg-[#f0f4f8] dark:bg-[#191b1d] px-1 py-0.5 rounded">wss://*.web.telegram.org</code>).
+                {t('about.p2Desc')}
               </p>
             </div>
 
@@ -102,10 +96,10 @@ const translatePath = useTranslatedPath(lang);
                 </svg>
               </div>
               <h3 class="text-base font-bold text-[#191b1d] dark:text-[#fafafa] mb-2">
-                Open & Auditable
+                {t('about.p3Title')}
               </h3>
               <p class="text-xs sm:text-sm text-[#5d6c7b] dark:text-[#8e9295] leading-relaxed">
-                Every line of source code is openly hosted on GitHub. Anyone can inspect network traffic, verify cryptographic logic, or self-host their own instance.
+                {t('about.p3Desc')}
               </p>
             </div>
 
@@ -115,7 +109,7 @@ const translatePath = useTranslatedPath(lang);
         <!-- How It Works Flow -->
         <div class="bg-white dark:bg-[#212427] rounded-3xl p-6 sm:p-10 border border-[#e5e7eb] dark:border-[#2e3236] shadow-xs mb-12">
           <h2 class="text-2xl font-bold text-[#191b1d] dark:text-[#fafafa] mb-6">
-            Under the Hood
+            {t('about.howTitle')}
           </h2>
 
           <div class="space-y-6 text-sm text-[#4b5563] dark:text-[#c4c7c5]">
@@ -125,10 +119,10 @@ const translatePath = useTranslatedPath(lang);
               </div>
               <div>
                 <h4 class="font-bold text-[#191b1d] dark:text-[#fafafa] text-base mb-1">
-                  Local Key Generation & Storage
+                  {t('about.s1Title')}
                 </h4>
                 <p class="leading-relaxed text-[#5d6c7b] dark:text-[#8e9295]">
-                  When you authenticate via phone code or QR, MTProto session authorization keys are computed in memory and securely preserved in your browser's encrypted local storage. They are never sent to any third-party server.
+                  {t('about.s1Desc')}
                 </p>
               </div>
             </div>
@@ -139,10 +133,10 @@ const translatePath = useTranslatedPath(lang);
               </div>
               <div>
                 <h4 class="font-bold text-[#191b1d] dark:text-[#fafafa] text-base mb-1">
-                  Dedicated Private Storage Channel
+                  {t('about.s2Title')}
                 </h4>
                 <p class="leading-relaxed text-[#5d6c7b] dark:text-[#8e9295]">
-                  TGDocs creates a dedicated private Telegram channel named <strong>"TGDocs Cloud Storage"</strong> in your account. Only you can read or write to this channel.
+                  {t('about.s2Desc')}
                 </p>
               </div>
             </div>
@@ -153,10 +147,10 @@ const translatePath = useTranslatedPath(lang);
               </div>
               <div>
                 <h4 class="font-bold text-[#191b1d] dark:text-[#fafafa] text-base mb-1">
-                  Multi-Device Metadata Synchronization
+                  {t('about.s3Title')}
                 </h4>
                 <p class="leading-relaxed text-[#5d6c7b] dark:text-[#8e9295]">
-                  Folder structures, nested paths, and file tags are stored as lightweight state snapshots synced to a private metadata channel. Wherever you log in, your full folder tree reconstitutes instantly.
+                  {t('about.s3Desc')}
                 </p>
               </div>
             </div>
@@ -166,16 +160,16 @@ const translatePath = useTranslatedPath(lang);
         <!-- Call to Action Card -->
         <div class="bg-gradient-to-br from-[#0082c8] to-[#005a8c] rounded-3xl p-8 sm:p-12 text-center text-white shadow-lg">
           <h2 class="text-2xl sm:text-3xl font-bold mb-4">
-            Ready to Organize Your Telegram Cloud?
+            {t('about.ctaTitle')}
           </h2>
           <p class="text-sm sm:text-base text-blue-100 max-w-lg mx-auto mb-8">
-            No installation, no downloads, and no credit card required. Experience your personal cloud storage today.
+            {t('about.ctaSubtitle')}
           </p>
           <a
-            href="/app"
+            href={translatePath('/app')}
             class="inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-white text-[#0082c8] hover:bg-blue-50 font-semibold text-sm sm:text-base shadow-md transition-all duration-150 cursor-pointer"
           >
-            <span>Get Started</span>
+            <span>{t('about.ctaAction')}</span>
           </a>
         </div>
 

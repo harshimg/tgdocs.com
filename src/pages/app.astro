@@ -1,8 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { App } from '../components/App';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
-<Layout isApp={true}>
-  <App client:only="react" />
+<Layout
+  title={t('meta.title')}
+  description={t('meta.description')}
+  keywords={t('meta.keywords')}
+  lang={lang}
+  isApp={true}
+>
+  <App client:only="react" initialLang={lang} />
 </Layout>

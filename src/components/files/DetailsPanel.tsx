@@ -16,9 +16,11 @@ import {
   Image as ImageIcon,
   Film,
 } from 'lucide-react';
+import { useTranslation } from '../../i18n/context';
 import type { TGFile, TGFolder } from '../../storage/types';
 
 export const DetailsPanel: React.FC = () => {
+  const { t } = useTranslation();
   const {
     detailsPanelOpen,
     toggleDetailsPanel,
@@ -91,44 +93,35 @@ export const DetailsPanel: React.FC = () => {
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-[#e0e3e7] dark:border-[#3c4043]">
             <h3 className="font-semibold text-sm text-[#1f1f1f] dark:text-[#e3e3e3] truncate">
-              {file ? file.name : folder ? folder.name : 'Item Details'}
+              {file ? file.name : folder ? folder.name : t('details.title')}
             </h3>
             <button
               onClick={toggleDetailsPanel}
               className="p-1.5 rounded-full hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] text-[#747775] hover:text-[#1f1f1f] dark:hover:text-[#e3e3e3] cursor-pointer"
-              title="Close details"
+              title={t('files.closeDetails')}
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Content */}
+          {/* Body Content */}
           {!inspectedItem ? (
             <div className="py-12 text-center text-xs text-[#747775] dark:text-[#8e918f]">
               Select a file or folder to view details.
             </div>
-          ) : isFile && file ? (
+          ) : file ? (
             <div className="py-4 space-y-4 text-xs">
-              {/* Thumbnail Box */}
-              <div className="relative h-36 rounded-xl bg-[#f0f4f9] dark:bg-[#282a2c] flex items-center justify-center border border-[#e0e3e7] dark:border-[#3c4043] overflow-hidden">
+              {/* Thumbnail / Large Preview Icon */}
+              <div className="h-32 rounded-xl bg-[#f0f4f9] dark:bg-[#282a2c] flex items-center justify-center overflow-hidden border border-[#e0e3e7] dark:border-[#3c4043]">
                 {thumbUrl ? (
-                  <div className="relative w-full h-full flex items-center justify-center bg-black/5 dark:bg-black/20">
-                    <img
-                      src={thumbUrl}
-                      alt={file.name}
-                      className="w-full h-full object-contain"
-                    />
-                    {category === 'video' && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/25">
-                        <div className="w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-white shadow-lg">
-                          <Play className="w-5 h-5 ml-0.5 fill-white text-white" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <img
+                    src={thumbUrl}
+                    alt={file.name}
+                    className="w-full h-full object-cover"
+                  />
                 ) : thumbLoading ? (
                   <div className="w-full h-full flex items-center justify-center animate-pulse bg-black/5 dark:bg-white/5">
-                    <span className="text-xs text-[#747775] dark:text-[#8e918f]">Loading preview...</span>
+                    <span className="text-xs text-[#747775] dark:text-[#8e918f]">{t('files.uploading')}</span>
                   </div>
                 ) : category === 'image' ? (
                   <ImageIcon className="w-10 h-10 text-red-500" />
@@ -146,7 +139,7 @@ export const DetailsPanel: React.FC = () => {
                   className="flex-1 py-2 px-3 rounded-xl bg-[#0b57d0] hover:bg-[#0842a0] dark:bg-[#a8c7fa] dark:hover:bg-[#d3e3fd] text-white dark:text-[#041e49] font-medium transition flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <Download className="w-4 h-4" />
-                  <span>Download</span>
+                  <span>{t('files.download')}</span>
                 </button>
 
                 <button
@@ -154,7 +147,7 @@ export const DetailsPanel: React.FC = () => {
                   className={`p-2 rounded-xl border border-[#e0e3e7] dark:border-[#3c4043] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] transition cursor-pointer ${
                     file.isFavorite ? 'text-amber-500' : 'text-[#747775]'
                   }`}
-                  title="Star item"
+                  title={file.isFavorite ? t('files.unstar') : t('files.star')}
                 >
                   <Star className="w-4 h-4" fill={file.isFavorite ? 'currentColor' : 'none'} />
                 </button>
@@ -164,7 +157,7 @@ export const DetailsPanel: React.FC = () => {
               <div className="space-y-3 pt-2 text-[#444746] dark:text-[#c4c7c5]">
                 <div>
                   <span className="text-[10px] uppercase font-semibold text-[#747775] tracking-wider block mb-1">
-                    Type
+                    {t('details.type')}
                   </span>
                   <p className="font-medium text-[#1f1f1f] dark:text-[#e3e3e3]">
                     {file.mimeType}
@@ -173,7 +166,7 @@ export const DetailsPanel: React.FC = () => {
 
                 <div>
                   <span className="text-[10px] uppercase font-semibold text-[#747775] tracking-wider block mb-1">
-                    Size
+                    {t('details.size')}
                   </span>
                   <p className="font-medium text-[#1f1f1f] dark:text-[#e3e3e3]">
                     {formatBytes(file.size)}
@@ -182,7 +175,7 @@ export const DetailsPanel: React.FC = () => {
 
                 <div>
                   <span className="text-[10px] uppercase font-semibold text-[#747775] tracking-wider block mb-1">
-                    Storage Location
+                    {t('details.location')}
                   </span>
                   <p className="font-medium text-[#1f1f1f] dark:text-[#e3e3e3] flex items-center gap-1">
                     <HardDrive className="w-3.5 h-3.5 text-[#0b57d0] dark:text-[#a8c7fa]" />
@@ -192,7 +185,7 @@ export const DetailsPanel: React.FC = () => {
 
                 <div>
                   <span className="text-[10px] uppercase font-semibold text-[#747775] tracking-wider block mb-1">
-                    Date Modified
+                    {t('details.modified')}
                   </span>
                   <p className="font-medium text-[#1f1f1f] dark:text-[#e3e3e3] flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-[#747775]" />
@@ -228,16 +221,16 @@ export const DetailsPanel: React.FC = () => {
               <div className="space-y-3 pt-2 text-[#444746] dark:text-[#c4c7c5]">
                 <div>
                   <span className="text-[10px] uppercase font-semibold text-[#747775] tracking-wider block mb-1">
-                    Folder Contents
+                    {t('files.folders')}
                   </span>
                   <p className="font-medium text-[#1f1f1f] dark:text-[#e3e3e3]">
-                    {folderItemCount} {folderItemCount === 1 ? 'file' : 'files'}
+                    {folderItemCount} {t('files.files')}
                   </p>
                 </div>
 
                 <div>
                   <span className="text-[10px] uppercase font-semibold text-[#747775] tracking-wider block mb-1">
-                    Created
+                    {t('details.created')}
                   </span>
                   <p className="font-medium text-[#1f1f1f] dark:text-[#e3e3e3]">
                     {formatDate(folder.createdAt / 1000)}

@@ -1,8 +1,10 @@
 import React from 'react';
 import { useFileStore } from '../../store/file-store';
+import { useTranslation } from '../../i18n/context';
 import { ChevronRight, Home, Folder } from 'lucide-react';
 
 export const Breadcrumbs: React.FC = () => {
+  const { t } = useTranslation();
   const { currentFolderId, folders, activeFilter, setCurrentFolder, setActiveFilter } = useFileStore();
 
   // Find chain of folders
@@ -22,13 +24,13 @@ export const Breadcrumbs: React.FC = () => {
   const getRootTitle = () => {
     switch (activeFilter) {
       case 'favorites':
-        return 'Starred';
+        return t('sidebar.starred');
       case 'recent':
-        return 'Recent';
+        return t('files.sortDate');
       case 'trash':
-        return 'Trash';
+        return t('sidebar.trash');
       default:
-        return 'My Storage';
+        return t('sidebar.myDrive');
     }
   };
 

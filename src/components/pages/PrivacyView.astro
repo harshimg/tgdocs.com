@@ -10,8 +10,8 @@ const translatePath = useTranslatedPath(lang);
 ---
 
 <Layout
-  title="Privacy Policy — TGDocs"
-  description="Privacy policy for TGDocs explaining our zero-server data collection model and client-side MTProto security architecture."
+  title={t('privacy.metaTitle')}
+  description={t('privacy.metaDesc')}
   lang={lang}
   isApp={false}
 >
@@ -24,13 +24,13 @@ const translatePath = useTranslatedPath(lang);
         <!-- Header -->
         <div class="mb-10 text-center sm:text-left">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#f0f4f8] dark:bg-[#212427] text-[#0082c8] text-xs font-semibold uppercase tracking-wider mb-3 border border-[#e2e8f0] dark:border-[#2e3236]">
-            <span>Zero-Knowledge Privacy</span>
+            <span>{t('privacy.tag')}</span>
           </div>
           <h1 class="text-3xl sm:text-4xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-2">
-            Privacy Policy
+            {t('privacy.title')}
           </h1>
           <p class="text-xs text-[#707579] dark:text-[#8e9295]">
-            Last updated: September 11, 2026
+            {t('privacy.lastUpdated')}
           </p>
         </div>
 
@@ -43,61 +43,61 @@ const translatePath = useTranslatedPath(lang);
               <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              The TGDocs Privacy Promise in One Sentence:
+              {t('privacy.promiseTitle')}
             </h3>
             <p>
-              We operate zero backend servers, collect zero personal information, use zero tracking cookies, and never transmit your files or credentials to anyone other than official Telegram Data Centers.
+              {t('privacy.promiseDesc')}
             </p>
           </div>
 
           <!-- 1. Zero Server-Side Data Collection -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              1. Information We Do NOT Collect
+              {t('privacy.s1Title')}
             </h2>
             <p>
-              Unlike traditional cloud drive providers, TGDocs does not have an account creation system, database, or proxy server. We do NOT collect, inspect, or retain:
+              {t('privacy.s1P1')}
             </p>
             <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-              <li>Your name, email address, phone number, or IP address.</li>
-              <li>Your Telegram password, 2FA password, or login verification codes.</li>
-              <li>The contents, filenames, types, or sizes of the files you store.</li>
-              <li>Analytics, behavioral telemetry, device fingerprints, or advertising IDs.</li>
+              <li>{t('privacy.s1B1')}</li>
+              <li>{t('privacy.s1B2')}</li>
+              <li>{t('privacy.s1B3')}</li>
+              <li>{t('privacy.s1B4')}</li>
             </ul>
           </section>
 
           <!-- 2. Local Browser Storage -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              2. Data Stored Locally on Your Device
+              {t('privacy.s2Title')}
             </h2>
             <p>
-              To provide a continuous file manager experience across browser reloads, TGDocs saves a minimal set of data directly inside your local web browser's storage (<code class="text-xs bg-[#f0f4f8] dark:bg-[#191b1d] px-1 py-0.5 rounded">localStorage</code>):
+              {t('privacy.s2P1')}
             </p>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs border border-[#e5e7eb] dark:border-[#2e3236] rounded-xl overflow-hidden">
                 <thead class="bg-[#f9fafb] dark:bg-[#191b1d] text-[#191b1d] dark:text-[#fafafa]">
                   <tr>
-                    <th class="p-2.5 font-semibold">Key / Data Item</th>
-                    <th class="p-2.5 font-semibold">Purpose</th>
-                    <th class="p-2.5 font-semibold">Where Stored</th>
+                    <th class="p-2.5 font-semibold">{t('privacy.thKey')}</th>
+                    <th class="p-2.5 font-semibold">{t('privacy.thPurpose')}</th>
+                    <th class="p-2.5 font-semibold">{t('privacy.thStorage')}</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-[#e5e7eb] dark:divide-[#2e3236]">
                   <tr>
                     <td class="p-2.5 font-mono text-[11px]">tgdocs_session</td>
-                    <td class="p-2.5">Encrypted MTProto session token used to talk to Telegram</td>
-                    <td class="p-2.5">Browser LocalStorage</td>
+                    <td class="p-2.5">{t('privacy.t1Desc')}</td>
+                    <td class="p-2.5">{t('privacy.t1Storage')}</td>
                   </tr>
                   <tr>
                     <td class="p-2.5 font-mono text-[11px]">tgdocs_theme</td>
-                    <td class="p-2.5">User interface color preference ('dark' or 'light')</td>
-                    <td class="p-2.5">Browser LocalStorage</td>
+                    <td class="p-2.5">{t('privacy.t2Desc')}</td>
+                    <td class="p-2.5">{t('privacy.t2Storage')}</td>
                   </tr>
                   <tr>
                     <td class="p-2.5 font-mono text-[11px]">tgdocs_metadata_cache</td>
-                    <td class="p-2.5">Cached folder hierarchy to speed up page rendering</td>
-                    <td class="p-2.5">Browser LocalStorage</td>
+                    <td class="p-2.5">{t('privacy.t3Desc')}</td>
+                    <td class="p-2.5">{t('privacy.t3Storage')}</td>
                   </tr>
                 </tbody>
               </table>
@@ -107,78 +107,78 @@ const translatePath = useTranslatedPath(lang);
           <!-- 3. Direct Telegram Connection -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              3. Direct Peer-to-Telegram Network Architecture
+              {t('privacy.s3Title')}
             </h2>
             <p>
-              When you log in or upload/download files, your browser establishes a direct WebSocket connection (<code class="text-xs bg-[#f0f4f8] dark:bg-[#191b1d] px-1 py-0.5 rounded">wss://*.web.telegram.org</code>) to Telegram's Data Centers.
+              {t('privacy.s3P1')}
             </p>
             <p>
-              Data transmission is secured using Telegram's cryptographic MTProto protocol. Your files and messages are governed exclusively by <a href="https://telegram.org/privacy" target="_blank" rel="noreferrer" class="text-[#0082c8] underline">Telegram's Privacy Policy</a>.
+              {t('privacy.s3P2')} <a href="https://telegram.org/privacy" target="_blank" rel="noreferrer" class="text-[#0082c8] underline">{t('privacy.s3Link')}</a>.
             </p>
           </section>
 
           <!-- 4. Data Deletion (Logging Out) -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              4. Complete Data Erasure (How to Wipe Your Data)
+              {t('privacy.s4Title')}
             </h2>
             <p>
-              Because your session is stored purely on your computer, you have complete control over data removal at any time:
+              {t('privacy.s4P1')}
             </p>
             <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-              <li><strong>Click "Log Out"</strong> in the top header menu inside the app. This triggers an immediate, irreversible purge of all session tokens, authorization keys, and local metadata caches from browser storage.</li>
-              <li>You can also clear your web browser's cookies and site data for <code class="text-xs bg-[#f0f4f8] dark:bg-[#191b1d] px-1 py-0.5 rounded">tgdocs.com</code> at any time.</li>
-              <li>In your official Telegram mobile or desktop app, navigate to <em>Settings → Devices → Active Sessions</em> to revoke TGDocs' web session at any moment.</li>
+              <li>{t('privacy.s4B1')}</li>
+              <li>{t('privacy.s4B2')}</li>
+              <li>{t('privacy.s4B3')}</li>
             </ul>
           </section>
 
           <!-- 5. Cookies and Trackers -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              5. Cookies and Third-Party Trackers
+              {t('privacy.s5Title')}
             </h2>
             <p>
-              TGDocs uses <strong>zero third-party tracking cookies</strong>, zero Google Analytics, zero Facebook Pixel, and zero advertising SDKs. The only storage utilized is functional browser storage needed to keep your session alive while you browse.
+              {t('privacy.s5P1')}
             </p>
           </section>
 
           <!-- 6. Children's Privacy -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              6. Children's Privacy
+              {t('privacy.s6Title')}
             </h2>
             <p>
-              TGDocs is not directed to children under the age of 13. Since we do not collect personal information, we do not knowingly store data from children under applicable privacy regulations.
+              {t('privacy.s6P1')}
             </p>
           </section>
 
           <!-- 7. Open Source Verification -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              7. Open Source Auditability
+              {t('privacy.s7Title')}
             </h2>
             <p>
-              Our privacy guarantees are not just words — they are cryptographically and programmatically verifiable. The full application source code is available for public inspection at <a href="https://github.com/harshimg/tgdocs.com" target="_blank" rel="noreferrer" class="text-[#0082c8] underline font-medium">github.com/harshimg/tgdocs.com</a>. You can inspect the network requests in your browser's Developer Tools (F12) to confirm that no third-party network requests are made.
+              {t('privacy.s7P1')} <a href="https://github.com/harshimg/tgdocs.com" target="_blank" rel="noreferrer" class="text-[#0082c8] underline font-medium">github.com/harshimg/tgdocs.com</a>. {t('privacy.s7P2')}
             </p>
           </section>
 
           <!-- 8. Updates to this Policy -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              8. Changes to this Privacy Policy
+              {t('privacy.s8Title')}
             </h2>
             <p>
-              Any changes to this Privacy Policy will be posted to this page with an updated revision date.
+              {t('privacy.s8P1')}
             </p>
           </section>
 
           <!-- 9. Contact -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              9. Contact Us
+              {t('privacy.s9Title')}
             </h2>
             <p>
-              For any questions regarding this Privacy Policy, please file an inquiry on our <a href="https://github.com/harshimg/tgdocs.com" target="_blank" rel="noreferrer" class="text-[#0082c8] underline">GitHub repository</a> or visit our <a href={translatePath('/contact')} class="text-[#0082c8] underline">Contact page</a>.
+              {t('privacy.s9P1')} <a href="https://github.com/harshimg/tgdocs.com" target="_blank" rel="noreferrer" class="text-[#0082c8] underline">GitHub repository</a> {t('terms.s10Or')} <a href={translatePath('/contact')} class="text-[#0082c8] underline">{t('terms.s10ContactLink')}</a>.
             </p>
           </section>
 

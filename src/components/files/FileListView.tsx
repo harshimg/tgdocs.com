@@ -15,6 +15,7 @@ import {
   Download,
   MoreVertical,
 } from 'lucide-react';
+import { useTranslation } from '../../i18n/context';
 
 interface FileListViewProps {
   folders: TGFolder[];
@@ -31,6 +32,7 @@ export const FileListView: React.FC<FileListViewProps> = ({
   onRenameFile,
   onPreviewFile,
 }) => {
+  const { t } = useTranslation();
   const {
     selectedFileIds,
     toggleSelectFile,
@@ -175,11 +177,11 @@ export const FileListView: React.FC<FileListViewProps> = ({
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="border-b border-[#e0e3e7] dark:border-[#3c4043] text-[#444746] dark:text-[#c4c7c5] font-medium">
-              <th className="py-2.5 px-4 font-normal">Name</th>
-              <th className="py-2.5 px-4 font-normal hidden sm:table-cell">Owner</th>
-              <th className="py-2.5 px-4 font-normal hidden md:table-cell">Last modified</th>
-              <th className="py-2.5 px-4 font-normal hidden sm:table-cell">File size</th>
-              <th className="py-2.5 px-4 font-normal text-right">Actions</th>
+              <th className="py-2.5 px-4 font-normal">{t('files.name')}</th>
+              <th className="py-2.5 px-4 font-normal hidden sm:table-cell">{t('files.owner')}</th>
+              <th className="py-2.5 px-4 font-normal hidden md:table-cell">{t('files.lastModified')}</th>
+              <th className="py-2.5 px-4 font-normal hidden sm:table-cell">{t('files.fileSize')}</th>
+              <th className="py-2.5 px-4 font-normal text-right"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#f0f4f9] dark:divide-[#282a2c]">
@@ -195,7 +197,7 @@ export const FileListView: React.FC<FileListViewProps> = ({
                   <Folder className="w-4 h-4 text-[#747775] dark:text-[#8e918f]" />
                   <span className="font-medium truncate max-w-xs">{folder.name}</span>
                 </td>
-                <td className="py-3 px-4 text-[#747775] dark:text-[#8e918f] hidden sm:table-cell">me</td>
+                <td className="py-3 px-4 text-[#747775] dark:text-[#8e918f] hidden sm:table-cell">{t('files.me')}</td>
                 <td className="py-3 px-4 text-[#747775] dark:text-[#8e918f] hidden md:table-cell">
                   {formatDate(folder.createdAt / 1000)}
                 </td>
@@ -232,7 +234,7 @@ export const FileListView: React.FC<FileListViewProps> = ({
                     <div className="shrink-0">{getFileIcon(file.mimeType, file.name)}</div>
                     <span className="font-medium truncate max-w-xs">{file.name}</span>
                   </td>
-                  <td className="py-3 px-4 text-[#747775] dark:text-[#8e918f] hidden sm:table-cell">me</td>
+                  <td className="py-3 px-4 text-[#747775] dark:text-[#8e918f] hidden sm:table-cell">{t('files.me')}</td>
                   <td className="py-3 px-4 text-[#747775] dark:text-[#8e918f] hidden md:table-cell">
                     {formatDate(file.date)}
                   </td>

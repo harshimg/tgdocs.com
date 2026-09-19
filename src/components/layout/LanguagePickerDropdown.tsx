@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { languages, defaultLang, type SupportedLanguage } from '../../i18n/ui';
-import { Check } from 'lucide-react';
+import { useTranslation } from '../../i18n/context';
+import { Check, Languages } from 'lucide-react';
 
 interface LanguagePickerDropdownProps {
   variant?: 'header' | 'login' | 'custom';
@@ -13,21 +14,10 @@ export const LanguagePickerDropdown: React.FC<LanguagePickerDropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { lang: contextLang, setLanguage, t } = useTranslation();
 
-  // Detect current language from window.location
-  const [currentLang, setCurrentLang] = useState<SupportedLanguage>(defaultLang);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const segments = window.location.pathname.split('/').filter(Boolean);
-      const candidate = segments[0] as SupportedLanguage;
-      if (candidate && candidate in languages) {
-        setCurrentLang(candidate);
-      } else {
-        setCurrentLang(defaultLang);
-      }
-    }
-  }, []);
+  // Detect current language from context or window.location
+  const currentLang = contextLang || defaultLang;
 
   // Handle outside clicks
   useEffect(() => {
@@ -76,12 +66,16 @@ export const LanguagePickerDropdown: React.FC<LanguagePickerDropdownProps> = ({
   const handleSelect = (langKey: SupportedLanguage) => {
     setIsOpen(false);
     if (langKey === currentLang) return;
+    if (setLanguage) {
+      setLanguage(langKey);
+    }
     try {
       localStorage.setItem('tgdocs_lang', langKey);
     } catch {
       // Ignore storage errors
     }
-    window.location.href = getTargetUrl(langKey);
+    const targetUrl = getTargetUrl(langKey);
+    window.location.href = targetUrl;
   };
 
   // Button styles based on variant
@@ -101,27 +95,12 @@ export const LanguagePickerDropdown: React.FC<LanguagePickerDropdownProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="Select Language"
-        title="Select Language"
+        aria-label={t('header.selectLanguage')}
+        title={t('header.selectLanguage')}
         aria-expanded={isOpen}
         className={buttonStyle}
       >
-        <svg
-          className={iconStyle}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="m5 8 6 6" />
-          <path d="m4 14 6-6 2-3" />
-          <path d="M2 5h12" />
-          <path d="M7 2h1" />
-          <path d="m22 22-5-10-5 10" />
-          <path d="M14 18h6" />
-        </svg>
+        <Languages className={iconStyle} />
       </button>
 
       {/* Dropdown Menu */}

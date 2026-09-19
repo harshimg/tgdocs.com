@@ -21,6 +21,7 @@ import {
   RotateCcw,
   Play,
 } from 'lucide-react';
+import { useTranslation } from '../../i18n/context';
 
 interface FileCardProps {
   file: TGFile;
@@ -29,6 +30,7 @@ interface FileCardProps {
 }
 
 export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview }) => {
+  const { t } = useTranslation();
   const {
     selectedFileIds,
     toggleSelectFile,
@@ -176,7 +178,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview })
                   className="w-full text-left px-3 py-2 text-xs text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] flex items-center gap-2 cursor-pointer"
                 >
                   <ExternalLink className="w-3.5 h-3.5 text-[#747775]" />
-                  <span>Preview</span>
+                  <span>{t('files.open')}</span>
                 </button>
                 <button
                   onClick={(e) => {
@@ -187,7 +189,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview })
                   className="w-full text-left px-3 py-2 text-xs text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] flex items-center gap-2 cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5 text-[#747775]" />
-                  <span>Download</span>
+                  <span>{t('files.download')}</span>
                 </button>
                 <button
                   onClick={(e) => {
@@ -198,7 +200,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview })
                   className="w-full text-left px-3 py-2 text-xs text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] flex items-center gap-2 cursor-pointer"
                 >
                   <Edit2 className="w-3.5 h-3.5 text-[#747775]" />
-                  <span>Rename</span>
+                  <span>{t('files.rename')}</span>
                 </button>
                 <div className="my-1 border-t border-[#e0e3e7] dark:border-[#3c4043]" />
                 {file.isTrashed ? (
@@ -212,7 +214,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview })
                       className="w-full text-left px-3 py-2 text-xs text-[#34a853] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] flex items-center gap-2 cursor-pointer"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
-                      <span>Restore</span>
+                      <span>{t('files.restore')}</span>
                     </button>
                     <button
                       onClick={(e) => {
@@ -223,7 +225,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview })
                       className="w-full text-left px-3 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>Delete forever</span>
+                      <span>{t('files.deleteForever')}</span>
                     </button>
                   </>
                 ) : (
@@ -236,7 +238,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onRename, onPreview })
                     className="w-full text-left px-3 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2 cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                    <span>Move to trash</span>
+                    <span>{t('files.trashAction')}</span>
                   </button>
                 )}
               </div>

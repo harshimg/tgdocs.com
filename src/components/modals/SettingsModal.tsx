@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getLocalCachedMeta, commitMetaToTelegram } from '../../telegram/metadata';
 import { loadSession } from '../../telegram/session';
 import { Settings, HardDrive, ShieldCheck, Download, Check, X } from 'lucide-react';
+import { useTranslation } from '../../i18n/context';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface SettingsModalProps {
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const [storageLocation, setStorageLocation] = useState<'channel' | 'saved_messages'>('channel');
   const [saved, setSaved] = useState(false);
   const [sessionExported, setSessionExported] = useState(false);
@@ -53,7 +55,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         <div className="flex items-center justify-between pb-4 border-b border-[#e0e3e7] dark:border-[#3c4043]">
           <div className="flex items-center gap-2">
             <Settings className="w-5 h-5 text-[#0b57d0] dark:text-[#a8c7fa]" />
-            <h3 className="font-semibold text-base text-[#1f1f1f] dark:text-[#e3e3e3]">Storage & Sync Settings</h3>
+            <h3 className="font-semibold text-base text-[#1f1f1f] dark:text-[#e3e3e3]">
+              {t('modals.settingsTitle')}
+            </h3>
           </div>
           <button
             onClick={onClose}
@@ -67,10 +71,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           {/* Storage Peer Choice */}
           <div>
             <h4 className="font-semibold text-sm text-[#1f1f1f] dark:text-[#e3e3e3] mb-1">
-              Telegram Storage Target
+              {t('modals.storageLocation')}
             </h4>
             <p className="text-[#747775] dark:text-[#8e918f] mb-3">
-              Choose where your uploaded files are stored in your Telegram account.
+              {t('sidebar.storage')}
             </p>
 
             <div className="space-y-2">
@@ -93,14 +97,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                 <div>
                   <div className="flex items-center gap-1.5">
                     <span className="font-semibold text-[#1f1f1f] dark:text-[#e3e3e3]">
-                      Dedicated Private Channel
-                    </span>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">
-                      Default & Recommended
+                      {t('modals.channelOption')}
                     </span>
                   </div>
                   <p className="text-[11px] text-[#747775] dark:text-[#8e918f] mt-0.5">
-                    Automatically maintains a private channel (`TGDocs Cloud Storage`) in your account. Keeps your personal chat clean.
+                    {t('modals.channelDesc')}
                   </p>
                 </div>
               </label>
@@ -123,10 +124,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                 />
                 <div>
                   <span className="font-semibold text-[#1f1f1f] dark:text-[#e3e3e3]">
-                    Saved Messages (Personal Chat)
+                    {t('modals.savedMsgOption')}
                   </span>
                   <p className="text-[11px] text-[#747775] dark:text-[#8e918f] mt-0.5">
-                    Stores all files directly in your Telegram "Saved Messages". Easily accessible from any official Telegram app.
+                    {t('modals.savedMsgDesc')}
                   </p>
                 </div>
               </label>
@@ -136,17 +137,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           {/* Security & Backup */}
           <div className="pt-2 border-t border-[#e0e3e7] dark:border-[#3c4043]">
             <h4 className="font-semibold text-sm text-[#1f1f1f] dark:text-[#e3e3e3] mb-1">
-              Encrypted Session Backup
+              {t('modals.backupSession')}
             </h4>
             <p className="text-[#747775] dark:text-[#8e918f] mb-3">
-              Export an encrypted backup of your browser session for quick recovery on another machine.
+              {t('modals.backupDesc')}
             </p>
             <button
               onClick={handleExportSession}
               className="py-2 px-3.5 rounded-xl border border-[#e0e3e7] dark:border-[#3c4043] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] text-xs font-medium text-[#1f1f1f] dark:text-[#e3e3e3] transition flex items-center gap-2"
             >
               <Download className="w-4 h-4 text-[#747775]" />
-              <span>{sessionExported ? 'Backup Downloaded!' : 'Export Session Backup'}</span>
+              <span>{sessionExported ? t('modals.sessionExported') : t('modals.exportSession')}</span>
             </button>
           </div>
         </div>
@@ -158,7 +159,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             onClick={onClose}
             className="py-2 px-4 rounded-xl text-xs font-medium text-[#444746] dark:text-[#c4c7c5] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] transition"
           >
-            Close
+            {t('modals.cancel')}
           </button>
           <button
             type="button"
@@ -168,10 +169,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             {saved ? (
               <>
                 <Check className="w-4 h-4" />
-                <span>Saved!</span>
+                <span>{t('modals.saved')}</span>
               </>
             ) : (
-              <span>Save Preferences</span>
+              <span>{t('modals.saveSettings')}</span>
             )}
           </button>
         </div>

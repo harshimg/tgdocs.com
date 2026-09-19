@@ -15,6 +15,7 @@ import {
   Menu,
 } from 'lucide-react';
 import { LanguagePickerDropdown } from './LanguagePickerDropdown';
+import { useTranslation } from '../../i18n/context';
 
 interface HeaderProps {
   onOpenPrivacyModal: () => void;
@@ -22,6 +23,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettingsModal }) => {
+  const { lang, t } = useTranslation();
   const { user, isDemoMode, logout } = useAuthStore();
   const { searchQuery, setSearchQuery, isDarkMode, toggleTheme, mobileSidebarOpen, setMobileSidebarOpen } =
     useFileStore();
@@ -53,15 +55,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
         {/* Mobile Hamburger Menu Toggle (Google Drive style) */}
         <button
           onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-          className="lg:hidden p-2 rounded-full hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] transition"
-          title="Open navigation"
-          aria-label="Open navigation menu"
+          className="lg:hidden p-2 rounded-full hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] transition cursor-pointer"
+          title={t('header.openNav')}
+          aria-label={t('header.openNav')}
         >
           <Menu className="w-5 h-5" />
         </button>
 
         {/* Brand Icon & Name */}
-        <a href="/" className="flex items-center gap-2.5 group">
+        <a href={lang && lang !== 'en' ? `/${lang}/` : '/'} className="flex items-center gap-2.5 group">
           <img
             src="/logo.svg"
             alt="TGDocs Logo"
@@ -71,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
             <span className="text-base sm:text-lg font-semibold text-[#1f1f1f] dark:text-[#e3e3e3] tracking-tight">TGDocs</span>
             {isDemoMode && (
               <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
-                Demo
+                {t('header.demoSandbox')}
               </span>
             )}
           </div>
@@ -86,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
           </div>
           <input
             type="text"
-            placeholder="Search in TGDocs..."
+            placeholder={t('header.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 sm:pl-11 pr-8 sm:pr-10 py-2 sm:py-2.5 rounded-full bg-[#f0f4f9] hover:bg-[#e9eef6] focus:bg-white dark:bg-[#282a2c] dark:hover:bg-[#333538] dark:focus:bg-[#1e1f20] border border-transparent focus:border-[#0b57d0] dark:focus:border-[#a8c7fa] text-xs sm:text-sm text-[#1f1f1f] dark:text-[#e3e3e3] placeholder-[#747775] dark:placeholder-[#8e918f] focus:outline-none focus:shadow-md transition-all"
@@ -94,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute inset-y-0 right-0 pr-2.5 sm:pr-3 flex items-center text-[#747775] hover:text-[#1f1f1f] dark:hover:text-[#e3e3e3]"
+              className="absolute inset-y-0 right-0 pr-2.5 sm:pr-3 flex items-center text-[#747775] hover:text-[#1f1f1f] dark:hover:text-[#e3e3e3] cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -110,8 +112,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
         {/* Privacy / Architecture Info */}
         <button
           onClick={onOpenPrivacyModal}
-          title="Privacy & Architecture"
-          className="p-2 sm:p-2.5 rounded-full hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] transition"
+          title={t('header.privacy')}
+          className="p-2 sm:p-2.5 rounded-full hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] transition cursor-pointer"
         >
           <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-[#0b57d0] dark:text-[#a8c7fa]" />
         </button>
@@ -119,8 +121,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          className="p-2 sm:p-2.5 rounded-full hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] transition"
+          title={isDarkMode ? t('header.switchLight') : t('header.switchDark')}
+          className="p-2 sm:p-2.5 rounded-full hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] transition cursor-pointer"
         >
           {isDarkMode ? <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" /> : <Moon className="w-4 h-4 sm:w-5 sm:h-5" />}
         </button>
@@ -129,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
         <div className="relative ml-1 sm:ml-2" ref={dropdownRef}>
           <button
             onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#0b57d0] dark:bg-[#a8c7fa] text-white dark:text-[#041e49] font-medium text-xs sm:text-sm flex items-center justify-center hover:opacity-90 shadow-sm ring-2 ring-transparent hover:ring-[#d3e3fd] transition"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#0b57d0] dark:bg-[#a8c7fa] text-white dark:text-[#041e49] font-medium text-xs sm:text-sm flex items-center justify-center hover:opacity-90 shadow-sm ring-2 ring-transparent hover:ring-[#d3e3fd] transition cursor-pointer"
           >
             {userInitial}
           </button>
@@ -147,7 +149,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
                   )}
                   {isDemoMode && (
                     <span className="text-[11px] text-amber-600 dark:text-amber-400 flex items-center gap-1 mt-0.5">
-                      <Sparkles className="w-3 h-3" /> Demo Sandbox
+                      <Sparkles className="w-3 h-3" /> {t('header.demoSandbox')}
                     </span>
                   )}
                 </div>
@@ -158,18 +160,18 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
                     <HardDrive className="w-3.5 h-3.5 text-[#0b57d0] dark:text-[#a8c7fa]" />
-                    Storage Target:
+                    {t('header.storageTarget')}
                   </span>
                   <span className="font-medium text-[#1f1f1f] dark:text-[#e3e3e3]">
-                    {isDemoMode ? 'Local Memory' : 'Private Channel'}
+                    {isDemoMode ? t('header.localMemory') : t('header.privateChannel')}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#34a853]" />
-                    Security:
+                    {t('header.activeSession')}
                   </span>
-                  <span className="text-emerald-700 dark:text-emerald-400 font-medium">AES-GCM Encrypted</span>
+                  <span className="text-emerald-700 dark:text-emerald-400 font-medium">{t('header.sessionEncrypted')}</span>
                 </div>
               </div>
 
@@ -180,10 +182,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
                     setUserDropdownOpen(false);
                     onOpenSettingsModal();
                   }}
-                  className="w-full text-left px-3 py-2 rounded-xl text-xs text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] transition flex items-center gap-2"
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#282a2c] transition flex items-center gap-2 cursor-pointer"
                 >
                   <Info className="w-4 h-4 text-[#747775]" />
-                  Storage & Sync Settings
+                  {t('sidebar.settings')}
                 </button>
 
                 <button
@@ -191,10 +193,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal, onOpenSettin
                     setUserDropdownOpen(false);
                     logout();
                   }}
-                  className="w-full text-left px-3 py-2 rounded-xl text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition flex items-center gap-2"
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition flex items-center gap-2 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
-                  {isDemoMode ? 'Exit Demo' : 'Sign Out & Purge Keys'}
+                  {t('header.logout')}
                 </button>
               </div>
             </div>

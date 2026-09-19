@@ -77,17 +77,34 @@ const ogImageUrl = image.startsWith('http') ? image : `${siteUrl.replace(/\/$/, 
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Inline script to prevent theme flash -->
+    <!-- Inline script to prevent theme flash & ensure site-wide language persistence & redirection -->
     <script is:inline>
       (function() {
         try {
-          var saved = localStorage.getItem('tgdocs_theme');
-          if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          var savedTheme = localStorage.getItem('tgdocs_theme');
+          if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
-          } else if (saved === 'light') {
+          } else if (savedTheme === 'light') {
             document.documentElement.classList.remove('dark');
           } else {
             document.documentElement.classList.add('dark');
+          }
+
+          var supportedLangs = ['en', 'es', 'ru', 'ja', 'fr', 'de', 'pt', 'ko', 'it', 'hi'];
+          var pathname = window.location.pathname;
+          var segments = pathname.split('/').filter(Boolean);
+          var firstSegment = segments[0];
+          var isPrefixed = firstSegment && supportedLangs.indexOf(firstSegment) !== -1;
+
+          if (isPrefixed) {
+            localStorage.setItem('tgdocs_lang', firstSegment);
+          } else {
+            var savedLang = localStorage.getItem('tgdocs_lang');
+            if (savedLang && savedLang !== 'en' && supportedLangs.indexOf(savedLang) !== -1) {
+              var targetPath = '/' + savedLang + (pathname === '/' ? '/' : (pathname.startsWith('/') ? pathname : '/' + pathname));
+              var dest = targetPath + window.location.search + window.location.hash;
+              window.location.replace(dest);
+            }
           }
         } catch (e) {
           document.documentElement.classList.add('dark');

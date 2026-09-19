@@ -10,8 +10,8 @@ const translatePath = useTranslatedPath(lang);
 ---
 
 <Layout
-  title="Terms & Conditions — TGDocs"
-  description="Terms and conditions governing the use of TGDocs, an open-source, client-side Telegram cloud file manager."
+  title={t('terms.metaTitle')}
+  description={t('terms.metaDesc')}
   lang={lang}
   isApp={false}
 >
@@ -24,13 +24,13 @@ const translatePath = useTranslatedPath(lang);
         <!-- Header -->
         <div class="mb-10 text-center sm:text-left">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#f0f4f8] dark:bg-[#212427] text-[#0082c8] text-xs font-semibold uppercase tracking-wider mb-3 border border-[#e2e8f0] dark:border-[#2e3236]">
-            <span>Legal Agreement</span>
+            <span>{t('terms.tag')}</span>
           </div>
           <h1 class="text-3xl sm:text-4xl font-extrabold text-[#191b1d] dark:text-[#fafafa] tracking-tight mb-2">
-            Terms & Conditions
+            {t('terms.title')}
           </h1>
           <p class="text-xs text-[#707579] dark:text-[#8e9295]">
-            Last updated: September 11, 2026
+            {t('terms.lastUpdated')}
           </p>
         </div>
 
@@ -40,124 +40,124 @@ const translatePath = useTranslatedPath(lang);
           <!-- 1. Introduction -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              1. Acceptance of Terms
+              {t('terms.s1Title')}
             </h2>
             <p>
-              By accessing, browsing, or using the website located at <strong>tgdocs.com</strong> (the "Service" or "TGDocs"), you acknowledge that you have read, understood, and agree to be bound by these Terms & Conditions ("Terms"). If you do not agree with any part of these Terms, you must not use or access TGDocs.
+              {t('terms.s1P1')}
             </p>
           </section>
 
           <!-- 2. Nature of Service -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              2. Nature of the Service (Client-Side Architecture)
+              {t('terms.s2Title')}
             </h2>
             <p>
-              TGDocs is a free, open-source, client-side web application interface. TGDocs provides a graphical user interface (resembling a cloud drive) that connects directly from your web browser to Telegram's public MTProto API over secure WebSockets.
+              {t('terms.s2P1')}
             </p>
             <p>
-              <strong>TGDocs does not operate any intermediate proxy, storage, or processing servers.</strong> All authentication, file encryption, uploads, and downloads occur strictly between your web browser and official Telegram Data Center servers.
+              <strong>{t('terms.s2Strong')}</strong> {t('terms.s2P2')}
             </p>
           </section>
 
           <!-- 3. Telegram Non-Affiliation -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              3. Independent Project & Non-Affiliation Disclaimer
+              {t('terms.s3Title')}
             </h2>
             <div class="p-4 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 text-xs text-[#005a8c] dark:text-[#93c5fd]">
-              <strong>Notice:</strong> TGDocs is an independent open-source project and is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Telegram FZ-LLC, Telegram Messenger Inc., or any of their subsidiaries or affiliates. The name "Telegram" as well as related names, marks, emblems, and images are registered trademarks of their respective owners.
+              <strong>{t('terms.s3NoticePrefix')}</strong> {t('terms.s3NoticeText')}
             </div>
             <p>
-              You must possess a valid, active Telegram account in good standing to use TGDocs. You agree to comply at all times with the official <a href="https://telegram.org/tos" target="_blank" rel="noreferrer" class="text-[#0082c8] underline">Telegram Terms of Service</a>.
+              {t('terms.s3P1')} <a href="https://telegram.org/tos" target="_blank" rel="noreferrer" class="text-[#0082c8] underline">{t('terms.s3TosLink')}</a>.
             </p>
           </section>
 
           <!-- 4. User Responsibilities & Account Security -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              4. User Security and Credentials
+              {t('terms.s4Title')}
             </h2>
             <p>
-              Because TGDocs operates entirely client-side, your Telegram session tokens, authorization keys, and cached file metadata are stored in your web browser's local storage (such as LocalStorage or IndexedDB).
+              {t('terms.s4P1')}
             </p>
             <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-              <li>You are solely responsible for maintaining the physical and digital security of your device and web browser.</li>
-              <li>We strongly recommend enabling Two-Step Verification (2FA) on your Telegram account.</li>
-              <li>When using shared or public computers, always click "Log Out" or clear your browser data before closing the tab.</li>
-              <li>TGDocs administrators and maintainers will never ask for your verification code, password, or session key.</li>
+              <li>{t('terms.s4B1')}</li>
+              <li>{t('terms.s4B2')}</li>
+              <li>{t('terms.s4B3')}</li>
+              <li>{t('terms.s4B4')}</li>
             </ul>
           </section>
 
           <!-- 5. Acceptable Use Policy -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              5. Acceptable Use and Prohibited Content
+              {t('terms.s5Title')}
             </h2>
             <p>
-              You agree not to use TGDocs to:
+              {t('terms.s5P1')}
             </p>
             <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-              <li>Store, share, or transmit any material that is unlawful, defamatory, harmful, abusive, harassing, or invasive of another's privacy.</li>
-              <li>Distribute malware, trojans, phishing payloads, or computer viruses.</li>
-              <li>Violate the intellectual property, copyright, trademark, or trade secret rights of any third party.</li>
-              <li>Attempt to circumvent Telegram's rate limits, spam detection mechanisms, or MTProto protocol guardrails.</li>
+              <li>{t('terms.s5B1')}</li>
+              <li>{t('terms.s5B2')}</li>
+              <li>{t('terms.s5B3')}</li>
+              <li>{t('terms.s5B4')}</li>
             </ul>
           </section>
 
           <!-- 6. Intellectual Property & Open Source License -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              6. Open Source Software
+              {t('terms.s6Title')}
             </h2>
             <p>
-              The source code of TGDocs is made available under the open-source MIT License. You are free to inspect, fork, modify, and distribute the software in accordance with the terms of that license.
+              {t('terms.s6P1')}
             </p>
           </section>
 
           <!-- 7. Disclaimer of Warranties -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              7. Disclaimer of Warranties
+              {t('terms.s7Title')}
             </h2>
             <p class="text-xs uppercase tracking-wider text-[#707579] dark:text-[#8e9295] font-semibold">
-              PLEASE READ CAREFULLY
+              {t('terms.s7Notice')}
             </p>
             <p>
-              THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, FREEDOM FROM ERRORS, AND NON-INFRINGEMENT.
+              {t('terms.s7P1')}
             </p>
             <p>
-              WE DO NOT GUARANTEE THAT THE SERVICE WILL BE UNINTERRUPTED, TIMELY, ERROR-FREE, OR SECURE. TELEGRAM'S API AVAILABILITY, RATE LIMITS, OR POLICY CHANGES MAY IMPACT THE OPERATION OF TGDOCS AT ANY TIME WITHOUT NOTICE.
+              {t('terms.s7P2')}
             </p>
           </section>
 
           <!-- 8. Limitation of Liability -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              8. Limitation of Liability
+              {t('terms.s8Title')}
             </h2>
             <p>
-              IN NO EVENT SHALL THE AUTHORS, CREATORS, OR CONTRIBUTORS OF TGDOCS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, LOSS OF DATA, LOSS OF PROFITS, LOSS OF ACCOUNT ACCESS, OR BUSINESS INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE OR INABILITY TO USE THE SERVICE.
+              {t('terms.s8P1')}
             </p>
           </section>
 
           <!-- 9. Changes to Terms -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              9. Modifications to Terms
+              {t('terms.s9Title')}
             </h2>
             <p>
-              We reserve the right to revise or update these Terms at any time. When updates occur, the "Last updated" date at the top will be revised. Continued use of TGDocs after any such changes constitutes your acceptance of the updated Terms.
+              {t('terms.s9P1')}
             </p>
           </section>
 
           <!-- 10. Contact -->
           <section class="space-y-3">
             <h2 class="text-lg sm:text-xl font-bold text-[#191b1d] dark:text-[#fafafa]">
-              10. Inquiries and Contact
+              {t('terms.s10Title')}
             </h2>
             <p>
-              If you have any questions or feedback regarding these Terms, please open an issue or discussion on our official <a href="https://github.com/harshimg/tgdocs.com" target="_blank" rel="noreferrer" class="text-[#0082c8] underline">GitHub repository</a> or visit our <a href={translatePath('/contact')} class="text-[#0082c8] underline">Contact page</a>.
+              {t('terms.s10P1')} <a href="https://github.com/harshimg/tgdocs.com" target="_blank" rel="noreferrer" class="text-[#0082c8] underline">GitHub repository</a> {t('terms.s10Or')} <a href={translatePath('/contact')} class="text-[#0082c8] underline">{t('terms.s10ContactLink')}</a>.
             </p>
           </section>
 

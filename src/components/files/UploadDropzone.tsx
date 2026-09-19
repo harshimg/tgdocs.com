@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useFileStore } from '../../store/file-store';
 import { formatBytes } from '../../utils/file-utils';
+import { useTranslation } from '../../i18n/context';
 import {
   Upload,
   CheckCircle2,
@@ -13,6 +14,7 @@ import {
 
 export const UploadDropzone: React.FC = () => {
   const { uploadQueue, uploadFiles, currentFolderId, folders } = useFileStore();
+  const { t } = useTranslation();
   const [isDragging, setIsDragging] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -144,7 +146,7 @@ export const UploadDropzone: React.FC = () => {
             </div>
 
             <h3 className="text-xl font-bold text-[#1f1f1f] dark:text-[#e3e3e3]">
-              Drop files to upload
+              {t('files.dropFiles')}
             </h3>
 
             <p className="text-xs text-[#747775] dark:text-[#8e918f]">
@@ -175,10 +177,10 @@ export const UploadDropzone: React.FC = () => {
               )}
               <span className="text-xs font-semibold text-[#1f1f1f] dark:text-[#e3e3e3]">
                 {activeCount > 0
-                  ? `Uploading ${activeCount} item${activeCount > 1 ? 's' : ''}...`
+                  ? `${t('files.uploading')} ${activeCount}...`
                   : errorCount > 0
-                  ? `${completedCount} completed, ${errorCount} failed`
-                  : `${completedCount} upload${completedCount > 1 ? 's' : ''} complete`}
+                  ? `${completedCount} ${t('files.uploadSuccess')}, ${errorCount} ${t('files.uploadFailed')}`
+                  : `${completedCount} ${t('files.uploadSuccess')}`}
               </span>
             </div>
 
@@ -238,8 +240,8 @@ export const UploadDropzone: React.FC = () => {
                       {task.status === 'uploading'
                         ? `${task.progress}%`
                         : task.status === 'completed'
-                        ? 'Finished'
-                        : task.error || 'Upload failed'}
+                        ? t('files.uploadSuccess')
+                        : task.error || t('files.uploadFailed')}
                     </span>
                     {task.status === 'completed' && (
                       <CheckCircle2 className="w-3.5 h-3.5 text-[#34a853] shrink-0 ml-1" />

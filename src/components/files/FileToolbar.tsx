@@ -13,8 +13,10 @@ import {
   CheckSquare,
   RefreshCw,
 } from 'lucide-react';
+import { useTranslation } from '../../i18n/context';
 
 export const FileToolbar: React.FC = () => {
+  const { t } = useTranslation();
   const {
     viewMode,
     setViewMode,
@@ -51,13 +53,13 @@ export const FileToolbar: React.FC = () => {
           <button
             onClick={clearSelection}
             className="p-1 rounded-full hover:bg-[#e9eef6] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] cursor-pointer"
-            title="Clear selection"
+            title={t('files.clearSelection')}
           >
             <X className="w-4 h-4" />
           </button>
 
           <span className="text-[11px] sm:text-xs font-semibold px-2 py-0.5 rounded-md bg-[#c2e7ff] dark:bg-[#004a77] text-[#001d35] dark:text-[#c2e7ff] shrink-0">
-            {selectedFileIds.length} <span className="hidden min-[400px]:inline">selected</span>
+            {selectedFileIds.length} <span className="hidden min-[400px]:inline">{t('files.itemsSelected')}</span>
           </span>
 
           <div className="h-4 w-[1px] bg-[#e0e3e7] dark:bg-[#3c4043] mx-0.5 sm:mx-1" />
@@ -66,11 +68,11 @@ export const FileToolbar: React.FC = () => {
           {activeFilter !== 'trash' && (
             <button
               onClick={handleBulkDownload}
-              title="Download selected"
+              title={t('files.download')}
               className="p-1.5 rounded-lg hover:bg-[#e9eef6] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] flex items-center gap-1.5 text-xs font-medium transition cursor-pointer shrink-0"
             >
               <Download className="w-4 h-4" />
-              <span className="hidden md:inline">Download</span>
+              <span className="hidden md:inline">{t('files.download')}</span>
             </button>
           )}
 
@@ -79,30 +81,30 @@ export const FileToolbar: React.FC = () => {
             <>
               <button
                 onClick={restoreSelectedFiles}
-                title="Restore selected"
+                title={t('files.restore')}
                 className="p-1.5 rounded-lg hover:bg-[#e9eef6] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] flex items-center gap-1.5 text-xs font-medium transition cursor-pointer shrink-0"
               >
                 <RotateCcw className="w-4 h-4 text-[#34a853]" />
-                <span className="hidden md:inline">Restore</span>
+                <span className="hidden md:inline">{t('files.restore')}</span>
               </button>
 
               <button
                 onClick={deleteSelectedPermanently}
-                title="Delete forever"
+                title={t('files.deleteForever')}
                 className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center gap-1.5 text-xs font-medium transition cursor-pointer shrink-0"
               >
                 <Trash2 className="w-4 h-4" />
-                <span className="hidden md:inline">Delete forever</span>
+                <span className="hidden md:inline">{t('files.deleteForever')}</span>
               </button>
             </>
           ) : (
             <button
               onClick={trashSelectedFiles}
-              title="Move to trash"
+              title={t('files.trashAction')}
               className="p-1.5 rounded-lg hover:bg-[#e9eef6] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] flex items-center gap-1.5 text-xs font-medium transition cursor-pointer shrink-0"
             >
               <Trash2 className="w-4 h-4" />
-              <span className="hidden md:inline">Trash</span>
+              <span className="hidden md:inline">{t('files.trashAction')}</span>
             </button>
           )}
         </div>
@@ -111,11 +113,11 @@ export const FileToolbar: React.FC = () => {
           {/* Select all */}
           <button
             onClick={selectAllFiles}
-            title="Select all"
+            title={t('files.selectAll')}
             className="p-1.5 rounded-lg hover:bg-[#e9eef6] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] flex items-center gap-1.5 text-xs transition cursor-pointer"
           >
             <CheckSquare className="w-4 h-4" />
-            <span className="hidden min-[480px]:inline">Select all</span>
+            <span className="hidden min-[480px]:inline">{t('files.selectAll')}</span>
           </button>
         </div>
       )}
@@ -130,16 +132,16 @@ export const FileToolbar: React.FC = () => {
             onChange={(e) => setSort(e.target.value as any)}
             className="bg-transparent text-xs font-medium text-[#444746] dark:text-[#c4c7c5] focus:outline-none cursor-pointer"
           >
-            <option value="name">Name {sortOrder === 'asc' ? '↑' : '↓'}</option>
-            <option value="date">Date {sortOrder === 'asc' ? '↑' : '↓'}</option>
-            <option value="size">Size {sortOrder === 'asc' ? '↑' : '↓'}</option>
+            <option value="name">{t('files.sortName')} {sortOrder === 'asc' ? '↑' : '↓'}</option>
+            <option value="date">{t('files.sortDate')} {sortOrder === 'asc' ? '↑' : '↓'}</option>
+            <option value="size">{t('files.sortSize')} {sortOrder === 'asc' ? '↑' : '↓'}</option>
           </select>
         </div>
 
         {/* View Mode Toggle: Grid */}
         <button
           onClick={() => setViewMode('grid')}
-          title="Grid view"
+          title={t('files.gridView')}
           className={`p-1.5 rounded-lg transition cursor-pointer ${
             viewMode === 'grid'
               ? 'bg-[#c2e7ff] text-[#001d35] dark:bg-[#004a77] dark:text-[#c2e7ff]'
@@ -152,7 +154,7 @@ export const FileToolbar: React.FC = () => {
         {/* View Mode Toggle: List */}
         <button
           onClick={() => setViewMode('list')}
-          title="List view"
+          title={t('files.listView')}
           className={`p-1.5 rounded-lg transition cursor-pointer ${
             viewMode === 'list'
               ? 'bg-[#c2e7ff] text-[#001d35] dark:bg-[#004a77] dark:text-[#c2e7ff]'
@@ -167,7 +169,7 @@ export const FileToolbar: React.FC = () => {
         {/* Details Panel Toggle */}
         <button
           onClick={toggleDetailsPanel}
-          title="Details panel"
+          title={t('files.fileDetails')}
           className={`p-1.5 rounded-lg transition cursor-pointer ${
             detailsPanelOpen
               ? 'bg-[#c2e7ff] text-[#001d35] dark:bg-[#004a77] dark:text-[#c2e7ff]'
@@ -181,7 +183,7 @@ export const FileToolbar: React.FC = () => {
         <button
           onClick={() => loadAll()}
           disabled={isLoading}
-          title="Sync with Telegram"
+          title={t('header.activeSession')}
           className="p-1.5 rounded-lg hover:bg-[#e9eef6] dark:hover:bg-[#282a2c] text-[#444746] dark:text-[#c4c7c5] transition cursor-pointer disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-[#0b57d0] dark:text-[#a8c7fa]' : ''}`} />

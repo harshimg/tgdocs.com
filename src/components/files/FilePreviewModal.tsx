@@ -4,6 +4,7 @@ import { useFileStore } from '../../store/file-store';
 import { getActiveStorageProvider } from '../../storage';
 import { formatBytes, getFileTypeCategory } from '../../utils/file-utils';
 import { X, Download, Star, ExternalLink, Loader2, File, Music } from 'lucide-react';
+import { useTranslation } from '../../i18n/context';
 
 interface FilePreviewModalProps {
   file: TGFile | null;
@@ -12,6 +13,7 @@ interface FilePreviewModalProps {
 
 export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ file, onClose }) => {
   const { downloadFile, toggleFavorite } = useFileStore();
+  const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
@@ -65,7 +67,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ file, onClos
             className={`p-1.5 sm:p-2 rounded-full hover:bg-white/10 transition cursor-pointer ${
               file.isFavorite ? 'text-amber-400' : 'text-gray-300'
             }`}
-            title="Star file"
+            title={t('files.star')}
           >
             <Star className="w-4 h-4 sm:w-5 sm:h-5" fill={file.isFavorite ? 'currentColor' : 'none'} />
           </button>
@@ -73,7 +75,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ file, onClos
           <button
             onClick={() => downloadFile(file.id)}
             className="p-1.5 sm:p-2 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition cursor-pointer"
-            title="Download"
+            title={t('files.download')}
           >
             <Download className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
@@ -81,7 +83,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ file, onClos
           <button
             onClick={onClose}
             className="p-1.5 sm:p-2 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition cursor-pointer"
-            title="Close preview"
+            title={t('modals.close')}
           >
             <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
@@ -93,7 +95,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ file, onClos
         {loading ? (
           <div className="flex flex-col items-center gap-3 text-white">
             <Loader2 className="w-8 h-8 animate-spin text-[#a8c7fa]" />
-            <p className="text-xs text-gray-300">Retrieving media from Telegram...</p>
+            <p className="text-xs text-gray-300">{t('modals.streaming')}</p>
           </div>
         ) : category === 'image' && previewUrl ? (
           <img
@@ -121,14 +123,14 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ file, onClos
             <File className="w-12 h-12 sm:w-16 sm:h-16 text-[#a8c7fa] mx-auto mb-4" />
             <h3 className="text-sm sm:text-base font-semibold text-white mb-1 truncate">{file.name}</h3>
             <p className="text-xs text-gray-400 mb-6">
-              No direct browser preview available for {file.mimeType || 'this file format'}.
+              {t('modals.noPreview')}
             </p>
             <button
               onClick={() => downloadFile(file.id)}
               className="py-2.5 px-6 rounded-xl bg-[#0b57d0] hover:bg-[#0842a0] text-white font-medium text-xs transition flex items-center gap-2 mx-auto cursor-pointer"
             >
               <Download className="w-4 h-4" />
-              <span>Download File</span>
+              <span>{t('files.download')}</span>
             </button>
           </div>
         )}

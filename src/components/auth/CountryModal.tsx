@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { COUNTRIES, type Country } from '../../utils/countries';
+import { useTranslation } from '../../i18n/context';
 import { Search, X, Check } from 'lucide-react';
 
 interface CountryModalProps {
@@ -15,6 +16,7 @@ export const CountryModal: React.FC<CountryModalProps> = ({
   onSelect,
   selectedCountry,
 }) => {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -47,7 +49,7 @@ export const CountryModal: React.FC<CountryModalProps> = ({
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-5 pt-4 pb-3 border-b border-[#2e323b]">
-          <h3 className="text-base font-medium text-white">Country</h3>
+          <h3 className="text-base font-medium text-white">{t('login.country')}</h3>
           <button
             type="button"
             onClick={onClose}
@@ -64,7 +66,7 @@ export const CountryModal: React.FC<CountryModalProps> = ({
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search country or code..."
+              placeholder={t('login.searchCountry')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="w-full pl-9 pr-4 py-2.5 sm:py-2 text-base sm:text-sm bg-[#141518] text-white placeholder-[#6b7280] rounded-xl border border-[#2e323b] focus:outline-none focus:border-[#24a1de] transition"

@@ -45,7 +45,8 @@ const translatePath = useTranslatedPath(currentLang);
             <a
               href={targetUrl}
               hreflang={langKey}
-              class={`flex items-center justify-between px-3 py-1.5 text-xs rounded-lg mx-1 transition-colors ${
+              data-lang={langKey}
+              class={`lang-picker-item flex items-center justify-between px-3 py-1.5 text-xs rounded-lg mx-1 transition-colors ${
                 isActive
                   ? 'bg-[#0082c8]/10 text-[#0082c8] font-bold dark:bg-[#0082c8]/20'
                   : 'text-[#4b5563] dark:text-[#d1d5db] hover:bg-[#f3f4f6] dark:hover:bg-[#2c3035] hover:text-[#191b1d] dark:hover:text-white'
@@ -95,6 +96,17 @@ const translatePath = useTranslatedPath(currentLang);
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleMenu();
+      });
+
+      menu.querySelectorAll('.lang-picker-item').forEach((item) => {
+        item.addEventListener('click', () => {
+          const selected = item.getAttribute('data-lang');
+          if (selected) {
+            try {
+              localStorage.setItem('tgdocs_lang', selected);
+            } catch (err) {}
+          }
+        });
       });
 
       document.addEventListener('click', (e) => {

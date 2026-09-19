@@ -15,6 +15,7 @@ import {
   Cloud,
   X,
 } from 'lucide-react';
+import { useTranslation } from '../../i18n/context';
 
 interface SidebarProps {
   onOpenNewFolderModal: () => void;
@@ -22,6 +23,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSettingsModal }) => {
+  const { t } = useTranslation();
   const {
     activeFilter,
     currentFolderId,
@@ -126,13 +128,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setNewMenuOpen(!newMenuOpen)}
-            className="flex items-center gap-3 px-5 py-4 rounded-2xl bg-white dark:bg-[#282a2c] hover:bg-[#f0f4f9] dark:hover:bg-[#333538] text-[#1f1f1f] dark:text-[#e3e3e3] font-medium text-sm shadow-[0_1px_3px_0_rgba(60,64,67,0.3),0_4px_8px_3px_rgba(60,64,67,0.15)] hover:shadow-[0_2px_6px_2px_rgba(60,64,67,0.15),0_1px_2px_0_rgba(60,64,67,0.3)] transition-all"
+            className="flex items-center gap-3 px-5 py-4 rounded-2xl bg-white dark:bg-[#282a2c] hover:bg-[#f0f4f9] dark:hover:bg-[#333538] text-[#1f1f1f] dark:text-[#e3e3e3] font-medium text-sm shadow-[0_1px_3px_0_rgba(60,64,67,0.3),0_4px_8px_3px_rgba(60,64,67,0.15)] hover:shadow-[0_2px_6px_2px_rgba(60,64,67,0.15),0_1px_2px_0_rgba(60,64,67,0.3)] transition-all cursor-pointer"
           >
             {/* Multi-colored Google plus icon */}
             <div className="relative w-6 h-6 flex items-center justify-center">
               <Plus className="w-6 h-6 text-[#0b57d0] dark:text-[#a8c7fa]" strokeWidth={2.5} />
             </div>
-            <span>New</span>
+            <span>{t('sidebar.new')}</span>
           </button>
 
           {/* New Menu Dropdown */}
@@ -143,20 +145,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
                   setNewMenuOpen(false);
                   onOpenNewFolderModal();
                 }}
-                className="w-full text-left px-4 py-2.5 text-sm text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#333538] flex items-center gap-3 transition"
+                className="w-full text-left px-4 py-2.5 text-sm text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#333538] flex items-center gap-3 transition cursor-pointer"
               >
                 <FolderPlus className="w-4 h-4 text-[#747775] dark:text-[#8e918f]" />
-                <span>New folder</span>
+                <span>{t('sidebar.newFolder')}</span>
               </button>
 
               <div className="my-1 border-t border-[#e0e3e7] dark:border-[#3c4043]" />
 
               <button
                 onClick={handleFileUploadTrigger}
-                className="w-full text-left px-4 py-2.5 text-sm text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#333538] flex items-center gap-3 transition"
+                className="w-full text-left px-4 py-2.5 text-sm text-[#1f1f1f] dark:text-[#e3e3e3] hover:bg-[#f0f4f9] dark:hover:bg-[#333538] flex items-center gap-3 transition cursor-pointer"
               >
                 <Upload className="w-4 h-4 text-[#747775] dark:text-[#8e918f]" />
-                <span>File upload</span>
+                <span>{t('sidebar.fileUpload')}</span>
               </button>
             </div>
           )}
@@ -174,7 +176,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
             }`}
           >
             <HardDrive className="w-5 h-5 shrink-0" />
-            <span>My Storage</span>
+            <span>{t('sidebar.myDrive')}</span>
           </button>
 
           {/* Starred */}
@@ -187,7 +189,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
             }`}
           >
             <Star className="w-5 h-5 shrink-0" />
-            <span>Starred</span>
+            <span>{t('sidebar.starred')}</span>
           </button>
 
           {/* Recent */}
@@ -200,7 +202,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
             }`}
           >
             <Clock className="w-5 h-5 shrink-0" />
-            <span>Recent</span>
+            <span>{t('files.lastModified')}</span>
           </button>
 
           {/* Trash */}
@@ -213,7 +215,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
             }`}
           >
             <Trash2 className="w-5 h-5 shrink-0" />
-            <span>Trash</span>
+            <span>{t('sidebar.trash')}</span>
           </button>
         </nav>
 
@@ -224,7 +226,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
               onClick={() => setFoldersExpanded(!foldersExpanded)}
               className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-[#747775] dark:text-[#8e918f] hover:text-[#1f1f1f] dark:hover:text-[#e3e3e3] cursor-pointer"
             >
-              <span className="font-semibold uppercase tracking-wider text-[10px]">Folders</span>
+              <span className="font-semibold uppercase tracking-wider text-[10px]">{t('files.folders')}</span>
               {foldersExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
             </button>
 
@@ -254,7 +256,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
       <div className="pt-4 border-t border-[#e0e3e7] dark:border-[#3c4043] space-y-2">
         <div className="flex items-center gap-2 text-xs font-medium text-[#444746] dark:text-[#c4c7c5]">
           <Cloud className="w-4 h-4 text-[#0b57d0] dark:text-[#a8c7fa]" />
-          <span>Storage</span>
+          <span>{t('sidebar.storage')}</span>
         </div>
 
         {/* Progress bar */}
@@ -266,7 +268,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
         </div>
 
         <p className="text-[11px] text-[#747775] dark:text-[#8e918f]">
-          {formatBytes(stats?.usedBytes || 0)} used · Telegram Cloud
+          {formatBytes(stats?.usedBytes || 0)} used · {t('sidebar.unlimited')}
         </p>
 
         <button
@@ -276,7 +278,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenNewFolderModal, onOpenSe
           }}
           className="w-full mt-1 py-1.5 px-3 rounded-lg border border-[#e0e3e7] dark:border-[#3c4043] hover:bg-[#e9eef6] dark:hover:bg-[#282a2c] text-[11px] font-medium text-[#0b57d0] dark:text-[#a8c7fa] transition text-center cursor-pointer"
         >
-          Storage options
+          {t('sidebar.settings')}
         </button>
       </div>
     </aside>
